@@ -4,10 +4,12 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { Folder, LayoutGrid, UserCog, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const mainNavItems: NavItem[] = [
+
+
+const dashboardNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         url: '/dashboard',
@@ -15,18 +17,30 @@ const mainNavItems: NavItem[] = [
     },
 ];
 
-const footerNavItems: NavItem[] = [
+
+
+const mainNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        url: 'https://github.com/laravel/react-starter-kit',
+        title: 'Internamentos',
+        url: '/internamentos',
         icon: Folder,
     },
+];
+
+const administracaoNavItems: NavItem[] = [
     {
-        title: 'Documentation',
-        url: 'https://laravel.com/docs/starter-kits',
-        icon: BookOpen,
+        title: 'Utilizadores',
+        url: '/users',
+        icon: Users,
+    },
+    {
+        title: 'Roles & Permissões',
+        url: '/access-control',
+        icon: UserCog,
     },
 ];
+
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     return (
@@ -44,7 +58,9 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={dashboardNavItems} title="Dasboard"/>
+                <NavMain items={mainNavItems} title="Gestão"/>
+                <NavMain items={administracaoNavItems} title="Administração" />
             </SidebarContent>
 
             <SidebarFooter>

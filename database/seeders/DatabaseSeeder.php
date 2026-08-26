@@ -14,13 +14,13 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // RUN THE ROLES AND PERMISSIONS SEEDER
-        $this->call(RolesAndPermissionsSeeder::class);
+        //$this->call(UtenteSeeder::class);
+        //$this->call(RolesAndPermissionsSeeder::class);
 
-        $admin = User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.test',
-        ]);
-
-        $admin->assignRole('admin');
+        // os que exitesr na pasta Permissions
+        foreach (glob(database_path('seeders/Permissions/*.php')) as $file) {
+            $className = pathinfo($file, PATHINFO_FILENAME);
+            $this->call("Database\\Seeders\\Permissions\\$className");
+        }
     }
 }

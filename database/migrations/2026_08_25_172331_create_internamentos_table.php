@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('internamentos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('utente_id')->index('internamentos_utente_id_foreign');
-            $table->string('cama', 191);
-            $table->unsignedBigInteger('localizacao_id')->index('internamentos_localizacao_id_foreign');
+            $table->foreignId('utente_id')->constrained()->onDelete('cascade');
+            $table->string('cama', 10);
+            $table->foreignId('localocalizacao_id')->constrained()->onDelete('cascade');
             $table->date('data_de_entrada');
             $table->unsignedBigInteger('origem_do_internamento_id')->index('internamentos_origem_do_internamento_id_foreign');
             $table->date('data_de_alta')->nullable();
@@ -28,9 +28,6 @@ return new class extends Migration
             $table->unsignedBigInteger('caso_social_id')->nullable()->index('internamentos_caso_social_id_foreign');
             $table->boolean('bloquear_tabela')->default(false)->comment('Se dados estão bloqueados');
             $table->longText('comentarios')->nullable();
-            $table->unsignedBigInteger('created_by_id')->nullable()->index('internamentos_created_by_id_foreign');
-            $table->unsignedBigInteger('updated_by_id')->nullable()->index('internamentos_updated_by_id_foreign');
-            $table->unsignedBigInteger('deleted_by_id')->nullable()->index('internamentos_deleted_by_id_foreign');
             $table->softDeletes();
             $table->timestamps();
         });
