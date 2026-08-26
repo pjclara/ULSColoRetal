@@ -1,0 +1,1 @@
+import{j as e,L as s}from"./app-q5OMBaEu.js";function i({utente:t}){return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Utente"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["Utente #",t.id]})})]})}export{i as default};

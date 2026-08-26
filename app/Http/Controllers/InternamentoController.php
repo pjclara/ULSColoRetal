@@ -49,12 +49,14 @@ class InternamentoController extends Controller
             'filters' => [
                 'search' => $request->input('search', ''),
             ],
-            'origensInternamento' => $this->service->getOrigensInternamento(),
-            'estadosAlta' => $this->service->getEstadosAlta(),
-            'responsaveis' => $this->service->getResponsaveis(),
-            'clavienDindo' => $this->service->getClavienDindo(),
-            'destinos' => $this->service->getDestinos(),
-            'casosSociais' => $this->service->getCasosSociais(),
+            'internamentoOptions' => [
+                'origensInternamento' => $this->service->getOrigensInternamento(),
+                'estadosAlta' => $this->service->getEstadosAlta(),
+                'responsaveis' => $this->service->getResponsaveis(),
+                'clavienDindo' => $this->service->getClavienDindo(),
+                'destinos' => $this->service->getDestinos(),
+                'casosSociais' => $this->service->getCasosSociais(),
+            ],
         ]);
     }
 

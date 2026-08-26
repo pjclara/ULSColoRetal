@@ -1,4 +1,5 @@
 export type InternamentoItem = {
+    id?: number;
     utente_id: number;
     cama: string | null;
     origem_do_internamento_id: number | null;

@@ -1,24 +1,19 @@
 import { AppPageHeader } from '@/components/app/app-page-header';
 import { AppWizard } from '@/components/app/app-wizard';
 import AppLayout from '@/layouts/app-layout';
-import type { InternamentoItem, Option, User, UtenteItem } from '@/types/type';
+import type { InternamentoItem, UtenteItem } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 import { StepUtente } from '../Utentes/StepUtente';
 import { StepInternamento } from './StepInternamento';
-// import { StepInternamento } from './StepInternamento';
+
+import type { InternamentoOptions } from '@/types/internamento';
 
 type Props = {
     utentes: UtenteItem[];
     internamentos: InternamentoItem[];
-    origensInternamento: Option[];
-    estadosAlta: Option[];
-    responsaveis: User[];
-    clavienDindo: Option[];
-    destinos: Option[];
-    casosSociais: Option[];
-
+    internamentoOptions: InternamentoOptions;
     filters: {
         search: string;
     };
@@ -51,17 +46,7 @@ const steps = [
     },
 ];
 
-export default function Create({
-    utentes,
-    internamentos,
-    origensInternamento,
-    estadosAlta,
-    responsaveis,
-    clavienDindo,
-    destinos,
-    casosSociais,
-    filters,
-}: Props) {
+export default function Create({ utentes, internamentos, internamentoOptions, filters }: Props) {
     const [currentStep, setCurrentStep] = useState(0);
     const [internamento, setInternamento] = useState<InternamentoItem | null>(null);
     const [filtersInternamentos, setFiltersInternamentos] = useState({
@@ -170,6 +155,7 @@ export default function Create({
 
                             {currentStep === 1 && utente && (
                                 <StepInternamento
+                                    internamentoOptions={internamentoOptions}
                                     utente={utente}
                                     internamentos={internamentos}
                                     filters={filtersInternamentos}
@@ -178,12 +164,6 @@ export default function Create({
                                     onBack={() => setCurrentStep(0)}
                                     onContinue={handleContinue}
                                     url={route('internamentos.create')}
-                                    origensInternamento={origensInternamento}
-                                    estadosAlta={estadosAlta}
-                                    responsaveis={responsaveis}
-                                    clavienDindo={clavienDindo}
-                                    destinos={destinos}
-                                    casosSociais={casosSociais}
                                 />
                             )}
                         </div>

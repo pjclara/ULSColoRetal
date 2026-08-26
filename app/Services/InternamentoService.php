@@ -124,6 +124,7 @@ class InternamentoService
     public function getResponsaveis()
     {
         return \App\Models\User::query()
+            ->whereActivo(true)
             ->orderBy('name')
             ->get(['id', 'name']);
     }

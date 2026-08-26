@@ -11,8 +11,13 @@ import { AppTable, AppTableColumn } from '@/components/app/app-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import type { InternamentoItem, Option, User, UtenteItem } from '@/types/type';
+import { InternamentoOptions } from '@/types/internamento';
+import type { InternamentoItem, UtenteItem } from '@/types/type';
 import CreateOrUpdateInternamentoModal from './CreateOrUpdateInternamentoModal';
+
+type InternamentoWithId = InternamentoItem & {
+    id: number;
+};
 
 type Pagination<T> = {
     data: T[];
@@ -44,33 +49,10 @@ type Props = {
     onContinue: () => void;
 
     selectedInternamento?: InternamentoItem | null;
-
-    onCreate?: () => void;
-    origensInternamento: Option[];
-    estadosAlta: Option[];
-    responsaveis: User[];
-    clavienDindo: Option[];
-    destinos: Option[];
-    casosSociais: Option[];
+    internamentoOptions: InternamentoOptions;
 };
 
-export function StepInternamento({
-    utente,
-    internamentos,
-    filters,
-    url,
-    onSelect,
-    onBack,
-    onContinue,
-    selectedInternamento = null,
-    onCreate,
-    origensInternamento,
-    estadosAlta,
-    responsaveis,
-    clavienDindo,
-    destinos,
-    casosSociais,
-}: Props) {
+export function StepInternamento({ utente, internamentos, filters, url, onSelect, onBack, onContinue, selectedInternamento = null, internamentoOptions }: Props) {
     const [search, setSearch] = useState(filters.search ?? '');
     const [searching, setSearching] = useState(false);
     const [showInternamentoModal, setShowInternamentoModal] = useState(false);
@@ -79,7 +61,7 @@ export function StepInternamento({
      * Os internamentos já vêm filtrados
      * pelo backend.
      */
-    const internamentosList = Array.isArray(internamentos) ? internamentos : internamentos.data;
+    const internamentosList = (Array.isArray(internamentos) ? internamentos : internamentos.data) as InternamentoWithId[];
 
     /**
      * Pesquisa os internamentos do utente
@@ -208,19 +190,20 @@ export function StepInternamento({
                 }
             />
 
+            <AppFilters onSubmit={handleSearch} onReset={handleReset} loading={searching}>
+                <AppFormField label="Pesquisar internamento">
+                    <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Data, estado ou responsável" />
+                </AppFormField>
+            </AppFilters>
 
             {internamentosList.length === 0 ? (
                 <AppEmptyState
                     title="Nenhum internamento encontrado."
                     description="Este utente não possui internamentos que correspondam à pesquisa."
-                    action={
-                        onCreate
-                            ? {
-                                  label: 'Criar internamento',
-                                  onClick: onCreate,
-                              }
-                            : undefined
-                    }
+                    action={{
+                        label: 'Criar internamento',
+                        onClick: () => setShowInternamentoModal(true),
+                    }}
                 />
             ) : (
                 <>
@@ -243,11 +226,9 @@ export function StepInternamento({
                 </Button>
 
                 <div className="flex gap-3">
-                    {onCreate && (
-                        <Button type="button" variant="outline" onClick={onCreate}>
-                            Novo internamento
-                        </Button>
-                    )}
+                    <Button type="button" variant="outline" onClick={() => setShowInternamentoModal(true)}>
+                        Novo internamento
+                    </Button>
 
                     <Button type="button" disabled={!selectedInternamento} onClick={onContinue}>
                         Continuar
@@ -255,15 +236,10 @@ export function StepInternamento({
                 </div>
             </div>
             <CreateOrUpdateInternamentoModal
+                internamentoOptions={internamentoOptions}
                 open={showInternamentoModal}
                 onClose={() => setShowInternamentoModal(false)}
                 utenteId={utente.id}
-                origensInternamento={origensInternamento}
-                estadosAlta={estadosAlta}
-                responsaveis={responsaveis}
-                clavienDindo={clavienDindo}
-                destinos={destinos}
-                casosSociais={casosSociais}
             />
         </div>
     );
