@@ -2,6 +2,7 @@ export type InternamentoItem = {
     id?: number;
     utente_id: number;
     cama: string | null;
+    localizacao_id: number | null;
     origem_do_internamento_id: number | null;
     data_de_entrada: string;
     data_de_alta?: string | null;
@@ -83,4 +84,9 @@ export type Pagination<T> = {
 export type Option = {
     value: string | number;
     label: string;
+}
+
+export type LocalizacaoItem = {
+    id: number;
+    nome: string;
 }

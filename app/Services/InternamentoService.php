@@ -27,6 +27,7 @@ class InternamentoService
                     'observacoes' => $internamento->observacoes ?? 'N/A',
                     'responsavel_id' => $internamento->responsavel_id ?? 'N/A',
                     'responsavel' => $internamento->responsavel->abrev ?? 'N/A',
+                    'localizacao_id' => $internamento->localizacao_id ?? 'N/A',
                     'diagnosticos' => $internamento->diagnosticos->map(function ($diagnostico) {
                         return [
                             'id' => $diagnostico->id,
@@ -152,6 +153,25 @@ class InternamentoService
     public function getCasosSociais()
     {
         return \App\Models\CasoSocial::query()
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
+    }
+
+    public function create(array $data): Internamento
+    {
+        return Internamento::create($data);
+    }
+
+    public function update(Internamento $internamento, array $data): Internamento
+    {
+        $internamento->update($data);
+
+        return $internamento;
+    }
+
+    public function getLocalizacoes()
+    {
+        return \App\Models\Localizacao::query()
             ->orderBy('nome')
             ->get(['id', 'nome']);
     }

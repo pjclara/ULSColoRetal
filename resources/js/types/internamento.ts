@@ -5,6 +5,7 @@ import type {
     EstadoDaAltaItem,
     OrigemDoInternamentoItem,
     User,
+    LocalizacaoItem,
 } from './type';
 
 export type InternamentoOptions = {
@@ -14,4 +15,5 @@ export type InternamentoOptions = {
     clavienDindo: ClavienDindoItem[];
     destinos: DestinoItem[];
     casosSociais: CasoSocialItem[];
+    localizacoes: LocalizacaoItem[];
 };

@@ -11,10 +11,19 @@ class Internamento extends Model
 
     protected $fillable = [
         'utente_id',
-        'data_internamento',
-        'data_alta',
+        'data_de_entrada',
+        'data_de_saida',
+        'data_de_alta',
         'motivo_internamento',
-        'observacoes',
+        'cama',
+        'localizacao_id',
+        'origem_do_internamento_id',
+        'estado_da_alta_id',
+        'responsavel_id',
+        'comentarios',
+        'clavien_dindo_id',
+        'destino_id',
+        'caso_social_id',
     ];
 
     /** @use HasFactory<\Database\Factories\InternamentoFactory> */

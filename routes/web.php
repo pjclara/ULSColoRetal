@@ -290,3 +290,34 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:diagnostico.delete')
         ->name('diagnosticos.destroy');
 });
+
+// Localizacao Module
+Route::middleware('auth')->group(function () {
+    Route::get('/localizacaos', [\App\Http\Controllers\LocalizacaoController::class, 'index'])
+        ->middleware('can:localizacao.view')
+        ->name('localizacaos.index');
+
+    Route::get('/localizacaos/create', [\App\Http\Controllers\LocalizacaoController::class, 'create'])
+        ->middleware('can:localizacao.create')
+        ->name('localizacaos.create');
+
+    Route::post('/localizacaos', [\App\Http\Controllers\LocalizacaoController::class, 'store'])
+        ->middleware('can:localizacao.create')
+        ->name('localizacaos.store');
+
+    Route::get('/localizacaos/{localizacao}', [\App\Http\Controllers\LocalizacaoController::class, 'show'])
+        ->middleware('can:localizacao.view')
+        ->name('localizacaos.show');
+
+    Route::get('/localizacaos/{localizacao}/edit', [\App\Http\Controllers\LocalizacaoController::class, 'edit'])
+        ->middleware('can:localizacao.update')
+        ->name('localizacaos.edit');
+
+    Route::put('/localizacaos/{localizacao}', [\App\Http\Controllers\LocalizacaoController::class, 'update'])
+        ->middleware('can:localizacao.update')
+        ->name('localizacaos.update');
+
+    Route::delete('/localizacaos/{localizacao}', [\App\Http\Controllers\LocalizacaoController::class, 'destroy'])
+        ->middleware('can:localizacao.delete')
+        ->name('localizacaos.destroy');
+});

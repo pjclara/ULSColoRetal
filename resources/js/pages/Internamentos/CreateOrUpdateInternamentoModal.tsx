@@ -22,6 +22,7 @@ const emptyOptions: InternamentoOptions = {
     clavienDindo: [],
     destinos: [],
     casosSociais: [],
+    localizacoes: [],
 };
 
 const emptyForm = (utenteId: number | null): InternamentoItem => ({
@@ -39,6 +40,7 @@ const emptyForm = (utenteId: number | null): InternamentoItem => ({
     caso_social_id: null,
     bloquear_tabela: false,
     comentarios: '',
+    localizacao_id: null,
 });
 
 export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteId, internamento, internamentoOptions }: Props) {
@@ -84,6 +86,8 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                 bloquear_tabela: internamento.bloquear_tabela ?? false,
 
                 comentarios: internamento.comentarios ?? '',
+
+                localizacao_id: internamento.localizacao_id != null ? Number(internamento.localizacao_id) : null,
             });
         } else {
             setForm(emptyForm(utenteId));
@@ -153,7 +157,16 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
         >
             <div className="grid gap-6 md:grid-cols-2">
                 <AppInputField label="Cama" value={form.cama ?? ''} onChange={(value) => updateField('cama', value)} error={errors.cama} />
-
+                <AppSelectField
+                    label="Localização"
+                    value={form.localizacao_id ?? ''}
+                    onChange={(value) => updateField('localizacao_id', value === '' ? null : Number(value))}
+                    error={errors.localizacao_id}
+                    options={options.localizacoes.map((user) => ({
+                        value: user.id,
+                        label: user.nome,
+                    }))}
+                />
                 <AppSelectField
                     label="Origem do internamento"
                     value={form.origem_do_internamento_id ?? ''}

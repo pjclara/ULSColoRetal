@@ -12,7 +12,7 @@ class UpdateInternamentoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,20 @@ class UpdateInternamentoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            //'utente_id' => ['required', 'exists:utentes,id'],
+            'cama' => ['nullable', 'string'],
+            'data_de_entrada' => ['required', 'date'],
+            'data_de_alta' => ['nullable', 'date'],
+            'data_de_saida' => ['nullable', 'date'],
+            'origem_do_internamento_id' => ['nullable', 'exists:origem_do_internamentos,id'],
+            'estado_da_alta_id' => ['nullable', 'exists:estado_da_altas,id'],
+            'motivo_internamento' => ['nullable', 'string'],
+            'observacoes' => ['nullable', 'string'],
+            'responsavel_id' => ['nullable', 'exists:users,id'],
+            'clavien_dindo_id' => ['nullable', 'exists:clavien_dindos,id'],
+            'destino_id' => ['nullable', 'exists:destinos,id'],
+            'caso_social_id' => ['nullable', 'exists:casos_sociais,id'],
+            'localizacao_id' => ['nullable', 'exists:localizacaos,id'],
         ];
     }
 }

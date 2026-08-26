@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreInternamentoRequest;
+use App\Http\Requests\UpdateInternamentoRequest;
 use App\Models\Internamento;
 use App\Models\Utente;
 use App\Services\InternamentoService;
@@ -32,6 +34,7 @@ class InternamentoController extends Controller
                 'clavienDindo' => $this->service->getClavienDindo(),
                 'destinos' => $this->service->getDestinos(),
                 'casosSociais' => $this->service->getCasosSociais(),
+                'localizacoes' => $this->service->getLocalizacoes(),
             ],
         ]);
     }
@@ -64,6 +67,7 @@ class InternamentoController extends Controller
                 'clavienDindo' => $this->service->getClavienDindo(),
                 'destinos' => $this->service->getDestinos(),
                 'casosSociais' => $this->service->getCasosSociais(),
+                'localizacoes' => $this->service->getLocalizacoes(),
             ],
         ]);
     }
@@ -71,9 +75,13 @@ class InternamentoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreInternamentoRequest $request)
     {
-        //
+        $internamento = $this->service->create($request->validated());
+
+        return redirect()
+            ->route('internamentos.index')
+            ->with('success', 'Internamento criado com sucesso.');
     }
 
     /**
@@ -95,9 +103,13 @@ class InternamentoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Internamento $internamento)
+    public function update(UpdateInternamentoRequest $request, Internamento $internamento)
     {
-        //
+        $internamento = $this->service->update($internamento, $request->validated());
+
+        return redirect()
+            ->route('internamentos.index')
+            ->with('success', 'Internamento atualizado com sucesso.');
     }
 
     /**
