@@ -103,3 +103,35 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:internamento.delete')
         ->name('internamentos.destroy');
 });
+
+
+// EstadoDaAlta Module
+Route::middleware('auth')->group(function () {
+    Route::get('/estado-da-altas', [\App\Http\Controllers\EstadoDaAltaController::class, 'index'])
+        ->middleware('can:estado-da-altum.view')
+        ->name('estado-da-altas.index');
+
+    Route::get('/estado-da-altas/create', [\App\Http\Controllers\EstadoDaAltaController::class, 'create'])
+        ->middleware('can:estado-da-altum.create')
+        ->name('estado-da-altas.create');
+
+    Route::post('/estado-da-altas', [\App\Http\Controllers\EstadoDaAltaController::class, 'store'])
+        ->middleware('can:estado-da-altum.create')
+        ->name('estado-da-altas.store');
+
+    Route::get('/estado-da-altas/{estadoDaAlta}', [\App\Http\Controllers\EstadoDaAltaController::class, 'show'])
+        ->middleware('can:estado-da-altum.view')
+        ->name('estado-da-altas.show');
+
+    Route::get('/estado-da-altas/{estadoDaAlta}/edit', [\App\Http\Controllers\EstadoDaAltaController::class, 'edit'])
+        ->middleware('can:estado-da-altum.update')
+        ->name('estado-da-altas.edit');
+
+    Route::put('/estado-da-altas/{estadoDaAlta}', [\App\Http\Controllers\EstadoDaAltaController::class, 'update'])
+        ->middleware('can:estado-da-altum.update')
+        ->name('estado-da-altas.update');
+
+    Route::delete('/estado-da-altas/{estadoDaAlta}', [\App\Http\Controllers\EstadoDaAltaController::class, 'destroy'])
+        ->middleware('can:estado-da-altum.delete')
+        ->name('estado-da-altas.destroy');
+});

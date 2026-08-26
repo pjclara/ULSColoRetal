@@ -37,8 +37,15 @@ class InternamentoController extends Controller
             $request->only(['search'])
         );
 
+        $internamentos = $this->service
+            ->forUtente(
+                $request->integer('utente_id'),
+                $request->input('search')
+            );
+
         return inertia('Internamentos/Create', [
             'utentes' => $utentes,
+            'internamentos' => $internamentos,
             'filters' => [
                 'search' => $request->input('search', ''),
             ],

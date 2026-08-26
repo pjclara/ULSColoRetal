@@ -29,4 +29,9 @@ class Internamento extends Model
     {
         return $this->belongsTo(User::class, 'responsavel_id');
     }
+
+    public function estadoDaAlta()
+    {
+        return $this->belongsTo(EstadoDaAlta::class, 'estado_da_alta_id');
+    }
 }

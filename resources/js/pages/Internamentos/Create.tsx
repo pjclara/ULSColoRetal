@@ -1,15 +1,17 @@
 import { AppPageHeader } from '@/components/app/app-page-header';
 import { AppWizard } from '@/components/app/app-wizard';
 import AppLayout from '@/layouts/app-layout';
-import type { UtenteItem } from '@/types/type';
+import type { InternamentoItem, UtenteItem } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
 import { StepUtente } from '../Utentes/StepUtente';
+import { StepInternamento } from './StepInternamento';
 // import { StepInternamento } from './StepInternamento';
 
 type Props = {
     utentes: UtenteItem[];
+    internamentos: InternamentoItem[]
 
     filters: {
         search: string;
@@ -43,8 +45,12 @@ const steps = [
     },
 ];
 
-export default function Create({ utentes, filters }: Props) {
+export default function Create({ utentes, internamentos, filters }: Props) {
     const [currentStep, setCurrentStep] = useState(0);
+    const [internamento, setInternamento] = useState<InternamentoItem | null>(null);
+    const [filtersInternamentos, setFiltersInternamentos] = useState({
+        search: '',
+    });
 
     const [utente, setUtente] = useState<UtenteItem | null>(null);
 
@@ -98,6 +104,14 @@ export default function Create({ utentes, filters }: Props) {
         setCurrentStep(0);
     };
 
+    const handleCreateInternamento = () => {
+        // Lógica para criar um novo internamento
+        // Pode redirecionar para a página de criação de internamento
+        router.get(route('internamentos.create'), {
+            utente_id: utente?.id,
+        });
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Criar Internamento" />
@@ -114,7 +128,7 @@ export default function Create({ utentes, filters }: Props) {
                             utentes={utentes}
                             filters={filters}
                             selectedUtente={utente}
-                            onCreate={(newUtente:any) => {
+                            onCreate={(newUtente: any) => {
                                 setUtente(newUtente);
                                 handleContinue();
                             }}
@@ -131,19 +145,26 @@ export default function Create({ utentes, filters }: Props) {
                                 <h2 className="text-lg font-semibold">Internamento</h2>
 
                                 <p className="text-muted-foreground mt-1 text-sm">
-                                    Utente selecionado: <strong>{utente.nome} - {utente.numero_processo}</strong>
+                                    Utente selecionado:{' '}
+                                    <strong>
+                                        {utente.nome} - {utente.numero_processo}
+                                    </strong>
                                 </p>
                             </div>
 
-                            {/*
-                            Aqui entra o componente:
-
-                            <StepInternamento
-                                utente={utente}
-                                onBack={handleBack}
-                                onSuccess={...}
-                            />
-                            */}
+                            {currentStep === 1 && utente && (
+                                <StepInternamento
+                                    utente={utente}
+                                    internamentos={internamentos}
+                                    filters={filtersInternamentos}
+                                    selectedInternamento={internamento}
+                                    onSelect={setInternamento}
+                                    onBack={() => setCurrentStep(0)}
+                                    onContinue={handleContinue}
+                                    onCreate={handleCreateInternamento}
+                                    url={route('internamentos.create')}
+                                />
+                            )}
                         </div>
                     )}
                 </div>
