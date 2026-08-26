@@ -25,6 +25,14 @@ class InternamentoController extends Controller
 
         return inertia('Internamentos/Index', [
             'internamentos' => $internamentos,
+            'internamentoOptions' => [
+                'origensInternamento' => $this->service->getOrigensInternamento(),
+                'estadosAlta' => $this->service->getEstadosAlta(),
+                'responsaveis' => $this->service->getResponsaveis(),
+                'clavienDindo' => $this->service->getClavienDindo(),
+                'destinos' => $this->service->getDestinos(),
+                'casosSociais' => $this->service->getCasosSociais(),
+            ],
         ]);
     }
 

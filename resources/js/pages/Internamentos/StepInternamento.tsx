@@ -131,7 +131,7 @@ export function StepInternamento({ utente, internamentos, filters, url, onSelect
         },
 
         {
-            key: 'estado_da_alta_id',
+            key: 'estadoDaAlta',
             label: 'Estado',
         },
 

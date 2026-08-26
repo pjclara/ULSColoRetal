@@ -1,1 +1,0 @@
-import{j as e,L as s}from"./app-q5OMBaEu.js";function r({origemDoInternamento:t}){return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"OrigemDoInternamento"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["OrigemDoInternamento #",t.id]})})]})}export{r as default};

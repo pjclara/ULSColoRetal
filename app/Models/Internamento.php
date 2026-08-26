@@ -34,4 +34,11 @@ class Internamento extends Model
     {
         return $this->belongsTo(EstadoDaAlta::class, 'estado_da_alta_id');
     }
+
+    /// ddiagnsoticos
+
+    public function diagnosticos()
+    {
+        return $this->belongsToMany(Diagnostico::class);
+    }
 }

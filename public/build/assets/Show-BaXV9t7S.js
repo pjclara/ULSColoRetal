@@ -1,0 +1,1 @@
+import{j as e,L as s}from"./app-Dl_2OHKb.js";function r({internamento:t}){return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Internamento"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["Internamento #",t.id]})})]})}export{r as default};

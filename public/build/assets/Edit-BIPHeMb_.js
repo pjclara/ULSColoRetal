@@ -1,1 +1,0 @@
-import{j as t,L as a}from"./app-q5OMBaEu.js";function i({estadoDaAlta:s}){return t.jsxs(t.Fragment,{children:[t.jsx(a,{title:"Editar EstadoDaAlta"}),t.jsx("div",{className:"p-6",children:t.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar EstadoDaAlta #",s.id]})})]})}export{i as default};

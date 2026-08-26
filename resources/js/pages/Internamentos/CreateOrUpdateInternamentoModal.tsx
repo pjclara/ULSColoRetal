@@ -1,8 +1,8 @@
 import { AppInputField } from '@/components/app/app-input-field';
 import { AppSelectField } from '@/components/app/app-input-select';
 import { AppModalForm } from '@/components/app/app-modal-form';
-import { InternamentoOptions } from '@/types/internamento';
-import type { CasoSocialItem, ClavienDindoItem, DestinoItem, EstadoDaAltaItem, InternamentoItem, OrigemDoInternamentoItem, User } from '@/types/type';
+import type { InternamentoOptions } from '@/types/internamento';
+import type { InternamentoItem } from '@/types/type';
 import { router } from '@inertiajs/react';
 import { FormEvent, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -15,6 +15,14 @@ interface Props {
     internamentoOptions: InternamentoOptions;
 }
 
+const emptyOptions: InternamentoOptions = {
+    origensInternamento: [],
+    estadosAlta: [],
+    responsaveis: [],
+    clavienDindo: [],
+    destinos: [],
+    casosSociais: [],
+};
 
 const emptyForm = (utenteId: number | null): InternamentoItem => ({
     utente_id: utenteId ?? 0,
@@ -35,6 +43,7 @@ const emptyForm = (utenteId: number | null): InternamentoItem => ({
 
 export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteId, internamento, internamentoOptions }: Props) {
     const isEdit = !!internamento;
+    const options = internamentoOptions ?? emptyOptions;
 
     const [form, setForm] = useState<InternamentoItem>(emptyForm(utenteId));
 
@@ -150,7 +159,7 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                     value={form.origem_do_internamento_id ?? ''}
                     onChange={(value) => updateField('origem_do_internamento_id', value === '' ? null : Number(value))}
                     error={errors.origem_do_internamento_id}
-                    options={internamentoOptions.origensInternamento.map((option) => ({
+                    options={options.origensInternamento.map((option) => ({
                         value: option.id,
                         label: option.nome,
                     }))}
@@ -163,78 +172,16 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                     onChange={(value) => updateField('data_de_entrada', value)}
                     error={errors.data_de_entrada}
                 />
-
-                <AppInputField
-                    label="Data de alta"
-                    type="date"
-                    value={form.data_de_alta ?? ''}
-                    onChange={(value) => updateField('data_de_alta', value)}
-                    error={errors.data_de_alta}
-                />
-
-                <AppInputField
-                    label="Data de saída"
-                    type="date"
-                    value={form.data_de_saida ?? ''}
-                    onChange={(value) => updateField('data_de_saida', value)}
-                    error={errors.data_de_saida}
-                />
-
-                <AppSelectField
-                    label="Estado da alta"
-                    value={form.estado_da_alta_id ?? ''}
-                    onChange={(value) => updateField('estado_da_alta_id', value === '' ? null : Number(value))}
-                    error={errors.estado_da_alta_id}
-                    options={internamentoOptions.estadosAlta.map((option) => ({
-                        value: option.id,
-                        label: option.nome,
-                    }))}
-                />
-
                 <AppSelectField
                     label="Responsável"
                     value={form.responsavel_id ?? ''}
                     onChange={(value) => updateField('responsavel_id', value === '' ? null : Number(value))}
                     error={errors.responsavel_id}
-                    options={internamentoOptions.responsaveis.map((user) => ({
+                    options={options.responsaveis.map((user) => ({
                         value: user.id,
                         label: user.name,
                     }))}
                 />
-
-                <AppSelectField
-                    label="Clavien-Dindo"
-                    value={form.clavien_dindo_id ?? ''}
-                    onChange={(value) => updateField('clavien_dindo_id', value === '' ? null : Number(value))}
-                    error={errors.clavien_dindo_id}
-                    options={internamentoOptions.clavienDindo.map((option) => ({
-                        value: option.id,
-                        label: option.nome,
-                    }))}
-                />
-
-                <AppSelectField
-                    label="Destino"
-                    value={form.destino_id ?? ''}
-                    onChange={(value) => updateField('destino_id', value === '' ? null : Number(value))}
-                    error={errors.destino_id}
-                    options={internamentoOptions.destinos.map((option) => ({
-                        value: option.id,
-                        label: option.nome,
-                    }))}
-                />
-
-                <AppSelectField
-                    label="Caso social"
-                    value={form.caso_social_id ?? ''}
-                    onChange={(value) => updateField('caso_social_id', value === '' ? null : Number(value))}
-                    error={errors.caso_social_id}
-                    options={internamentoOptions.casosSociais.map((option) => ({
-                        value: option.id,
-                        label: option.nome,
-                    }))}
-                />
-
                 <AppInputField
                     label="Motivo do internamento"
                     value={form.motivo_internamento}
@@ -242,22 +189,72 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                     error={errors.motivo_internamento}
                     placeholder="Indique o motivo do internamento"
                 />
-
-                <div className="flex items-center gap-3">
-                    <input
-                        id="bloquear_tabela"
-                        type="checkbox"
-                        checked={form.bloquear_tabela}
-                        onChange={(event) => updateField('bloquear_tabela', event.target.checked)}
-                        className="h-4 w-4 rounded border-gray-300"
-                    />
-
-                    <label htmlFor="bloquear_tabela" className="text-sm font-medium">
-                        Bloquear tabela
-                    </label>
-                </div>
             </div>
 
+            <hr />
+            {internamento && (
+                <div className="grid gap-6 md:grid-cols-2">
+                    <AppInputField
+                        label="Data de alta"
+                        type="date"
+                        value={form.data_de_alta ?? ''}
+                        onChange={(value) => updateField('data_de_alta', value)}
+                        error={errors.data_de_alta}
+                    />
+
+                    <AppInputField
+                        label="Data de saída"
+                        type="date"
+                        value={form.data_de_saida ?? ''}
+                        onChange={(value) => updateField('data_de_saida', value)}
+                        error={errors.data_de_saida}
+                    />
+
+                    <AppSelectField
+                        label="Estado da alta"
+                        value={form.estado_da_alta_id ?? ''}
+                        onChange={(value) => updateField('estado_da_alta_id', value === '' ? null : Number(value))}
+                        error={errors.estado_da_alta_id}
+                        options={options.estadosAlta.map((option) => ({
+                            value: option.id,
+                            label: option.nome,
+                        }))}
+                    />
+
+                    <AppSelectField
+                        label="Clavien-Dindo"
+                        value={form.clavien_dindo_id ?? ''}
+                        onChange={(value) => updateField('clavien_dindo_id', value === '' ? null : Number(value))}
+                        error={errors.clavien_dindo_id}
+                        options={options.clavienDindo.map((option) => ({
+                            value: option.id,
+                            label: option.nome,
+                        }))}
+                    />
+
+                    <AppSelectField
+                        label="Destino"
+                        value={form.destino_id ?? ''}
+                        onChange={(value) => updateField('destino_id', value === '' ? null : Number(value))}
+                        error={errors.destino_id}
+                        options={options.destinos.map((option) => ({
+                            value: option.id,
+                            label: option.nome,
+                        }))}
+                    />
+
+                    <AppSelectField
+                        label="Caso social"
+                        value={form.caso_social_id ?? ''}
+                        onChange={(value) => updateField('caso_social_id', value === '' ? null : Number(value))}
+                        error={errors.caso_social_id}
+                        options={options.casosSociais.map((option) => ({
+                            value: option.id,
+                            label: option.nome,
+                        }))}
+                    />
+                </div>
+            )}
             <div className="mt-6">
                 <label htmlFor="comentarios" className="mb-2 block text-sm font-medium">
                     Comentários

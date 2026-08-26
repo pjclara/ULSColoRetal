@@ -259,3 +259,34 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:caso-social.delete')
         ->name('caso-socials.destroy');
 });
+
+// Diagnostico Module
+Route::middleware('auth')->group(function () {
+    Route::get('/diagnosticos', [\App\Http\Controllers\DiagnosticoController::class, 'index'])
+        ->middleware('can:diagnostico.view')
+        ->name('diagnosticos.index');
+
+    Route::get('/diagnosticos/create', [\App\Http\Controllers\DiagnosticoController::class, 'create'])
+        ->middleware('can:diagnostico.create')
+        ->name('diagnosticos.create');
+
+    Route::post('/diagnosticos', [\App\Http\Controllers\DiagnosticoController::class, 'store'])
+        ->middleware('can:diagnostico.create')
+        ->name('diagnosticos.store');
+
+    Route::get('/diagnosticos/{diagnostico}', [\App\Http\Controllers\DiagnosticoController::class, 'show'])
+        ->middleware('can:diagnostico.view')
+        ->name('diagnosticos.show');
+
+    Route::get('/diagnosticos/{diagnostico}/edit', [\App\Http\Controllers\DiagnosticoController::class, 'edit'])
+        ->middleware('can:diagnostico.update')
+        ->name('diagnosticos.edit');
+
+    Route::put('/diagnosticos/{diagnostico}', [\App\Http\Controllers\DiagnosticoController::class, 'update'])
+        ->middleware('can:diagnostico.update')
+        ->name('diagnosticos.update');
+
+    Route::delete('/diagnosticos/{diagnostico}', [\App\Http\Controllers\DiagnosticoController::class, 'destroy'])
+        ->middleware('can:diagnostico.delete')
+        ->name('diagnosticos.destroy');
+});

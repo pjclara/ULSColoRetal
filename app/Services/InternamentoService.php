@@ -17,16 +17,22 @@ class InternamentoService
             ->paginate($perPage)->through(function ($internamento) {
                 return [
                     'id' => $internamento->id,
-                    'nome_paciente' => $internamento->utente?->nome ?? 'N/A',
+                    'nome_curto' => $internamento->utente?->nome_curto ?? 'N/A',
                     'numero_processo' => $internamento->utente?->numero_processo ?? 'N/A',
                     'cama' => $internamento->cama ?? 'N/A',
-                    'data_internamento' => $internamento->data_de_entrada ?? 'N/A',
+                    'data_de_entrada' => $internamento->data_de_entrada ?? 'N/A',
+                    'origem_do_internamento_id' => $internamento->origem_do_internamento_id ?? 'N/A',
                     'data_alta' => $internamento->data_alta ?? 'N/A',
                     'motivo_internamento' => $internamento->motivo_internamento ?? 'N/A',
                     'observacoes' => $internamento->observacoes ?? 'N/A',
+                    'responsavel_id' => $internamento->responsavel_id ?? 'N/A',
                     'responsavel' => $internamento->responsavel->abrev ?? 'N/A',
-                    'created_at' => $internamento->created_at?->toDateTimeString(),
-                    'updated_at' => $internamento->updated_at?->toDateTimeString(),
+                    'diagnosticos' => $internamento->diagnosticos->map(function ($diagnostico) {
+                        return [
+                            'id' => $diagnostico->id,
+                            'nome' => $diagnostico->nome,
+                        ];
+                    }),
                 ];
             });
     }
@@ -87,17 +93,17 @@ class InternamentoService
             })
             ->orderBy('data_de_entrada', 'desc')
             ->paginate(15)
-            ->withQueryString()
             ->withQueryString()->through(function ($internamento) {
                 return [
                     'id' => $internamento->id,
+                    'nome_curto' => $internamento->utente?->nome_curto ?? 'N/A',
                     'nome_paciente' => $internamento->utente?->nome ?? 'N/A',
                     'numero_processo' => $internamento->utente?->numero_processo ?? 'N/A',
                     'cama' => $internamento->cama ?? 'N/A',
                     'data_de_entrada' => $internamento->data_de_entrada ?? 'N/A',
                     'data_de_alta' => $internamento->data_de_alta ?? 'N/A',
                     'data_de_saida' => $internamento->data_de_saida ?? 'N/A',
-                    'estado_da_alta_id' => $internamento->estadoDaAlta->nome ?? 'N/A',
+                    'estadoDaAlta' => $internamento->estado_da_alta_id ?? 'N/A',
                     'motivo_internamento' => $internamento->motivo_internamento ?? 'N/A',
                     'observacoes' => $internamento->observacoes ?? 'N/A',
                     'responsavel' => $internamento->responsavel->abrev ?? 'N/A',

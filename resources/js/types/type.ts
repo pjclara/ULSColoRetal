@@ -14,6 +14,10 @@ export type InternamentoItem = {
     caso_social_id?: number | null;
     bloquear_tabela: boolean;
     comentarios?: string | null;
+    diagnosticos?: {
+        id: number;
+        nome: string;
+    }[];
 }
 
 export  type UtenteItem = {

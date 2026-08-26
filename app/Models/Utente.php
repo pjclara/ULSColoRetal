@@ -25,4 +25,14 @@ class Utente extends Model
 
     /** @use HasFactory<\Database\Factories\UtenteFactory> */
     use HasFactory;
+
+    // append the utente's full name to the model's array form
+    protected $appends = ['nome_curto'];
+
+    // devolver 1º e ultimo nome do utente
+    public function getNomeCurtoAttribute()
+    {
+        $nomes = explode(' ', $this->nome);
+        return $nomes[0] . ' ' . end($nomes);
+    }
 }
