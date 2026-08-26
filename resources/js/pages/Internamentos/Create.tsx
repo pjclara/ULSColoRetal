@@ -1,7 +1,7 @@
 import { AppPageHeader } from '@/components/app/app-page-header';
 import { AppWizard } from '@/components/app/app-wizard';
 import AppLayout from '@/layouts/app-layout';
-import type { InternamentoItem, UtenteItem } from '@/types/type';
+import type { InternamentoItem, Option, User, UtenteItem } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 
@@ -11,7 +11,13 @@ import { StepInternamento } from './StepInternamento';
 
 type Props = {
     utentes: UtenteItem[];
-    internamentos: InternamentoItem[]
+    internamentos: InternamentoItem[];
+    origensInternamento: Option[];
+    estadosAlta: Option[];
+    responsaveis: User[];
+    clavienDindo: Option[];
+    destinos: Option[];
+    casosSociais: Option[];
 
     filters: {
         search: string;
@@ -45,7 +51,17 @@ const steps = [
     },
 ];
 
-export default function Create({ utentes, internamentos, filters }: Props) {
+export default function Create({
+    utentes,
+    internamentos,
+    origensInternamento,
+    estadosAlta,
+    responsaveis,
+    clavienDindo,
+    destinos,
+    casosSociais,
+    filters,
+}: Props) {
     const [currentStep, setCurrentStep] = useState(0);
     const [internamento, setInternamento] = useState<InternamentoItem | null>(null);
     const [filtersInternamentos, setFiltersInternamentos] = useState({
@@ -110,7 +126,7 @@ export default function Create({ utentes, internamentos, filters }: Props) {
         router.get(route('internamentos.create'), {
             utente_id: utente?.id,
         });
-    }
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -161,8 +177,13 @@ export default function Create({ utentes, internamentos, filters }: Props) {
                                     onSelect={setInternamento}
                                     onBack={() => setCurrentStep(0)}
                                     onContinue={handleContinue}
-                                    onCreate={handleCreateInternamento}
                                     url={route('internamentos.create')}
+                                    origensInternamento={origensInternamento}
+                                    estadosAlta={estadosAlta}
+                                    responsaveis={responsaveis}
+                                    clavienDindo={clavienDindo}
+                                    destinos={destinos}
+                                    casosSociais={casosSociais}
                                 />
                             )}
                         </div>

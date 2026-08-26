@@ -1,5 +1,5 @@
-import { FormEvent, useState } from 'react';
 import { router } from '@inertiajs/react';
+import { FormEvent, useState } from 'react';
 
 import { AppEmptyState } from '@/components/app/app-empty-state';
 import { AppEntitySummary } from '@/components/app/app-entity-summary';
@@ -11,10 +11,8 @@ import { AppTable, AppTableColumn } from '@/components/app/app-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
-import type {
-    UtenteItem,
-    InternamentoItem
-} from '@/types/type';
+import type { InternamentoItem, Option, User, UtenteItem } from '@/types/type';
+import CreateOrUpdateInternamentoModal from './CreateOrUpdateInternamentoModal';
 
 type Pagination<T> = {
     data: T[];
@@ -31,9 +29,7 @@ type Pagination<T> = {
 type Props = {
     utente: UtenteItem;
 
-    internamentos:
-        | InternamentoItem[]
-        | Pagination<InternamentoItem>;
+    internamentos: InternamentoItem[] | Pagination<InternamentoItem>;
 
     filters: {
         search?: string;
@@ -41,9 +37,7 @@ type Props = {
 
     url: string;
 
-    onSelect: (
-        internamento: InternamentoItem,
-    ) => void;
+    onSelect: (internamento: InternamentoItem) => void;
 
     onBack: () => void;
 
@@ -52,6 +46,12 @@ type Props = {
     selectedInternamento?: InternamentoItem | null;
 
     onCreate?: () => void;
+    origensInternamento: Option[];
+    estadosAlta: Option[];
+    responsaveis: User[];
+    clavienDindo: Option[];
+    destinos: Option[];
+    casosSociais: Option[];
 };
 
 export function StepInternamento({
@@ -64,30 +64,28 @@ export function StepInternamento({
     onContinue,
     selectedInternamento = null,
     onCreate,
+    origensInternamento,
+    estadosAlta,
+    responsaveis,
+    clavienDindo,
+    destinos,
+    casosSociais,
 }: Props) {
-    const [search, setSearch] = useState(
-        filters.search ?? '',
-    );
-
+    const [search, setSearch] = useState(filters.search ?? '');
     const [searching, setSearching] = useState(false);
+    const [showInternamentoModal, setShowInternamentoModal] = useState(false);
 
     /**
      * Os internamentos já vêm filtrados
      * pelo backend.
      */
-    const internamentosList = Array.isArray(
-        internamentos,
-    )
-        ? internamentos
-        : internamentos.data;
+    const internamentosList = Array.isArray(internamentos) ? internamentos : internamentos.data;
 
     /**
      * Pesquisa os internamentos do utente
      * no backend.
      */
-    const handleSearch = (
-        event: FormEvent<HTMLFormElement>,
-    ) => {
+    const handleSearch = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         setSearching(true);
@@ -166,27 +164,12 @@ export function StepInternamento({
             className: 'text-right',
 
             render: (internamento) => {
-                const selected =
-                    selectedInternamento?.id ===
-                    internamento.id;
+                const selected = selectedInternamento?.id === internamento.id;
 
                 return (
                     <div className="flex justify-end gap-2">
-                        <Button
-                            type="button"
-                            size="sm"
-                            variant={
-                                selected
-                                    ? 'default'
-                                    : 'outline'
-                            }
-                            onClick={() =>
-                                onSelect(internamento)
-                            }
-                        >
-                            {selected
-                                ? 'Selecionado'
-                                : 'Selecionar'}
+                        <Button type="button" size="sm" variant={selected ? 'default' : 'outline'} onClick={() => onSelect(internamento)}>
+                            {selected ? 'Selecionado' : 'Selecionar'}
                         </Button>
                     </div>
                 );
@@ -197,14 +180,9 @@ export function StepInternamento({
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-xl font-semibold">
-                    Selecionar internamento
-                </h2>
+                <h2 className="text-xl font-semibold">Selecionar internamento</h2>
 
-                <p className="mt-1 text-sm text-neutral-500">
-                    Selecione um internamento existente
-                    para o utente ou crie um novo.
-                </p>
+                <p className="mt-1 text-sm text-neutral-500">Selecione um internamento existente para o utente ou crie um novo.</p>
             </div>
 
             <AppEntitySummary
@@ -216,45 +194,20 @@ export function StepInternamento({
                     },
                     {
                         label: 'N.º Processo',
-                        value:
-                            utente.numero_processo ??
-                            '',
+                        value: utente.numero_processo ?? '',
                     },
                     {
                         label: 'Data de nascimento',
-                        value:
-                            utente.data_nascimento ??
-                            '',
+                        value: utente.data_nascimento ?? '',
                     },
                 ]}
                 action={
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={onBack}
-                    >
+                    <Button type="button" variant="outline" onClick={onBack}>
                         Alterar utente
                     </Button>
                 }
             />
 
-            <AppFilters
-                onSubmit={handleSearch}
-                onReset={handleReset}
-                loading={searching}
-            >
-                <AppFormField label="Pesquisar internamento">
-                    <Input
-                        value={search}
-                        onChange={(event) =>
-                            setSearch(
-                                event.target.value,
-                            )
-                        }
-                        placeholder="Estado, serviço..."
-                    />
-                </AppFormField>
-            </AppFilters>
 
             {internamentosList.length === 0 ? (
                 <AppEmptyState
@@ -263,8 +216,7 @@ export function StepInternamento({
                     action={
                         onCreate
                             ? {
-                                  label:
-                                      'Criar internamento',
+                                  label: 'Criar internamento',
                                   onClick: onCreate,
                               }
                             : undefined
@@ -272,63 +224,47 @@ export function StepInternamento({
                 />
             ) : (
                 <>
-                    <AppTable
-                        columns={columns}
-                        data={internamentosList}
-                        rowKey={(internamento) =>
-                            internamento.id
-                        }
-                    />
+                    <AppTable columns={columns} data={internamentosList} rowKey={(internamento) => internamento.id} />
 
                     {!Array.isArray(internamentos) && (
                         <AppPagination
                             links={internamentos.links}
-                            from={
-                                internamentos.from ??
-                                undefined
-                            }
-                            to={
-                                internamentos.to ??
-                                undefined
-                            }
-                            total={
-                                internamentos.total ??
-                                undefined
-                            }
+                            from={internamentos.from ?? undefined}
+                            to={internamentos.to ?? undefined}
+                            total={internamentos.total ?? undefined}
                         />
                     )}
                 </>
             )}
 
             <div className="flex justify-between border-t border-neutral-200 pt-5 dark:border-neutral-800">
-                <Button
-                    type="button"
-                    variant="outline"
-                    onClick={onBack}
-                >
+                <Button type="button" variant="outline" onClick={onBack}>
                     Voltar
                 </Button>
 
                 <div className="flex gap-3">
                     {onCreate && (
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={onCreate}
-                        >
+                        <Button type="button" variant="outline" onClick={onCreate}>
                             Novo internamento
                         </Button>
                     )}
 
-                    <Button
-                        type="button"
-                        disabled={!selectedInternamento}
-                        onClick={onContinue}
-                    >
+                    <Button type="button" disabled={!selectedInternamento} onClick={onContinue}>
                         Continuar
                     </Button>
                 </div>
             </div>
+            <CreateOrUpdateInternamentoModal
+                open={showInternamentoModal}
+                onClose={() => setShowInternamentoModal(false)}
+                utenteId={utente.id}
+                origensInternamento={origensInternamento}
+                estadosAlta={estadosAlta}
+                responsaveis={responsaveis}
+                clavienDindo={clavienDindo}
+                destinos={destinos}
+                casosSociais={casosSociais}
+            />
         </div>
     );
 }

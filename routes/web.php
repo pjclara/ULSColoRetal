@@ -135,3 +135,127 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:estado-da-altum.delete')
         ->name('estado-da-altas.destroy');
 });
+
+// OrigemDoInternamento Module
+Route::middleware('auth')->group(function () {
+    Route::get('/origem-do-internamentos', [\App\Http\Controllers\OrigemDoInternamentoController::class, 'index'])
+        ->middleware('can:origem-do-internamento.view')
+        ->name('origem-do-internamentos.index');
+
+    Route::get('/origem-do-internamentos/create', [\App\Http\Controllers\OrigemDoInternamentoController::class, 'create'])
+        ->middleware('can:origem-do-internamento.create')
+        ->name('origem-do-internamentos.create');
+
+    Route::post('/origem-do-internamentos', [\App\Http\Controllers\OrigemDoInternamentoController::class, 'store'])
+        ->middleware('can:origem-do-internamento.create')
+        ->name('origem-do-internamentos.store');
+
+    Route::get('/origem-do-internamentos/{origemDoInternamento}', [\App\Http\Controllers\OrigemDoInternamentoController::class, 'show'])
+        ->middleware('can:origem-do-internamento.view')
+        ->name('origem-do-internamentos.show');
+
+    Route::get('/origem-do-internamentos/{origemDoInternamento}/edit', [\App\Http\Controllers\OrigemDoInternamentoController::class, 'edit'])
+        ->middleware('can:origem-do-internamento.update')
+        ->name('origem-do-internamentos.edit');
+
+    Route::put('/origem-do-internamentos/{origemDoInternamento}', [\App\Http\Controllers\OrigemDoInternamentoController::class, 'update'])
+        ->middleware('can:origem-do-internamento.update')
+        ->name('origem-do-internamentos.update');
+
+    Route::delete('/origem-do-internamentos/{origemDoInternamento}', [\App\Http\Controllers\OrigemDoInternamentoController::class, 'destroy'])
+        ->middleware('can:origem-do-internamento.delete')
+        ->name('origem-do-internamentos.destroy');
+});
+
+// ClavienDindo Module
+Route::middleware('auth')->group(function () {
+    Route::get('/clavien-dindos', [\App\Http\Controllers\ClavienDindoController::class, 'index'])
+        ->middleware('can:clavien-dindo.view')
+        ->name('clavien-dindos.index');
+
+    Route::get('/clavien-dindos/create', [\App\Http\Controllers\ClavienDindoController::class, 'create'])
+        ->middleware('can:clavien-dindo.create')
+        ->name('clavien-dindos.create');
+
+    Route::post('/clavien-dindos', [\App\Http\Controllers\ClavienDindoController::class, 'store'])
+        ->middleware('can:clavien-dindo.create')
+        ->name('clavien-dindos.store');
+
+    Route::get('/clavien-dindos/{clavienDindo}', [\App\Http\Controllers\ClavienDindoController::class, 'show'])
+        ->middleware('can:clavien-dindo.view')
+        ->name('clavien-dindos.show');
+
+    Route::get('/clavien-dindos/{clavienDindo}/edit', [\App\Http\Controllers\ClavienDindoController::class, 'edit'])
+        ->middleware('can:clavien-dindo.update')
+        ->name('clavien-dindos.edit');
+
+    Route::put('/clavien-dindos/{clavienDindo}', [\App\Http\Controllers\ClavienDindoController::class, 'update'])
+        ->middleware('can:clavien-dindo.update')
+        ->name('clavien-dindos.update');
+
+    Route::delete('/clavien-dindos/{clavienDindo}', [\App\Http\Controllers\ClavienDindoController::class, 'destroy'])
+        ->middleware('can:clavien-dindo.delete')
+        ->name('clavien-dindos.destroy');
+});
+
+// Destino Module
+Route::middleware('auth')->group(function () {
+    Route::get('/destinos', [\App\Http\Controllers\DestinoController::class, 'index'])
+        ->middleware('can:destino.view')
+        ->name('destinos.index');
+
+    Route::get('/destinos/create', [\App\Http\Controllers\DestinoController::class, 'create'])
+        ->middleware('can:destino.create')
+        ->name('destinos.create');
+
+    Route::post('/destinos', [\App\Http\Controllers\DestinoController::class, 'store'])
+        ->middleware('can:destino.create')
+        ->name('destinos.store');
+
+    Route::get('/destinos/{destino}', [\App\Http\Controllers\DestinoController::class, 'show'])
+        ->middleware('can:destino.view')
+        ->name('destinos.show');
+
+    Route::get('/destinos/{destino}/edit', [\App\Http\Controllers\DestinoController::class, 'edit'])
+        ->middleware('can:destino.update')
+        ->name('destinos.edit');
+
+    Route::put('/destinos/{destino}', [\App\Http\Controllers\DestinoController::class, 'update'])
+        ->middleware('can:destino.update')
+        ->name('destinos.update');
+
+    Route::delete('/destinos/{destino}', [\App\Http\Controllers\DestinoController::class, 'destroy'])
+        ->middleware('can:destino.delete')
+        ->name('destinos.destroy');
+});
+
+// CasoSocial Module
+Route::middleware('auth')->group(function () {
+    Route::get('/caso-socials', [\App\Http\Controllers\CasoSocialController::class, 'index'])
+        ->middleware('can:caso-social.view')
+        ->name('caso-socials.index');
+
+    Route::get('/caso-socials/create', [\App\Http\Controllers\CasoSocialController::class, 'create'])
+        ->middleware('can:caso-social.create')
+        ->name('caso-socials.create');
+
+    Route::post('/caso-socials', [\App\Http\Controllers\CasoSocialController::class, 'store'])
+        ->middleware('can:caso-social.create')
+        ->name('caso-socials.store');
+
+    Route::get('/caso-socials/{casoSocial}', [\App\Http\Controllers\CasoSocialController::class, 'show'])
+        ->middleware('can:caso-social.view')
+        ->name('caso-socials.show');
+
+    Route::get('/caso-socials/{casoSocial}/edit', [\App\Http\Controllers\CasoSocialController::class, 'edit'])
+        ->middleware('can:caso-social.update')
+        ->name('caso-socials.edit');
+
+    Route::put('/caso-socials/{casoSocial}', [\App\Http\Controllers\CasoSocialController::class, 'update'])
+        ->middleware('can:caso-social.update')
+        ->name('caso-socials.update');
+
+    Route::delete('/caso-socials/{casoSocial}', [\App\Http\Controllers\CasoSocialController::class, 'destroy'])
+        ->middleware('can:caso-social.delete')
+        ->name('caso-socials.destroy');
+});

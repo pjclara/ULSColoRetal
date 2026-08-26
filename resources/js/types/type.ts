@@ -1,17 +1,16 @@
 export type InternamentoItem = {
-    id: number;
-    utente_id: UtenteItem['id'];
-    cama_id: number;
-    origem_do_internamento_id: OrigemDoInternamentoItem['id'];
+    utente_id: number;
+    cama: string | null;
+    origem_do_internamento_id: number | null;
     data_de_entrada: string;
     data_de_alta?: string | null;
     data_de_saida?: string | null;
-    estado_da_alta_id?: EstadoDaAltaItem['id'] | null;
-    responsavel_id: User['id'];
+    estado_da_alta_id?: number | null;
+    responsavel_id: number | null;
     motivo_internamento: string;
-    clavien_dindo_id?: ClavienDindoItem['id'] | null;
-    destino_id?: DestinoItem['id'] | null;
-    caso_social_id?: CasoSocialItem['id'] | null;
+    clavien_dindo_id?: number | null;
+    destino_id?: number | null;
+    caso_social_id?: number | null;
     bloquear_tabela: boolean;
     comentarios?: string | null;
 }
@@ -74,4 +73,9 @@ export type Pagination<T> = {
     from: number | null;
     to: number | null;
     total: number | null;
+}
+
+export type Option = {
+    value: string | number;
+    label: string;
 }

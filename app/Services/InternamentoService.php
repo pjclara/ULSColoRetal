@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Internamento;
+use App\Models\OrigemDoInternamento;
 use App\Models\Utente;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -104,5 +105,47 @@ class InternamentoService
                     'updated_at' => $internamento->updated_at?->toDateTimeString(),
                 ];
             });
+    }
+
+    public function getOrigensInternamento()
+    {
+        return OrigemDoInternamento::query()
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
+    }
+
+    public function getEstadosAlta()
+    {
+        return \App\Models\EstadoDaAlta::query()
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
+    }
+
+    public function getResponsaveis()
+    {
+        return \App\Models\User::query()
+            ->orderBy('name')
+            ->get(['id', 'name']);
+    }
+
+    public function getClavienDindo()
+    {
+        return \App\Models\ClavienDindo::query()
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
+    }
+
+    public function getDestinos()
+    {
+        return \App\Models\Destino::query()
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
+    }
+
+    public function getCasosSociais()
+    {
+        return \App\Models\CasoSocial::query()
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
     }
 }
