@@ -103,6 +103,7 @@ export type CentroDeReferenciaItem = {
     destino_id: number;
     responsavel_id: number;
     comentarios: string;
+    origem?: OrigemDoInternamentoItem;
 }
 
 export type origensDaReferenciacaoItem = {

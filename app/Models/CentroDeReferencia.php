@@ -28,4 +28,9 @@ class CentroDeReferencia extends Model
     {
         return $this->belongsTo(Utente::class);
     }
+
+    public function origem()
+    {
+        return $this->belongsTo(OrigemDoInternamento::class, 'origem_id');
+    }
 }

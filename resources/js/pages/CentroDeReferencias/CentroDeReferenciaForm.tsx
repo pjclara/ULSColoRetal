@@ -43,7 +43,7 @@ const emptyForm: FormData = {
 };
 
 export default function CentroDeReferenciaForm({ utente, centroDeReferencia, origens, destinos, responsaveis, onClose,  onBack, onSuccess }: Props) {
-    const editing = !!centroDeReferencia;
+    const editing = !!centroDeReferencia?.utente_id;
 
 
     const [form, setForm] = useState<FormData>(emptyForm);
@@ -121,7 +121,7 @@ export default function CentroDeReferenciaForm({ utente, centroDeReferencia, ori
         if (editing) {
             router.put(`/centro-de-referencias/${centroDeReferencia!.id}`, form, options);
         } else {
-            router.post('/centros-de-referencias', form, options);
+            router.post('/centro-de-referencias', form, options);
         }
     };
 

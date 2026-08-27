@@ -64,9 +64,11 @@ export default function CreateOrUpdateCentroDeReferencia({ utente, centroDeRefer
                     },
                 ]}
                 action={
-                    <Button type="button" variant="outline" onClick={onBack}>
-                        Alterar utente
-                    </Button>
+                    <div className="mt-4 flex shrink-0 justify-end gap-2">
+                        <Button type="button" variant="outline" onClick={onBack}>
+                            Alterar utente
+                        </Button>
+                    </div>
                 }
             />
             {centroDeReferenciaData ? (
@@ -78,21 +80,25 @@ export default function CreateOrUpdateCentroDeReferencia({ utente, centroDeRefer
                             value: centroDeReferenciaData.data_de_referenciacao ?? '',
                         },
                         {
-                            label: 'Origem',
-                            value: internamentoOptions.origensDaReferenciacao.find((o) => o.id === centroDeReferenciaData.origem_id)?.nome ?? '',
+                            label: 'Diagnóstico',
+                            value: centroDeReferenciaData.data_de_diagnostico ?? '',
                         },
-                                                {
+                        {
+                            label: 'Origem',
+                            value: centroDeReferenciaData.origem?.nome ?? '',
+                        },
+                        {
                             label: 'Comentários',
                             value: centroDeReferenciaData.comentarios ?? '',
                         },
                     ]}
                     action={
-                        <div className="flex gap-2">
+                        <div className="mt-4 flex shrink-0 justify-between gap-2">
+                            <Button type="button" onClick={() => setShowCentroModal(true)}>
+                                Editar centro de referência
+                            </Button>
                             <Button type="button" variant="outline" onClick={onContinue}>
                                 Continuar
-                            </Button>
-                            <Button type="button" variant="outline" onClick={() => setShowCentroModal(true)}>
-                                Editar centro de referência
                             </Button>
                         </div>
                     }
@@ -102,10 +108,15 @@ export default function CreateOrUpdateCentroDeReferencia({ utente, centroDeRefer
                     <h2 className="text-lg font-semibold">Centro de referência</h2>
                     <p className="text-muted-foreground mt-1 text-sm">
                         Nenhum centro de referência selecionado. Por favor, crie um novo centro de referência para continuar.
-                        <Button type="button" variant="outline" className="ml-2" onClick={() => setShowCentroModal(true)}>
+                    </p>
+                    <div className="mt-4 flex shrink-0 justify-between gap-2">
+                        <Button type="button" className="ml-2" onClick={() => setShowCentroModal(true)}>
                             Criar centro de referência
                         </Button>
-                    </p>
+                        <Button type="button" variant="outline" onClick={onContinue}>
+                            Continuar
+                        </Button>
+                    </div>
                 </div>
             )}
             <CentroDeReferenciaModal

@@ -18,7 +18,7 @@ class UtenteService
     public function search(array $filters)
     {
         return Utente::query()
-            ->with('centroDeReferencia')
+            ->with('centroDeReferencia.origem')
             ->latest()
             ->when(
                 $filters['search'] ?? null,

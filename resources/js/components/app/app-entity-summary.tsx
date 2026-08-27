@@ -28,9 +28,8 @@ export function AppEntitySummary({ title, fields, action }: AppEntitySummaryProp
                         ))}
                     </dl>
                 </div>
-
-                {action && <div className="shrink-0">{action}</div>}
             </div>
+            {action && <div className="shrink-0">{action}</div>}
         </div>
     );
 }

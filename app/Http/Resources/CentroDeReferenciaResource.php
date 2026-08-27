@@ -14,6 +14,15 @@ class CentroDeReferenciaResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'utente_id' => $this->utente_id,
+            'origem_id' => $this->origem_id,
+            'destino_id' => $this->destino_id,
+            'responsavel_id' => $this->responsavel_id,
+            'data_de_referenciacao' => $this->data_de_referenciacao,
+            'data_de_diagnostico' => $this->data_de_diagnostico,
+            'observacoes' => $this->observacoes,
+        ];
     }
 }
