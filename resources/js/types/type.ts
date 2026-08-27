@@ -29,6 +29,7 @@ export  type UtenteItem = {
     numero_utente?: number | null;
     numero_processo?: number | null;
     concelho_id?: number | null;
+    centro_de_referencia?: CentroDeReferenciaItem | null;
 }
 
 export type OrigemDoInternamentoItem = {
@@ -90,3 +91,17 @@ export type LocalizacaoItem = {
     id: number;
     nome: string;
 }
+
+export type CentroDeReferenciaItem = {
+    id: number;
+    utente_id: number;
+    data_de_diagnostico: string;
+    data_de_referenciacao: string;
+    origem_id: number;
+    data_de_entrada: string;
+    data_de_saida: string;
+    destino_id: number;
+    responsavel_id: number;
+    comentarios: string;
+}
+ 

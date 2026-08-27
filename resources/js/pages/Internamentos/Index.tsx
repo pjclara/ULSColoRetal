@@ -38,7 +38,6 @@ export default function Index({ internamentos, internamentoOptions }: Props) {
     const [selectedInternamento, setSelectedInternamento] = useState<InternamentoItem | null>(null);
 
     const openInternamento = (internamento: InternamentoItem) => {
-        console.log('Internamento selecionado:', internamento);
         setSelectedInternamento(internamento);
         setShowInternamentoModal(true);
     };

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreInternamentoRequest;
 use App\Http\Requests\UpdateInternamentoRequest;
+use App\Http\Resources\UtenteResource;
 use App\Models\Internamento;
 use App\Models\Utente;
 use App\Services\InternamentoService;

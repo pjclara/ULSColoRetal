@@ -155,7 +155,7 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
             maxWidth="5xl"
             submitLabel={isEdit ? 'Guardar alterações' : 'Criar internamento'}
         >
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid gap-2 md:grid-cols-2">
                 <AppInputField label="Cama" value={form.cama ?? ''} onChange={(value) => updateField('cama', value)} error={errors.cama} />
                 <AppSelectField
                     label="Localização"
@@ -206,7 +206,7 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
 
             <hr />
             {internamento && (
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-2 md:grid-cols-2">
                     <AppInputField
                         label="Data de alta"
                         type="date"

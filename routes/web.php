@@ -321,3 +321,65 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:localizacao.delete')
         ->name('localizacaos.destroy');
 });
+
+// Complicacao Module
+Route::middleware('auth')->group(function () {
+    Route::get('/complicacaos', [\App\Http\Controllers\ComplicacaoController::class, 'index'])
+        ->middleware('can:complicacao.view')
+        ->name('complicacaos.index');
+
+    Route::get('/complicacaos/create', [\App\Http\Controllers\ComplicacaoController::class, 'create'])
+        ->middleware('can:complicacao.create')
+        ->name('complicacaos.create');
+
+    Route::post('/complicacaos', [\App\Http\Controllers\ComplicacaoController::class, 'store'])
+        ->middleware('can:complicacao.create')
+        ->name('complicacaos.store');
+
+    Route::get('/complicacaos/{complicacao}', [\App\Http\Controllers\ComplicacaoController::class, 'show'])
+        ->middleware('can:complicacao.view')
+        ->name('complicacaos.show');
+
+    Route::get('/complicacaos/{complicacao}/edit', [\App\Http\Controllers\ComplicacaoController::class, 'edit'])
+        ->middleware('can:complicacao.update')
+        ->name('complicacaos.edit');
+
+    Route::put('/complicacaos/{complicacao}', [\App\Http\Controllers\ComplicacaoController::class, 'update'])
+        ->middleware('can:complicacao.update')
+        ->name('complicacaos.update');
+
+    Route::delete('/complicacaos/{complicacao}', [\App\Http\Controllers\ComplicacaoController::class, 'destroy'])
+        ->middleware('can:complicacao.delete')
+        ->name('complicacaos.destroy');
+});
+
+// CentroDeReferencia Module
+Route::middleware('auth')->group(function () {
+    Route::get('/centro-de-referencias', [\App\Http\Controllers\CentroDeReferenciaController::class, 'index'])
+        ->middleware('can:centro-de-referencium.view')
+        ->name('centro-de-referencias.index');
+
+    Route::get('/centro-de-referencias/create', [\App\Http\Controllers\CentroDeReferenciaController::class, 'create'])
+        ->middleware('can:centro-de-referencium.create')
+        ->name('centro-de-referencias.create');
+
+    Route::post('/centro-de-referencias', [\App\Http\Controllers\CentroDeReferenciaController::class, 'store'])
+        ->middleware('can:centro-de-referencium.create')
+        ->name('centro-de-referencias.store');
+
+    Route::get('/centro-de-referencias/{centroDeReferencia}', [\App\Http\Controllers\CentroDeReferenciaController::class, 'show'])
+        ->middleware('can:centro-de-referencium.view')
+        ->name('centro-de-referencias.show');
+
+    Route::get('/centro-de-referencias/{centroDeReferencia}/edit', [\App\Http\Controllers\CentroDeReferenciaController::class, 'edit'])
+        ->middleware('can:centro-de-referencium.update')
+        ->name('centro-de-referencias.edit');
+
+    Route::put('/centro-de-referencias/{centroDeReferencia}', [\App\Http\Controllers\CentroDeReferenciaController::class, 'update'])
+        ->middleware('can:centro-de-referencium.update')
+        ->name('centro-de-referencias.update');
+
+    Route::delete('/centro-de-referencias/{centroDeReferencia}', [\App\Http\Controllers\CentroDeReferenciaController::class, 'destroy'])
+        ->middleware('can:centro-de-referencium.delete')
+        ->name('centro-de-referencias.destroy');
+});

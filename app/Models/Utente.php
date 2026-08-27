@@ -35,4 +35,10 @@ class Utente extends Model
         $nomes = explode(' ', $this->nome);
         return $nomes[0] . ' ' . end($nomes);
     }
+
+    // centro de referencia do utente
+    public function centroDeReferencia()
+    {
+        return $this->hasOne(CentroDeReferencia::class);
+    }
 }

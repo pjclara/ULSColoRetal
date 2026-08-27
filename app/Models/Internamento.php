@@ -50,4 +50,9 @@ class Internamento extends Model
     {
         return $this->belongsToMany(Diagnostico::class);
     }
+
+    public function complicacaos()
+    {
+        return $this->belongsToMany(Complicacao::class);
+    }
 }

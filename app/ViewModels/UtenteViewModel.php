@@ -14,8 +14,12 @@ class UtenteViewModel
     {
         return [
             'id' => $this->model->id,
-            'created_at' => $this->model->created_at?->toISOString(),
-            'updated_at' => $this->model->updated_at?->toISOString(),
+            'nome_curto' => $this->model->nome_curto,
+            'numero_processo' => $this->model->numero_processo,
+            'data_de_nascimento' => $this->model->data_de_nascimento,
+            'sexo' => $this->model->sexo,
+            'idade' => $this->model->idade,
+            'centro_de_referencia' => new CentroDeReferenciaViewModel($this->model->centroDeReferencia),
         ];
     }
 }

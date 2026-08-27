@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Utente;
+use App\ViewModels\UtenteViewModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class UtenteService
@@ -17,6 +18,7 @@ class UtenteService
     public function search(array $filters)
     {
         return Utente::query()
+            ->with('centroDeReferencia')
             ->latest()
             ->when(
                 $filters['search'] ?? null,
@@ -37,5 +39,16 @@ class UtenteService
             ->orderBy('nome')
             ->paginate(15)
             ->withQueryString();
+    }
+
+    public function checkUtenteExists(int $utenteId): UtenteViewModel
+    {
+        $utente = Utente::find($utenteId);
+
+        if (!$utente) {
+            abort(404, 'Utente não encontrado.');
+        }
+
+        return new UtenteViewModel($utente);
     }
 }

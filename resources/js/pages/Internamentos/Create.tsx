@@ -9,9 +9,11 @@ import { StepUtente } from '../Utentes/StepUtente';
 import { StepInternamento } from './StepInternamento';
 
 import type { InternamentoOptions } from '@/types/internamento';
+import StepCentroDeReferencia from '../CentroDeReferencias/StepCentroDeReferencia';
 
 type Props = {
     utentes: UtenteItem[];
+    utente: UtenteItem;
     internamentos: InternamentoItem[];
     internamentoOptions: InternamentoOptions;
     filters: {
@@ -38,6 +40,11 @@ const steps = [
         id: 'utente',
         title: 'Utente',
         description: 'Procurar ou criar',
+    },
+    {
+        id: 'centro_de_referencia',
+        title: 'Centro de Referência',
+        description: 'Preencher os dados do centro de referência',
     },
     {
         id: 'internamento',
@@ -106,8 +113,6 @@ export default function Create({ utentes, internamentos, internamentoOptions, fi
     };
 
     const handleCreateInternamento = () => {
-        // Lógica para criar um novo internamento
-        // Pode redirecionar para a página de criação de internamento
         router.get(route('internamentos.create'), {
             utente_id: utente?.id,
         });
@@ -138,9 +143,19 @@ export default function Create({ utentes, internamentos, internamentoOptions, fi
                             url={route('internamentos.create')}
                         />
                     )}
+                    {/* PASSO 2 — CENTRO DE REFERENCIA */}
+                    {currentStep === 1 && utente && (
+                        <StepCentroDeReferencia
+                            utente={utente}
+                            centroDeReferencia={utente.centro_de_referencia}
+                            onBack={handleBack}
+                            onContinue={() => setCurrentStep(2)}
+                        />
+                    )}
+                    
 
                     {/* PASSO 2 — INTERNAMENTO */}
-                    {currentStep === 1 && utente && (
+                    {currentStep === 2 && utente && (
                         <div className="space-y-6">
                             <div className="rounded-lg border p-6">
                                 <h2 className="text-lg font-semibold">Internamento</h2>
@@ -153,19 +168,17 @@ export default function Create({ utentes, internamentos, internamentoOptions, fi
                                 </p>
                             </div>
 
-                            {currentStep === 1 && utente && (
-                                <StepInternamento
-                                    internamentoOptions={internamentoOptions}
-                                    utente={utente}
-                                    internamentos={internamentos}
-                                    filters={filtersInternamentos}
-                                    selectedInternamento={internamento}
-                                    onSelect={setInternamento}
-                                    onBack={() => setCurrentStep(0)}
-                                    onContinue={handleContinue}
-                                    url={route('internamentos.create')}
-                                />
-                            )}
+                            <StepInternamento
+                                internamentoOptions={internamentoOptions}
+                                utente={utente}
+                                internamentos={internamentos}
+                                filters={filtersInternamentos}
+                                selectedInternamento={internamento}
+                                onSelect={setInternamento}
+                                onBack={() => setCurrentStep(1)}
+                                onContinue={handleContinue}
+                                url={route('internamentos.create')}
+                            />
                         </div>
                     )}
                 </div>

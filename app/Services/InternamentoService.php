@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Internamento;
 use App\Models\OrigemDoInternamento;
 use App\Models\Utente;
+use App\ViewModels\UtenteViewModel;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class InternamentoService
@@ -34,6 +35,13 @@ class InternamentoService
                             'nome' => $diagnostico->nome,
                         ];
                     }),
+                    'complicacaos' => $internamento->complicacaos->map(function ($complicacao) {
+                        return [
+                            'id' => $complicacao->id,
+                            'nome' => $complicacao->nome,
+                        ];
+                    }),
+                    'utente' => new UtenteViewModel($internamento->utente),
                 ];
             });
     }
@@ -41,6 +49,7 @@ class InternamentoService
     public function search(array $filters)
     {
         return Utente::query()
+            ->with('centroDeReferencia')
             ->when(
                 $filters['search'] ?? null,
                 function ($query, $search) {
@@ -70,8 +79,6 @@ class InternamentoService
                     'motivo_internamento' => $internamento->motivo_internamento ?? 'N/A',
                     'observacoes' => $internamento->observacoes ?? 'N/A',
                     'responsavel' => $internamento->responsavel->abrev ?? 'N/A',
-                    'created_at' => $internamento->created_at?->toDateTimeString(),
-                    'updated_at' => $internamento->updated_at?->toDateTimeString(),
                 ];
             });
     }
@@ -108,8 +115,7 @@ class InternamentoService
                     'motivo_internamento' => $internamento->motivo_internamento ?? 'N/A',
                     'observacoes' => $internamento->observacoes ?? 'N/A',
                     'responsavel' => $internamento->responsavel->abrev ?? 'N/A',
-                    'created_at' => $internamento->created_at?->toDateTimeString(),
-                    'updated_at' => $internamento->updated_at?->toDateTimeString(),
+                    'centro_de_referencia' => $internamento->utente->centroDeReferencia?->id ?? 'N/A',
                 ];
             });
     }
