@@ -109,6 +109,12 @@ export default function Create({ utentes, internamentos, internamentoOptions, fi
      * Voltar ao passo do utente.
      */
     const handleBack = () => {
+        // Limpar o utente selecionado e voltar ao passo 0
+        setUtente(null);
+        setInternamento(null);
+        setFiltersInternamentos({
+            search: '',
+        });
         setCurrentStep(0);
     };
 
@@ -146,6 +152,7 @@ export default function Create({ utentes, internamentos, internamentoOptions, fi
                     {/* PASSO 2 — CENTRO DE REFERENCIA */}
                     {currentStep === 1 && utente && (
                         <StepCentroDeReferencia
+                            internamentoOptions={internamentoOptions}
                             utente={utente}
                             centroDeReferencia={utente.centro_de_referencia}
                             onBack={handleBack}

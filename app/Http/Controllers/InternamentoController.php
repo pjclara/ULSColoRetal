@@ -36,6 +36,7 @@ class InternamentoController extends Controller
                 'destinos' => $this->service->getDestinos(),
                 'casosSociais' => $this->service->getCasosSociais(),
                 'localizacoes' => $this->service->getLocalizacoes(),
+                'origensDaReferenciacao' => $this->service->getOrigensDaReferenciacao(),
             ],
         ]);
     }
@@ -69,6 +70,7 @@ class InternamentoController extends Controller
                 'destinos' => $this->service->getDestinos(),
                 'casosSociais' => $this->service->getCasosSociais(),
                 'localizacoes' => $this->service->getLocalizacoes(),
+                'origensDaReferenciacao' => $this->service->getOrigensDaReferenciacao(),
             ],
         ]);
     }

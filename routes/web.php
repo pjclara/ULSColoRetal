@@ -383,3 +383,34 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:centro-de-referencium.delete')
         ->name('centro-de-referencias.destroy');
 });
+
+// OrigemDaReferenciacao Module
+Route::middleware('auth')->group(function () {
+    Route::get('/origem-da-referenciacaos', [\App\Http\Controllers\OrigemDaReferenciacaoController::class, 'index'])
+        ->middleware('can:origem-da-referenciacao.view')
+        ->name('origem-da-referenciacaos.index');
+
+    Route::get('/origem-da-referenciacaos/create', [\App\Http\Controllers\OrigemDaReferenciacaoController::class, 'create'])
+        ->middleware('can:origem-da-referenciacao.create')
+        ->name('origem-da-referenciacaos.create');
+
+    Route::post('/origem-da-referenciacaos', [\App\Http\Controllers\OrigemDaReferenciacaoController::class, 'store'])
+        ->middleware('can:origem-da-referenciacao.create')
+        ->name('origem-da-referenciacaos.store');
+
+    Route::get('/origem-da-referenciacaos/{origemDaReferenciacao}', [\App\Http\Controllers\OrigemDaReferenciacaoController::class, 'show'])
+        ->middleware('can:origem-da-referenciacao.view')
+        ->name('origem-da-referenciacaos.show');
+
+    Route::get('/origem-da-referenciacaos/{origemDaReferenciacao}/edit', [\App\Http\Controllers\OrigemDaReferenciacaoController::class, 'edit'])
+        ->middleware('can:origem-da-referenciacao.update')
+        ->name('origem-da-referenciacaos.edit');
+
+    Route::put('/origem-da-referenciacaos/{origemDaReferenciacao}', [\App\Http\Controllers\OrigemDaReferenciacaoController::class, 'update'])
+        ->middleware('can:origem-da-referenciacao.update')
+        ->name('origem-da-referenciacaos.update');
+
+    Route::delete('/origem-da-referenciacaos/{origemDaReferenciacao}', [\App\Http\Controllers\OrigemDaReferenciacaoController::class, 'destroy'])
+        ->middleware('can:origem-da-referenciacao.delete')
+        ->name('origem-da-referenciacaos.destroy');
+});

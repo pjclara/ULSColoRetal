@@ -6,6 +6,8 @@ import type {
     OrigemDoInternamentoItem,
     User,
     LocalizacaoItem,
+    origensDaReferenciacaoItem
+    
 } from './type';
 
 export type InternamentoOptions = {
@@ -16,4 +18,5 @@ export type InternamentoOptions = {
     destinos: DestinoItem[];
     casosSociais: CasoSocialItem[];
     localizacoes: LocalizacaoItem[];
+    origensDaReferenciacao: origensDaReferenciacaoItem[];
 };

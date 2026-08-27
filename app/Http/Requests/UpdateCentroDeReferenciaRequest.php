@@ -12,7 +12,7 @@ class UpdateCentroDeReferenciaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,15 @@ class UpdateCentroDeReferenciaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'utente_id' => ['required', 'exists:utentes,id'],
+            'data_de_diagnostico' => ['required', 'date'],
+            'data_de_referenciacao' => ['required', 'date'],
+            'origem_id' => ['required', 'exists:origem_da_referenciacaos,id'],
+            'data_de_entrada' => ['nullable', 'date'],
+            'data_de_saida' => ['nullable', 'date'],
+            'destino_id' => ['nullable', 'exists:destinos,id'],
+            'responsavel_id' => ['nullable', 'exists:users,id'],
+            'comentarios' => ['nullable', 'string'],
         ];
     }
 }

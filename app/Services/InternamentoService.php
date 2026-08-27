@@ -181,4 +181,11 @@ class InternamentoService
             ->orderBy('nome')
             ->get(['id', 'nome']);
     }
+
+    public function getOrigensDaReferenciacao()
+    {
+        return \App\Models\OrigemDaReferenciacao::query()
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
+    }
 }

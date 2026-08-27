@@ -93,7 +93,7 @@ export type LocalizacaoItem = {
 }
 
 export type CentroDeReferenciaItem = {
-    id: number;
+    id?: number;
     utente_id: number;
     data_de_diagnostico: string;
     data_de_referenciacao: string;
@@ -103,5 +103,10 @@ export type CentroDeReferenciaItem = {
     destino_id: number;
     responsavel_id: number;
     comentarios: string;
+}
+
+export type origensDaReferenciacaoItem = {
+    id: number;
+    nome: string;
 }
  

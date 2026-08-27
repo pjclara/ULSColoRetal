@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCentroDeReferenciaRequest;
+use App\Http\Requests\UpdateCentroDeReferenciaRequest;
 use App\Models\CentroDeReferencia;
 use Illuminate\Http\Request;
 
@@ -26,9 +28,13 @@ class CentroDeReferenciaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreCentroDeReferenciaRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $centroDeReferencia = CentroDeReferencia::create($validated);
+
+        return redirect()->back()->with('centro_de_referencia', $centroDeReferencia)->with('success', 'Centro de Referência criado com sucesso.');
     }
 
     /**
@@ -51,9 +57,13 @@ class CentroDeReferenciaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, CentroDeReferencia $centroDeReferencia)
+    public function update(UpdateCentroDeReferenciaRequest $request, CentroDeReferencia $centroDeReferencia)
     {
-        //
+        $validated = $request->validated();
+
+        $centroDeReferencia->update($validated);
+
+        return redirect()->back()->with('centro_de_referencia', $centroDeReferencia)->with('success', 'Centro de Referência criado com sucesso.');
     }
 
     /**
