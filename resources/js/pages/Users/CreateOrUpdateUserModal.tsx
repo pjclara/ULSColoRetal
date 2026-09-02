@@ -1,10 +1,9 @@
 import { AppInputField } from '@/components/app/app-input-field';
 import { AppSelectField } from '@/components/app/app-input-select';
 import { AppModalForm } from '@/components/app/app-modal-form';
+import { useCrudForm } from '@/hooks/use-crud-form';
 import { User } from '@/types/type';
-import { router } from '@inertiajs/react';
-import { FormEvent, useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import { useEffect } from 'react';
 
 interface Props {
     open: boolean;
@@ -13,7 +12,7 @@ interface Props {
 }
 
 interface FormData extends Record<string, string | boolean> {
-     name: string;
+    name: string;
     email: string;
     password: string;
     username: string;
@@ -37,9 +36,14 @@ const emptyForm: FormData = {
 export default function CreateOrUpdateUserModal({ open, onClose, user }: Props) {
     const isEdit = user !== null && user !== undefined;
 
-    const [form, setForm] = useState<FormData>(emptyForm);
-    const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState<Record<string, string>>({});
+    const { form, errors, loading, updateField, resetForm, submit } = useCrudForm<FormData>(emptyForm, {
+        url: isEdit ? `/users/${user?.id}` : '/users',
+        isEditing: isEdit,
+        successMessage: isEdit ? 'Utilizador atualizado com sucesso.' : 'Utilizador criado com sucesso.',
+        errorMessage: 'Erro ao guardar o utilizador.',
+        preserveScroll: false,
+        onSuccess: () => onClose(),
+    });
 
     useEffect(() => {
         if (!open) {
@@ -47,7 +51,7 @@ export default function CreateOrUpdateUserModal({ open, onClose, user }: Props) 
         }
 
         if (user) {
-            setForm({
+            resetForm({
                 name: user.name,
                 email: user.email,
                 password: '',
@@ -58,60 +62,10 @@ export default function CreateOrUpdateUserModal({ open, onClose, user }: Props) 
                 sexo: user.sexo,
             });
         } else {
-            setForm({ ...emptyForm });
+            resetForm({ ...emptyForm });
         }
-
-        setErrors({});
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, user]);
-
-    const updateField = <K extends keyof FormData>(field: K, value: FormData[K]) => {
-        setForm((current) => ({
-            ...current,
-            [field]: value,
-        }));
-
-        setErrors((current) => ({
-            ...current,
-            [field]: '',
-        }));
-    };
-
-    const submit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        setLoading(true);
-        setErrors({});
-
-        if (isEdit && !user) {
-            setLoading(false);
-            return;
-        }
-
-        const url = isEdit ? `/users/${user.id}` : '/users';
-
-        const options = {
-            onError: (formErrors: Record<string, string>) => {
-                setErrors(formErrors);
-                toast.error('Erro ao guardar o utilizador.');
-            },
-
-            onFinish: () => {
-                setLoading(false);
-            },
-
-            onSuccess: () => {
-                onClose();
-
-                toast.success(isEdit ? 'Utilizador atualizado com sucesso.' : 'Utilizador criado com sucesso.');
-            },
-        };
-
-        if (isEdit) {
-            router.put(url, form, options);
-        } else {
-            router.post(url, form, options);
-        }
-    };
 
     if (!open) {
         return null;
@@ -135,14 +89,6 @@ export default function CreateOrUpdateUserModal({ open, onClose, user }: Props) 
                     onChange={(value) => updateField('name', value)}
                     error={errors.name}
                     placeholder="Nome completo"
-                />
-
-                <AppInputField
-                    label="Abreviatura"
-                    value={form.abrev}
-                    onChange={(value) => updateField('abreviatura', value)}
-                    error={errors.abreviatura}
-                    placeholder="Abreviatura"
                 />
 
                 <AppInputField

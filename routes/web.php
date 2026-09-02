@@ -102,6 +102,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/internamentos/{internamento}', [\App\Http\Controllers\InternamentoController::class, 'destroy'])
         ->middleware('can:internamento.delete')
         ->name('internamentos.destroy');
+
+    Route::post('/internamentos/{internamento}/diagnosticos', [\App\Http\Controllers\InternamentoController::class, 'addDiagnostico'])
+        ->middleware('can:internamento.update') 
+        ->name('internamentos.addDiagnostico');
+
+    Route::delete('/internamentos/{internamento}/diagnosticos', [\App\Http\Controllers\InternamentoController::class, 'removeDiagnostico'])
+        ->middleware('can:internamento.update')
+        ->name('internamentos.removeDiagnostico');
 });
 
 
@@ -413,4 +421,66 @@ Route::middleware('auth')->group(function () {
     Route::delete('/origem-da-referenciacaos/{origemDaReferenciacao}', [\App\Http\Controllers\OrigemDaReferenciacaoController::class, 'destroy'])
         ->middleware('can:origem-da-referenciacao.delete')
         ->name('origem-da-referenciacaos.destroy');
+});
+
+// ListaDeEspera Module
+Route::middleware('auth')->group(function () {
+    Route::get('/lista-de-esperas', [\App\Http\Controllers\ListaDeEsperaController::class, 'index'])
+        ->middleware('can:lista-de-espera.view')
+        ->name('lista-de-esperas.index');
+
+    Route::get('/lista-de-esperas/create', [\App\Http\Controllers\ListaDeEsperaController::class, 'create'])
+        ->middleware('can:lista-de-espera.create')
+        ->name('lista-de-esperas.create');
+
+    Route::post('/lista-de-esperas', [\App\Http\Controllers\ListaDeEsperaController::class, 'store'])
+        ->middleware('can:lista-de-espera.create')
+        ->name('lista-de-esperas.store');
+
+    Route::get('/lista-de-esperas/{listaDeEspera}', [\App\Http\Controllers\ListaDeEsperaController::class, 'show'])
+        ->middleware('can:lista-de-espera.view')
+        ->name('lista-de-esperas.show');
+
+    Route::get('/lista-de-esperas/{listaDeEspera}/edit', [\App\Http\Controllers\ListaDeEsperaController::class, 'edit'])
+        ->middleware('can:lista-de-espera.update')
+        ->name('lista-de-esperas.edit');
+
+    Route::put('/lista-de-esperas/{listaDeEspera}', [\App\Http\Controllers\ListaDeEsperaController::class, 'update'])
+        ->middleware('can:lista-de-espera.update')
+        ->name('lista-de-esperas.update');
+
+    Route::delete('/lista-de-esperas/{listaDeEspera}', [\App\Http\Controllers\ListaDeEsperaController::class, 'destroy'])
+        ->middleware('can:lista-de-espera.delete')
+        ->name('lista-de-esperas.destroy');
+});
+
+// Agendamento Module
+Route::middleware('auth')->group(function () {
+    Route::get('/agendamentos', [\App\Http\Controllers\AgendamentoController::class, 'index'])
+        ->middleware('can:agendamento.view')
+        ->name('agendamentos.index');
+
+    Route::get('/agendamentos/create', [\App\Http\Controllers\AgendamentoController::class, 'create'])
+        ->middleware('can:agendamento.create')
+        ->name('agendamentos.create');
+
+    Route::post('/agendamentos', [\App\Http\Controllers\AgendamentoController::class, 'store'])
+        ->middleware('can:agendamento.create')
+        ->name('agendamentos.store');
+
+    Route::get('/agendamentos/{agendamento}', [\App\Http\Controllers\AgendamentoController::class, 'show'])
+        ->middleware('can:agendamento.view')
+        ->name('agendamentos.show');
+
+    Route::get('/agendamentos/{agendamento}/edit', [\App\Http\Controllers\AgendamentoController::class, 'edit'])
+        ->middleware('can:agendamento.update')
+        ->name('agendamentos.edit');
+
+    Route::put('/agendamentos/{agendamento}', [\App\Http\Controllers\AgendamentoController::class, 'update'])
+        ->middleware('can:agendamento.update')
+        ->name('agendamentos.update');
+
+    Route::delete('/agendamentos/{agendamento}', [\App\Http\Controllers\AgendamentoController::class, 'destroy'])
+        ->middleware('can:agendamento.delete')
+        ->name('agendamentos.destroy');
 });

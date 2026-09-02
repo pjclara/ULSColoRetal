@@ -5,17 +5,22 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreInternamentoRequest;
 use App\Http\Requests\UpdateInternamentoRequest;
 use App\Http\Resources\UtenteResource;
+use App\Models\Destino;
 use App\Models\Internamento;
-use App\Models\Utente;
+use App\Models\OrigemDoInternamento;
+use App\Models\User;
+use App\Services\DiagnosticoService;
 use App\Services\InternamentoService;
 use App\Services\UtenteService;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class InternamentoController extends Controller
 {
     public function __construct(
         private InternamentoService $service,
-        private UtenteService $utenteService
+        private UtenteService $utenteService,
+        private DiagnosticoService $diagnosticoService
     ) {}
     /**
      * Display a listing of the resource.
@@ -92,8 +97,27 @@ class InternamentoController extends Controller
      */
     public function show(Internamento $internamento)
     {
-        //
+        return Inertia::render('Internamentos/Show', [
+            'internamento' => $internamento->load([
+                'utente',
+                'origemDoInternamento',
+                'diagnosticos',
+                'destino',
+                'responsavel',
+                'clavienDindo',
+                'complicacaos',
+            ]),
+            'utente' => new UtenteResource($internamento->utente),
+            'centroDeReferencia' => $internamento->centroDeReferencia,
+            'options' => [
+                'origens' => OrigemDoInternamento::select('id', 'nome')->get(),
+                'destinos' => Destino::select('id', 'nome')->get(),
+                'responsaveis' => User::select('id', 'name')->get(),
+            ],
+             'diagnosticosAgrupados' => $this->diagnosticoService->getDiagnosticosAgrupados(),
+        ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -122,4 +146,34 @@ class InternamentoController extends Controller
     {
         //
     }
+
+    public function addDiagnostico(Request $request, Internamento $internamento)
+    {
+        $request->validate([
+            'diagnosticoId' => 'required|exists:diagnosticos,id',
+        ]);
+
+        $this->service->addDiagnostico($internamento, $request->input('diagnosticoId'));
+
+        return redirect()
+            ->route('internamentos.show', $internamento->id)
+            ->with('success', 'Diagnóstico adicionado com sucesso ao internamento.');
+    }
+
+    public function removeDiagnostico(Request $request, Internamento $internamento)
+    {
+        $request->validate([
+            'diagnosticoId' => 'required|exists:diagnosticos,id',
+        ]);
+
+        $this->service->removeDiagnostico($internamento, $request->input('diagnosticoId'));
+
+        return redirect()
+            ->route('internamentos.show', $internamento->id)
+            ->with('success', 'Diagnóstico removido com sucesso do internamento.');
+    }
+
+    
+
+
 }

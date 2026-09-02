@@ -17,6 +17,16 @@ const dashboardNavItems: NavItem[] = [
     },
 ];
 
+// bloco
+
+const blocoNavItems: NavItem[] = [
+    {
+        title: 'Lista de espera',
+        url: '/lista-de-esperas',
+        icon: Folder,
+    },
+];
+
 
 
 const mainNavItems: NavItem[] = [
@@ -59,6 +69,7 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={dashboardNavItems} title="Dasboard"/>
+                <NavMain items={blocoNavItems} title="Bloco"/>
                 <NavMain items={mainNavItems} title="Gestão"/>
                 <NavMain items={administracaoNavItems} title="Administração" />
             </SidebarContent>

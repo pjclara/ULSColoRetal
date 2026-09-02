@@ -1,1 +1,0 @@
-import{j as e,L as i}from"./app-Dl_2OHKb.js";function t({clavienDindo:s}){return e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"ClavienDindo"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["ClavienDindo #",s.id]})})]})}export{t as default};

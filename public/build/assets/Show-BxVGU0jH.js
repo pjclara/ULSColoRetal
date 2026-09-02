@@ -1,0 +1,1 @@
+import{j as s,L as a}from"./app-BNKQiizf.js";function l({estadoDaAlta:t}){return s.jsxs(s.Fragment,{children:[s.jsx(a,{title:"EstadoDaAlta"}),s.jsx("div",{className:"p-6",children:s.jsxs("h1",{className:"text-2xl font-semibold",children:["EstadoDaAlta #",t.id]})})]})}export{l as default};

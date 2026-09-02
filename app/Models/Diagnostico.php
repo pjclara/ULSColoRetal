@@ -9,7 +9,10 @@ class Diagnostico extends Model
 {
     protected $fillable = [
         'nome',
-        'descricao'];
+        'grupo_diagnostico_id',
+        'tipo_diagnostico_id',
+        'abrev',
+        'centro_referencia',];
 
     /** @use HasFactory<\Database\Factories\DiagnosticoFactory> */
     use HasFactory;
@@ -17,5 +20,15 @@ class Diagnostico extends Model
     public function internamentos()
     {
         return $this->belongsToMany(Internamento::class);
+    }
+
+    public function grupoDiagnostico()
+    {
+        return $this->belongsTo(GrupoDiagnostico::class);
+    }
+
+    public function listaDeEsperas()
+    {
+        return $this->belongsToMany(ListaDeEspera::class);
     }
 }

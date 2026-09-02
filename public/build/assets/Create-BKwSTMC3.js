@@ -1,1 +1,0 @@
-import{j as a,L as t}from"./app-Dl_2OHKb.js";function e(){return a.jsxs(a.Fragment,{children:[a.jsx(t,{title:"Criar EstadoDaAlta"}),a.jsx("div",{className:"p-6",children:a.jsx("h1",{className:"text-2xl font-semibold",children:"Criar EstadoDaAlta"})})]})}export{e as default};

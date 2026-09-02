@@ -12,7 +12,7 @@ class UpdateUtenteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,11 @@ class UpdateUtenteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nome' => ['required', 'string', 'max:255'],
+            'numero_utente' => ['required', 'numeric'],
+            'numero_processo' => ['required', 'numeric'],
+            'data_nascimento' => ['required', 'date'],
+            'sexo_id' => ['required', 'integer', 'exists:sexos,id'],
         ];
     }
 }

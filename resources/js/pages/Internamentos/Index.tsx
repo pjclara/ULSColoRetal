@@ -4,7 +4,7 @@ import { AppTable, AppTableColumn } from '@/components/app/app-table';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import type { InternamentoOptions } from '@/types/internamento';
-import { InternamentoItem } from '@/types/type';
+import { InternamentoItem, Pagination } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import CreateOrUpdateInternamentoModal from './CreateOrUpdateInternamentoModal';
@@ -17,17 +17,7 @@ const breadcrumbs = [
 ];
 
 type Props = {
-    internamentos: {
-        data: InternamentoItem[];
-        links: {
-            url: string | null;
-            label: string;
-            active: boolean;
-        }[];
-        from: number | null;
-        to: number | null;
-        total: number | null;
-    };
+    internamentos: Pagination<InternamentoItem>;
 
     internamentoOptions: InternamentoOptions;
 };
@@ -68,7 +58,7 @@ export default function Index({ internamentos, internamentoOptions }: Props) {
             label: 'Diagnósticos',
             key: 'diagnosticos',
             render: (internamento) => (
-                <ul className="list-disc list-inside text-sm text-gray-600">
+                <ul className="list-inside list-disc text-sm text-gray-600">
                     {internamento?.diagnosticos?.map((diagnostico) => (
                         <li key={diagnostico.id}>{diagnostico.nome}</li>
                     ))}
@@ -84,7 +74,7 @@ export default function Index({ internamentos, internamentoOptions }: Props) {
             key: 'actions',
             render: (internamento) => (
                 <div className="flex justify-end gap-2">
-                    <Button type="button" size="sm" variant="outline" onClick={() => openInternamento(internamento)}>
+                    <Button type="button" size="sm" variant="outline" onClick={() => router.get(route('internamentos.show', internamento.id))}>
                         Ver detalhes
                     </Button>
 

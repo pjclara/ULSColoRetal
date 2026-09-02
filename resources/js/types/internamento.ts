@@ -18,5 +18,5 @@ export type InternamentoOptions = {
     destinos: DestinoItem[];
     casosSociais: CasoSocialItem[];
     localizacoes: LocalizacaoItem[];
-    origensDaReferenciacao: origensDaReferenciacaoItem[];
+    origensDaReferenciacao?: origensDaReferenciacaoItem[];
 };

@@ -4,28 +4,10 @@ import { AppTable, AppTableColumn } from '@/components/app/app-table';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import type { Pagination } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import CreateOrUpdateUserModal from './CreateOrUpdateUserModal';
-
-type Props = {
-    users: {
-        data: {
-            id: number;
-            name: string;
-            abreviatura?: string | null;
-            email: string;
-            numero_mecanografico?: string | null;
-            categoria?: string | null;
-            especialidade?: string | null;
-            ativo: boolean;
-        }[];
-        links: any[];
-        from?: number | null;
-        to?: number | null;
-        total?: number | null;
-    };
-};
 
 type User = {
     id: number;
@@ -36,6 +18,10 @@ type User = {
     categoria?: string | null;
     especialidade?: string | null;
     ativo: boolean;
+};
+
+type Props = {
+    users: Pagination<User>;
 };
 
 const breadcrumbs: BreadcrumbItem[] = [

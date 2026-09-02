@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUtenteRequest;
+use App\Http\Requests\UpdateUtenteRequest;
 use App\Models\Utente;
 use Illuminate\Http\Request;
 
@@ -26,9 +28,11 @@ class UtenteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreUtenteRequest $request)
     {
-        //
+        $utente = Utente::create($request->validated());
+        
+        return back()->with('success', 'Utente created successfully.');
     }
 
     /**
@@ -50,9 +54,11 @@ class UtenteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Utente $utente)
+    public function update(UpdateUtenteRequest $request, Utente $utente)
     {
-        //
+        $utente->update($request->validated());
+
+        return back()->with('success', 'Utente updated successfully.');
     }
 
     /**
@@ -60,6 +66,7 @@ class UtenteController extends Controller
      */
     public function destroy(Utente $utente)
     {
-        //
+        $utente->delete();
+        return response()->json(null, 204);
     }
 }

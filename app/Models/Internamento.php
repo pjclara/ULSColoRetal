@@ -29,6 +29,15 @@ class Internamento extends Model
     /** @use HasFactory<\Database\Factories\InternamentoFactory> */
     use HasFactory, SoftDeletes;
 
+    protected $casts = [
+        'data_de_entrada' => 'date: d/m/Y',
+        'data_de_saida' => 'date: d/m/Y',
+        'data_de_alta' => 'date: d/m/Y',
+    ];
+
+    //append the internamento's dias_internamento to the model's array form
+    protected $appends = ['dias_internamento'];
+
     public function utente()
     {
         return $this->belongsTo(Utente::class);
@@ -54,5 +63,30 @@ class Internamento extends Model
     public function complicacaos()
     {
         return $this->belongsToMany(Complicacao::class);
+    }
+
+    public function origemDoInternamento()
+    {
+        return $this->belongsTo(OrigemDoInternamento::class, 'origem_do_internamento_id');
+    }
+
+    public function destino()
+    {
+        return $this->belongsTo(Destino::class, 'destino_id');
+    }
+
+    public function clavienDindo()
+    {
+        return $this->belongsTo(ClavienDindo::class, 'clavien_dindo_id');
+    }
+
+    // dias_internamento
+
+    public function getDiasInternamentoAttribute()
+    {
+        if ($this->data_de_entrada && $this->data_de_saida) {
+            return $this->data_de_entrada->diffInDays($this->data_de_saida);
+        }
+        return null;
     }
 }

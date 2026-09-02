@@ -1,11 +1,10 @@
 import { AppInputField } from '@/components/app/app-input-field';
 import { AppSelectField } from '@/components/app/app-input-select';
 import { AppModalForm } from '@/components/app/app-modal-form';
+import { useCrudForm } from '@/hooks/use-crud-form';
 import type { InternamentoOptions } from '@/types/internamento';
 import type { InternamentoItem } from '@/types/type';
-import { router } from '@inertiajs/react';
-import { FormEvent, useEffect, useState } from 'react';
-import toast from 'react-hot-toast';
+import { useEffect } from 'react';
 
 interface Props {
     open: boolean;
@@ -13,6 +12,7 @@ interface Props {
     utenteId: number | null;
     internamento?: InternamentoItem | null;
     internamentoOptions: InternamentoOptions;
+    onSubmit?: () => void;
 }
 
 const emptyOptions: InternamentoOptions = {
@@ -47,10 +47,12 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
     const isEdit = !!internamento;
     const options = internamentoOptions ?? emptyOptions;
 
-    const [form, setForm] = useState<InternamentoItem>(emptyForm(utenteId));
-
-    const [loading, setLoading] = useState(false);
-    const [errors, setErrors] = useState<Record<string, string>>({});
+    const { form, errors, loading, updateField, resetForm, submit } = useCrudForm<InternamentoItem>(emptyForm(utenteId), {
+        url: isEdit && internamento ? route('internamentos.update', (internamento as InternamentoItem & { id: number }).id) : route('internamentos.store'),
+        isEditing: isEdit,
+        successMessage: isEdit ? 'Internamento atualizado com sucesso.' : 'Internamento criado com sucesso.',
+        onSuccess: () => onClose(),
+    });
 
     useEffect(() => {
         if (!open) {
@@ -58,7 +60,7 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
         }
 
         if (internamento) {
-            setForm({
+            resetForm({
                 utente_id: internamento.utente_id,
 
                 cama: String(internamento.cama ?? ''),
@@ -90,55 +92,10 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                 localizacao_id: internamento.localizacao_id != null ? Number(internamento.localizacao_id) : null,
             });
         } else {
-            setForm(emptyForm(utenteId));
+            resetForm(emptyForm(utenteId));
         }
-
-        setErrors({});
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, internamento, utenteId]);
-
-    const updateField = <K extends keyof InternamentoItem>(field: K, value: InternamentoItem[K]) => {
-        setForm((current) => ({
-            ...current,
-            [field]: value,
-        }));
-
-        setErrors((current) => ({
-            ...current,
-            [field]: '',
-        }));
-    };
-
-    const submit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        setLoading(true);
-        setErrors({});
-
-        const options = {
-            preserveScroll: true,
-
-            onError: (formErrors: Record<string, string>) => {
-                setErrors(formErrors);
-                toast.error('Verifique os dados introduzidos.');
-            },
-
-            onFinish: () => {
-                setLoading(false);
-            },
-
-            onSuccess: () => {
-                toast.success(isEdit ? 'Internamento atualizado com sucesso.' : 'Internamento criado com sucesso.');
-
-                onClose();
-            },
-        };
-
-        if (isEdit && internamento) {
-            router.put(route('internamentos.update', (internamento as InternamentoItem & { id: number }).id), form, options);
-        } else {
-            router.post(route('internamentos.store'), { ...form, utente_id: utenteId ?? form.utente_id }, options);
-        }
-    };
 
     if (!open) {
         return null;

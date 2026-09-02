@@ -9,6 +9,7 @@ import { AppPagination } from '@/components/app/app-pagination';
 import { AppTable, AppTableColumn } from '@/components/app/app-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useServerSearch } from '@/hooks/use-server-search';
 
 import type { UtenteItem } from '@/types/type';
 
@@ -47,11 +48,10 @@ export function StepUtente({
     onSelect,
     url,
 }: Props) {
-    const [search, setSearch] = useState(
-        filters.search ?? '',
-    );
-
-    const [searching, setSearching] = useState(false);
+    const { search, setSearch, searching, handleSearch, handleReset } = useServerSearch({
+        url,
+        initialSearch: filters.search ?? '',
+    });
 
     /**
      * Os resultados já vêm filtrados do backend.
@@ -59,56 +59,6 @@ export function StepUtente({
     const utentesList = Array.isArray(utentes)
         ? utentes
         : utentes.data;
-
-    /**
-     * Pesquisa no backend.
-     */
-    const handleSearch = (
-        event: FormEvent<HTMLFormElement>,
-    ) => {
-        event.preventDefault();
-
-        setSearching(true);
-
-        router.get(
-            url,
-            {
-                search: search.trim(),
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-
-                onFinish: () => {
-                    setSearching(false);
-                },
-            },
-        );
-    };
-
-    /**
-     * Limpar pesquisa.
-     */
-    const handleReset = () => {
-        setSearch('');
-
-        setSearching(true);
-
-        router.get(
-            url,
-            {},
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-
-                onFinish: () => {
-                    setSearching(false);
-                },
-            },
-        );
-    };
 
     const columns: AppTableColumn<UtenteItem>[] = [
         {

@@ -27,7 +27,11 @@ class Utente extends Model
     use HasFactory;
 
     // append the utente's full name to the model's array form
-    protected $appends = ['nome_curto'];
+    protected $appends = ['nome_curto', 'idade'];
+
+    protected $casts = [
+        'data_nascimento' => 'date:Y-m-d',
+    ];
 
     // devolver 1º e ultimo nome do utente
     public function getNomeCurtoAttribute()
@@ -40,5 +44,13 @@ class Utente extends Model
     public function centroDeReferencia()
     {
         return $this->hasOne(CentroDeReferencia::class);
+    }
+
+    // utente's idade
+    public function getIdadeAttribute()
+    {
+        return $this->data_nascimento
+            ? $this->data_nascimento->age
+            : null;
     }
 }

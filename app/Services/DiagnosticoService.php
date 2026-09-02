@@ -13,4 +13,24 @@ class DiagnosticoService
             ->latest()
             ->paginate($perPage);
     }
+
+    public function getDiagnosticosAgrupados(): array
+    {
+        $diagnosticos = Diagnostico::with('grupoDiagnostico')
+            ->orderBy('grupo_diagnostico_id')
+            ->orderBy('nome')
+            ->get();
+
+        $diagnosticosAgrupados = [];
+
+        foreach ($diagnosticos as $diagnostico) {
+            $grupoNome = $diagnostico->grupoDiagnostico->nome ?? 'Sem Grupo';
+            if (!isset($diagnosticosAgrupados[$grupoNome])) {
+                $diagnosticosAgrupados[$grupoNome] = [];
+            }
+            $diagnosticosAgrupados[$grupoNome][] = $diagnostico;
+        }
+
+        return $diagnosticosAgrupados;
+    }
 }

@@ -1,4 +1,3 @@
-import { router } from '@inertiajs/react';
 import { FormEvent, useState } from 'react';
 
 import { AppEmptyState } from '@/components/app/app-empty-state';
@@ -10,6 +9,7 @@ import { AppTable, AppTableColumn } from '@/components/app/app-table';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useServerSearch } from '@/hooks/use-server-search';
 
 import { InternamentoOptions } from '@/types/internamento';
 import type { InternamentoItem, UtenteItem } from '@/types/type';
@@ -53,8 +53,11 @@ type Props = {
 };
 
 export function StepInternamento({ utente, internamentos, filters, url, onSelect, onBack, onContinue, selectedInternamento = null, internamentoOptions }: Props) {
-    const [search, setSearch] = useState(filters.search ?? '');
-    const [searching, setSearching] = useState(false);
+    const { search, setSearch, searching, handleSearch, handleReset } = useServerSearch({
+        url,
+        initialSearch: filters.search ?? '',
+        extraParams: { utente_id: utente.id },
+    });
     const [showInternamentoModal, setShowInternamentoModal] = useState(false);
 
     /**
@@ -62,57 +65,6 @@ export function StepInternamento({ utente, internamentos, filters, url, onSelect
      * pelo backend.
      */
     const internamentosList = (Array.isArray(internamentos) ? internamentos : internamentos.data) as InternamentoWithId[];
-
-    /**
-     * Pesquisa os internamentos do utente
-     * no backend.
-     */
-    const handleSearch = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-
-        setSearching(true);
-
-        router.get(
-            url,
-            {
-                utente_id: utente.id,
-                search: search.trim(),
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-
-                onFinish: () => {
-                    setSearching(false);
-                },
-            },
-        );
-    };
-
-    /**
-     * Limpar pesquisa.
-     */
-    const handleReset = () => {
-        setSearch('');
-        setSearching(true);
-
-        router.get(
-            url,
-            {
-                utente_id: utente.id,
-            },
-            {
-                preserveState: true,
-                preserveScroll: true,
-                replace: true,
-
-                onFinish: () => {
-                    setSearching(false);
-                },
-            },
-        );
-    };
 
     const columns: AppTableColumn<InternamentoItem>[] = [
         {

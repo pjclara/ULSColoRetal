@@ -12,7 +12,11 @@ class DiagnosticoController extends Controller
      */
     public function index()
     {
-        //
+        $diagnosticos = Diagnostico::select('id', 'nome', 'abrev')
+            ->orderBy('nome')
+            ->get();
+
+        return response()->json($diagnosticos);
     }
 
     /**

@@ -2,7 +2,7 @@ import { AppEntitySummary } from '@/components/app/app-entity-summary';
 import { Button } from '@/components/ui/button';
 import { InternamentoOptions } from '@/types/internamento';
 
-import type { CentroDeReferenciaItem, UtenteItem } from '@/types/type';
+import type { CentroDeReferenciaItem, UtenteItem, origensDaReferenciacaoItem, DestinoItem, User } from '@/types/type';
 
 import { useEffect, useState } from 'react';
 import CentroDeReferenciaModal from './CentroDeReferenciaModal';
@@ -10,7 +10,11 @@ import CentroDeReferenciaModal from './CentroDeReferenciaModal';
 type Props = {
     utente: UtenteItem;
     centroDeReferencia?: CentroDeReferenciaItem | null;
-    internamentoOptions: InternamentoOptions;
+    internamentoOptions?: InternamentoOptions;
+    origems: origensDaReferenciacaoItem[];
+    destinos: DestinoItem[];
+    users: User[];
+
     onBack: () => void;
     onContinue: () => void;
     onSuccess?: (centro: CentroDeReferenciaItem) => void;
@@ -28,7 +32,7 @@ const emptyForm: CentroDeReferenciaItem = {
     comentarios: '',
 };
 
-export default function CreateOrUpdateCentroDeReferencia({ utente, centroDeReferencia, onBack, onContinue, internamentoOptions }: Props) {
+export default function CreateOrUpdateCentroDeReferencia({ utente, centroDeReferencia, onBack, onContinue, internamentoOptions, origems, destinos, users }: Props) {
     const [centroDeReferenciaData, setCentroDeReferencia] = useState<CentroDeReferenciaItem | null>(centroDeReferencia ?? null);
     const [showCentroModal, setShowCentroModal] = useState(false);
 
@@ -124,9 +128,9 @@ export default function CreateOrUpdateCentroDeReferencia({ utente, centroDeRefer
                 onClose={() => setShowCentroModal(false)}
                 utente={utente}
                 centroDeReferencia={centroDeReferenciaData}
-                origens={internamentoOptions.origensDaReferenciacao}
-                destinos={internamentoOptions.destinos}
-                responsaveis={internamentoOptions.responsaveis}
+                origens={origems}
+                destinos={destinos}
+                responsaveis={users}
                 onSuccess={handleCentroDeReferenciaSuccess}
             />
         </div>

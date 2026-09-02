@@ -21,7 +21,7 @@ class InternamentoService
                     'nome_curto' => $internamento->utente?->nome_curto ?? 'N/A',
                     'numero_processo' => $internamento->utente?->numero_processo ?? 'N/A',
                     'cama' => $internamento->cama ?? 'N/A',
-                    'data_de_entrada' => $internamento->data_de_entrada ?? 'N/A',
+                    'data_de_entrada' => $internamento->data_de_entrada->format('Y-m-d') ?? 'N/A',
                     'origem_do_internamento_id' => $internamento->origem_do_internamento_id ?? 'N/A',
                     'data_alta' => $internamento->data_alta ?? 'N/A',
                     'motivo_internamento' => $internamento->motivo_internamento ?? 'N/A',
@@ -187,5 +187,16 @@ class InternamentoService
         return \App\Models\OrigemDaReferenciacao::query()
             ->orderBy('nome')
             ->get(['id', 'nome']);
+    }
+
+    public function addDiagnostico(Internamento $internamento, int $diagnosticoId)
+    {
+        $internamento->diagnosticos()->attach($diagnosticoId);
+    }
+
+    // remove diagnostico from internamento
+    public function removeDiagnostico(Internamento $internamento, int $diagnosticoId)
+    {
+         $internamento->diagnosticos()->detach($diagnosticoId);
     }
 }

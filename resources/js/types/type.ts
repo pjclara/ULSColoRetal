@@ -22,10 +22,10 @@ export type InternamentoItem = {
 }
 
 export  type UtenteItem = {
-    id: number;
+    id: number | null;
     nome: string;
-    data_nascimento: string;
-    sexo_id: string;
+    data_nascimento: string | null;
+    sexo_id: number | null;
     numero_utente?: number | null;
     numero_processo?: number | null;
     concelho_id?: number | null;
@@ -53,7 +53,10 @@ export type User = {
     equipa: string;
     sexo: string;
 }
-
+export type SexoItem = {
+    id: number;
+    nome: string;
+}
 export type ClavienDindoItem = {
     id: number;
     nome: string;

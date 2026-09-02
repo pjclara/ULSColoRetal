@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 interface AppEntitySummaryField {
-    label: string;
+    label?: string;
     value: ReactNode;
 }
 
@@ -20,12 +20,16 @@ export function AppEntitySummary({ title, fields, action }: AppEntitySummaryProp
                     <p className="text-sm text-neutral-500 dark:text-neutral-400">{title}</p>
 
                     <dl className="mt-2 grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2 lg:grid-cols-3">
-                        {fields.map((field) => (
-                            <div key={field.label}>
-                                <dt className="inline font-medium text-neutral-700 dark:text-neutral-300">{field.label}: </dt>
-                                <dd className="inline text-neutral-600 dark:text-neutral-400">{field.value ?? '—'}</dd>
-                            </div>
-                        ))}
+                        {fields
+                            .filter((field) => field.value) // só mostra campos com valor
+                            .map((field) => (
+                                <div key={field.label}>
+                                    {field.label && (
+                                        <dt className="inline font-medium text-neutral-700 dark:text-neutral-300">{field.label}: </dt>
+                                    )}
+                                    <dd className="ml-2 inline text-neutral-600 dark:text-neutral-400">{field.value ?? '—'}</dd>
+                                </div>
+                            ))}
                     </dl>
                 </div>
             </div>

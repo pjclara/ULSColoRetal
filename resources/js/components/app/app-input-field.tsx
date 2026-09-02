@@ -4,8 +4,8 @@ import { AppFormField } from './app-form-field';
 
 interface AppInputFieldProps {
     label: string;
-    value: string | number;
-    onChange: (value: string) => void;
+    value: string | number | Date;
+    onChange: (value: string | number | Date) => void;
     error?: string;
     placeholder?: string;
     type?: 'text' | 'email' | 'password' | 'date'   | 'number' | 'time';
@@ -32,7 +32,7 @@ export function AppInputField({
         >
             <Input
                 type={type}
-                value={value}
+                value={value instanceof Date ? value.toISOString() : value}
                 onChange={(event) => onChange(event.target.value)}
                 placeholder={placeholder}
                 disabled={disabled}
