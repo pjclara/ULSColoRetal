@@ -3,19 +3,25 @@
 namespace App\ViewModels;
 
 use App\Models\ListaDeEspera;
+use JsonSerializable;
 
-class ListaDeEsperaViewModel
+class ListaDeEsperaViewModel implements JsonSerializable
 {
     public function __construct(
-        protected ListaDeEspera $model
+        protected readonly ListaDeEspera $model
     ) {}
 
-    public function toArray(): array
+
+    public function jsonSerialize(): array
     {
         return [
             'id' => $this->model->id,
-            'created_at' => $this->model->created_at?->toISOString(),
-            'updated_at' => $this->model->updated_at?->toISOString(),
+            'prioridade_id' => $this->model->prioridade_id,
+            'data_de_lista' => $this->model->data_de_lista->format('Y-m-d'),
+            'estado_lista_espera' => $this->model->estado_lista_espera,
+            'cancelar_lista_espera' => $this->model->cancelar_lista_espera,
+            'comentarios' => $this->model->comentarios,
+            'responsavel' => $this->model->responsavel?->toArray(),
         ];
     }
 }

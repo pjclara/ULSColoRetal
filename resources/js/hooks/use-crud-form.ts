@@ -1,6 +1,6 @@
 import type { Errors, FormDataConvertible, Page } from '@inertiajs/core';
 import { router } from '@inertiajs/react';
-import { FormEvent, useState } from 'react';
+import { FormEvent, useCallback, useState } from 'react';
 import toast from 'react-hot-toast';
 
 type CrudFormData = Record<string, FormDataConvertible>;
@@ -39,10 +39,10 @@ export function useCrudForm<T extends CrudFormData>(initialData: T, options: Use
         }));
     };
 
-    const resetForm = (data: T) => {
+    const resetForm = useCallback((data: T) => {
         setForm(data);
         setErrors({});
-    };
+    }, []);
 
     const submit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();

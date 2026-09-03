@@ -2,11 +2,13 @@ import { AppPageHeader } from '@/components/app/app-page-header';
 import { AppWizard } from '@/components/app/app-wizard';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { UtenteItem, CentroDeReferenciaItem, origensDaReferenciacaoItem, DestinoItem, User } from '@/types/type';
+import { DestinoItem, Option, User, UtenteItem, origensDaReferenciacaoItem } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
-import { useState } from 'react';
-import { StepUtente } from '../Utentes/StepUtente';
+import { useEffect, useState } from 'react';
 import StepCentroDeReferencia from '../CentroDeReferencias/StepCentroDeReferencia';
+import { StepConfirmation } from '../StepConfirmation';
+import { StepUtente } from '../Utentes/StepUtente';
+import StepListaDeEspera from './StepListaDeEspera';
 
 type Props = {
     utentes: UtenteItem[];
@@ -18,6 +20,7 @@ type Props = {
     origems: origensDaReferenciacaoItem[];
     destinos: DestinoItem[];
     users: User[];
+    estadoOptions: Option[];
 };
 
 const breadcrumbs = [
@@ -50,13 +53,17 @@ const steps = [
     {
         id: 'confirmacao',
         title: 'Confirmação',
-        description: 'Rever e confirmar os dados introduzidos',
+        description: 'Confirmar os dados antes de submeter',
     },
 ];
 
-export default function Index({ utentes, filters, utente, origems, destinos, users }: Props) {
+export default function Index({ utentes, filters, utente, origems, destinos, users, estadoOptions }: Props) {
     const [currentStep, setCurrentStep] = useState(0);
-    const [utenteState, setUtente] = useState<UtenteItem | undefined>(utente ?? undefined);
+    const [utenteState, setUtente] = useState<UtenteItem | null>(utente ?? null);
+
+    useEffect(() => {
+        setUtente(utente ?? null);
+    }, [utente]);
 
     const goToNextStep = (utenteId: number | null) => {
         if (!utenteId) return;
@@ -107,37 +114,76 @@ export default function Index({ utentes, filters, utente, origems, destinos, use
                     }
                 />
 
-                <div className="mx-auto max-w-6xl space-y-8">
-                    <AppWizard steps={steps} currentStep={currentStep} />
+                <div className="mx-auto max-w-6xl">
+                    <AppWizard steps={steps} currentStep={currentStep}>
+                        {currentStep === 0 && (
+                            <StepUtente
+                                utentes={utentes}
+                                filters={filters}
+                                selectedUtente={utenteState}
+                                onCreate={(newUtente) => {
+                                    setUtente(newUtente);
+                                    goToNextStep(newUtente.id);
+                                }}
+                                onSelect={handleSelectUtente}
+                                onContinue={handleContinue}
+                                url={route('lista-de-esperas.create')}
+                            />
+                        )}
+
+                        {currentStep === 1 && utenteState && (
+                            <StepCentroDeReferencia
+                                users={users}
+                                origems={origems}
+                                destinos={destinos}
+                                utente={utenteState}
+                                centroDeReferencia={utenteState.centro_de_referencia}
+                                onBack={handleBack}
+                                onContinue={() => setCurrentStep(2)}
+                            />
+                        )}
+
+                        {currentStep === 2 && utenteState && (
+                            <StepListaDeEspera
+                                utente={utenteState}
+                                centroDeReferencia={utenteState.centro_de_referencia}
+                                onContinue={() => setCurrentStep(3)}
+                                onBack={() => setCurrentStep(1)}
+                                estadoOptions={estadoOptions}
+                                responsavelOptions={users.map((user) => ({
+                                    value: user.id,
+                                    label: user.name,
+                                }))}
+                            />
+                        )}
+
+                        {currentStep === 3 && utenteState && (
+                            <StepConfirmation
+                                successMessage="Lista de Espera criada com sucesso"
+                                backLabel="Voltar"
+                                backUrl={route('lista-de-esperas.create')}
+                                viewLabel="Ver"
+                                viewUrl={route('lista-de-esperas.index')}
+                                sections={[
+                                    {
+                                        title: 'Utente',
+                                        fields: [
+                                            { label: 'Nome', value: utenteState?.nome ?? '' },
+                                            { label: 'Numero_processo', value: utenteState?.numero_processo ?? '' },
+                                        ],
+                                    },
+                                    {
+                                        title: 'Centro de Referência',
+                                        fields: [
+                                            { label: 'Nome', value: utenteState?.centro_de_referencia?.id ?? '' },
+                                        ],
+                                    },
+                                    
+                                ]}
+                            />
+                        )}
+                    </AppWizard>
                 </div>
-
-                {currentStep === 0 && (
-                    <StepUtente
-                        utentes={utentes}
-                        filters={filters}
-                        selectedUtente={utenteState}
-                        onCreate={(newUtente) => {
-                            setUtente(newUtente);
-                            goToNextStep(newUtente.id);
-                        }}
-                        onSelect={handleSelectUtente}
-                        onContinue={handleContinue}
-                        url={route('lista-de-esperas.create')}
-                    />
-                )}
-
-                {/* PASSO 2 — CENTRO DE REFERENCIA */}
-                {currentStep === 1 && utenteState && (
-                    <StepCentroDeReferencia
-                        users={users}
-                        origems={origems}
-                        destinos={destinos}
-                        utente={utenteState}
-                        centroDeReferencia={utenteState.centro_de_referencia}
-                        onBack={handleBack}
-                        onContinue={() => setCurrentStep(2)}
-                    />
-                )}
             </div>
         </AppLayout>
     );

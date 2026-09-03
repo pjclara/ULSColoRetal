@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreListaDeEsperaRequest extends FormRequest
@@ -12,7 +11,7 @@ class StoreListaDeEsperaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +22,12 @@ class StoreListaDeEsperaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'utente_id' => ['required', 'integer', 'exists:utentes,id'],
+            'data_de_lista' => ['required', 'date'],
+            'estado_lista_espera' => ['required', 'in:1,2,3,4'],
+            'cancelar_lista_espera' => ['nullable', 'boolean'],
+            'comentarios' => ['nullable', 'string'],
+            'responsavel_id' => ['required', 'integer', 'exists:users,id'],
         ];
     }
 }

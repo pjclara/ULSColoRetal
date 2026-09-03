@@ -1,7 +1,4 @@
 
-import { FormEvent, useState } from 'react';
-import { router } from '@inertiajs/react';
-
 import { AppEmptyState } from '@/components/app/app-empty-state';
 import { AppFilters } from '@/components/app/app-filters';
 import { AppFormField } from '@/components/app/app-form-field';
@@ -70,8 +67,8 @@ export function StepUtente({
             label: 'N.º Processo',
         },
         {
-            key: 'data_nascimento',
-            label: 'Data de nascimento',
+            key: 'idade',
+            label: 'Idade',
         },
         {
             key: 'actions',
@@ -129,8 +126,7 @@ export function StepUtente({
                 <>
                     <AppTable
                         columns={columns}
-                        data={utentesList}
-                        rowKey={(utente) => utente.id}
+                        data={utentesList}                        
                     />
 
                     {!Array.isArray(utentes) && (

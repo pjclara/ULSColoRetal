@@ -2,8 +2,9 @@ import { AppEntitySummary } from '@/components/app/app-entity-summary';
 import { Button } from '@/components/ui/button';
 import { InternamentoOptions } from '@/types/internamento';
 
-import type { CentroDeReferenciaItem, UtenteItem, origensDaReferenciacaoItem, DestinoItem, User } from '@/types/type';
+import type { CentroDeReferenciaItem, DestinoItem, User, UtenteItem, origensDaReferenciacaoItem } from '@/types/type';
 
+import { AppEmptyState } from '@/components/app/app-empty-state';
 import { useEffect, useState } from 'react';
 import CentroDeReferenciaModal from './CentroDeReferenciaModal';
 
@@ -32,7 +33,16 @@ const emptyForm: CentroDeReferenciaItem = {
     comentarios: '',
 };
 
-export default function CreateOrUpdateCentroDeReferencia({ utente, centroDeReferencia, onBack, onContinue, internamentoOptions, origems, destinos, users }: Props) {
+export default function CreateOrUpdateCentroDeReferencia({
+    utente,
+    centroDeReferencia,
+    onBack,
+    onContinue,
+    internamentoOptions,
+    origems,
+    destinos,
+    users,
+}: Props) {
     const [centroDeReferenciaData, setCentroDeReferencia] = useState<CentroDeReferenciaItem | null>(centroDeReferencia ?? null);
     const [showCentroModal, setShowCentroModal] = useState(false);
 
@@ -69,7 +79,7 @@ export default function CreateOrUpdateCentroDeReferencia({ utente, centroDeRefer
                 ]}
                 action={
                     <div className="mt-4 flex shrink-0 justify-end gap-2">
-                        <Button type="button" variant="outline" onClick={onBack}>
+                        <Button type="button" variant="success" onClick={onBack}>
                             Alterar utente
                         </Button>
                     </div>
@@ -108,20 +118,27 @@ export default function CreateOrUpdateCentroDeReferencia({ utente, centroDeRefer
                     }
                 />
             ) : (
-                <div className="rounded-lg border p-6">
-                    <h2 className="text-lg font-semibold">Centro de referência</h2>
-                    <p className="text-muted-foreground mt-1 text-sm">
-                        Nenhum centro de referência selecionado. Por favor, crie um novo centro de referência para continuar.
-                    </p>
-                    <div className="mt-4 flex shrink-0 justify-between gap-2">
-                        <Button type="button" className="ml-2" onClick={() => setShowCentroModal(true)}>
-                            Criar centro de referência
-                        </Button>
-                        <Button type="button" variant="outline" onClick={onContinue}>
-                            Continuar
-                        </Button>
-                    </div>
-                </div>
+                <AppEmptyState
+                    title="Nenhum centro de referência encontrado."
+                    description="Crie um novo centro de referência para continuar."
+                    actions={[
+                        {
+                            label: 'Voltar',
+                            onClick: onBack,
+                        },
+                        {
+                            label: 'Continuar',
+                            variant: 'outline',
+                            onClick: onContinue,
+                        },
+                        {
+                            label: 'Criar centro de referência',
+                            variant: 'info',
+                            onClick: () => setShowCentroModal(true),
+                        },
+                        
+                    ]}
+                />
             )}
             <CentroDeReferenciaModal
                 open={showCentroModal}

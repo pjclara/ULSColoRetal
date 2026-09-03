@@ -1,4 +1,5 @@
 export type InternamentoItem = {
+
     id?: number;
     utente_id: number;
     cama: string | null;
@@ -30,6 +31,19 @@ export  type UtenteItem = {
     numero_processo?: number | null;
     concelho_id?: number | null;
     centro_de_referencia?: CentroDeReferenciaItem | null;
+    lista_de_esperas?: ListaDeEsperaItem[] | null;
+    responsavel?: User | null;
+}
+
+export type ListaDeEsperaItem = {
+    id?: number;
+    utente_id: number;
+    data_de_lista: string;
+    estado_lista_espera: string;
+    cancelar_lista_espera: boolean;
+    comentarios?: string | null;
+    responsavel_id: number | null;
+    responsavel?: User | null;
 }
 
 export type OrigemDoInternamentoItem = {

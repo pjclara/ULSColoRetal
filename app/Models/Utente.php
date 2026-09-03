@@ -53,4 +53,10 @@ class Utente extends Model
             ? $this->data_nascimento->age
             : null;
     }
+
+    // lista de esperas do utente
+    public function listaDeEsperas()
+    {
+        return $this->hasMany(ListaDeEspera::class);
+    }
 }

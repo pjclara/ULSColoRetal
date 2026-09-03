@@ -1,0 +1,1 @@
+import{j as e,L as r}from"./app-D92FHMwJ.js";function i({centroDeReferencia:t}){return e.jsxs(e.Fragment,{children:[e.jsx(r,{title:"Editar CentroDeReferencia"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar CentroDeReferencia #",t.id]})})]})}export{i as default};
