@@ -36,7 +36,7 @@ type Props = {
     salaDeAgendamentoOptions: Option[];
     tipoDeAgendamentoOptions: Option[];
     localDeAgendamentoOptions: Option[];
-    
+    periodoDeAgendamentoOptions: Option[];
 };
 
 const breadcrumbs = [
@@ -56,6 +56,7 @@ export default function Index({
     salaDeAgendamentoOptions,
     localDeAgendamentoOptions,
     tipoDeAgendamentoOptions,
+    periodoDeAgendamentoOptions,
 }: Props) {
     // Modal da Lista de Espera
     const [isOpen, setIsOpen] = useState(false);
@@ -92,8 +93,9 @@ export default function Index({
     /**
      * Abre o modal de agendamento.
      */
-    const openAgendamento = (item: AgendamentoItem) => {
-        setSelectedAgendamento(item);
+    const openAgendamento = (item: ListaDeEsperaItem) => {
+        setSelectedListaDeEspera(item);
+        setSelectedAgendamento(item.agendamentos?.[0] ?? null);
         setIsOpenAgendamento(true);
     };
 
@@ -103,6 +105,7 @@ export default function Index({
     const closeAgendamentoModal = () => {
         setIsOpenAgendamento(false);
         setSelectedAgendamento(null);
+        setSelectedListaDeEspera(null);
     };
 
     const applyFilters = () => {
@@ -292,6 +295,7 @@ export default function Index({
                 localDeAgendamentoOptions={localDeAgendamentoOptions}
                 salaDeAgendamentoOptions={salaDeAgendamentoOptions}
                 estadoDeAgendamentoOptions={estadoDeAgendamentoOptions}
+                periodoDeAgendamentoOptions={periodoDeAgendamentoOptions}
             />
         </AppLayout>
     );

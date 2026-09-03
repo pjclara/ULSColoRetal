@@ -12,6 +12,10 @@ use App\Models\User;
 use App\Models\OrigemDaReferenciacao;
 use App\Models\Diagnostico;
 use App\Models\Destino;
+use App\Models\EstadoDeAgendamento;
+use App\Models\LocalDeAgendamento;
+use App\Models\SalaDeAgendamento;
+use App\Models\TipoDeAgendamento;
 
 class ListaDeEsperaController extends Controller
 {
@@ -61,21 +65,27 @@ class ListaDeEsperaController extends Controller
                     'value' => $destino->id,
                     'label' => $destino->nome,
                 ]),
-            'tipoDeAgendamentoOptions' => [
-                ['value' => '1', 'label' => 'Consulta'],
-                ['value' => '2', 'label' => 'Exame'],
-                ['value' => '3', 'label' => 'Procedimento'],
+            'tipoDeAgendamentoOptions' => TipoDeAgendamento::all()->map(fn(TipoDeAgendamento $tipo) => [
+                'value' => $tipo->id,
+                'label' => $tipo->nome,
+            ]),
+            'localDeAgendamentoOptions' => LocalDeAgendamento::all()->map(fn(LocalDeAgendamento $local) => [
+                'value' => $local->id,
+                'label' => $local->nome,
+            ]),
+            'salaDeAgendamentoOptions' => SalaDeAgendamento::all()->map(fn(SalaDeAgendamento $sala) => [
+                'value' => $sala->id,
+                'label' => $sala->nome,
+            ]),
+            'periodoDeAgendamentoOptions' => [
+                ['value' => '1', 'label' => 'Manhã'],
+                ['value' => '2', 'label' => 'Tarde'],
             ],
-            'localDeAgendamentoOptions' => [
-                ['value' => '1', 'label' => 'Hospital A'],
-                ['value' => '2', 'label' => 'Hospital B'],
-                ['value' => '3', 'label' => 'Clínica C'],
-            ],
-            'salaDeAgendamentoOptions' => [
-                ['value' => '1', 'label' => 'Sala 1'],
-                ['value' => '2', 'label' => 'Sala 2'],
-                ['value' => '3', 'label' => 'Sala 3'],
-            ],
+            'estadoDeAgendamentoOptions' => EstadoDeAgendamento::all()->map(fn(EstadoDeAgendamento $estado) => [
+                'value' => $estado->id,
+                'label' => $estado->nome,
+            ]),
+
         ]);
     }
 

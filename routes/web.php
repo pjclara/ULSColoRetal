@@ -484,3 +484,127 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:agendamento.delete')
         ->name('agendamentos.destroy');
 });
+
+// EstadoDeAgendamento Module
+Route::middleware('auth')->group(function () {
+    Route::get('/estado-de-agendamentos', [\App\Http\Controllers\EstadoDeAgendamentoController::class, 'index'])
+        ->middleware('can:estado-de-agendamento.view')
+        ->name('estado-de-agendamentos.index');
+
+    Route::get('/estado-de-agendamentos/create', [\App\Http\Controllers\EstadoDeAgendamentoController::class, 'create'])
+        ->middleware('can:estado-de-agendamento.create')
+        ->name('estado-de-agendamentos.create');
+
+    Route::post('/estado-de-agendamentos', [\App\Http\Controllers\EstadoDeAgendamentoController::class, 'store'])
+        ->middleware('can:estado-de-agendamento.create')
+        ->name('estado-de-agendamentos.store');
+
+    Route::get('/estado-de-agendamentos/{estadoDeAgendamento}', [\App\Http\Controllers\EstadoDeAgendamentoController::class, 'show'])
+        ->middleware('can:estado-de-agendamento.view')
+        ->name('estado-de-agendamentos.show');
+
+    Route::get('/estado-de-agendamentos/{estadoDeAgendamento}/edit', [\App\Http\Controllers\EstadoDeAgendamentoController::class, 'edit'])
+        ->middleware('can:estado-de-agendamento.update')
+        ->name('estado-de-agendamentos.edit');
+
+    Route::put('/estado-de-agendamentos/{estadoDeAgendamento}', [\App\Http\Controllers\EstadoDeAgendamentoController::class, 'update'])
+        ->middleware('can:estado-de-agendamento.update')
+        ->name('estado-de-agendamentos.update');
+
+    Route::delete('/estado-de-agendamentos/{estadoDeAgendamento}', [\App\Http\Controllers\EstadoDeAgendamentoController::class, 'destroy'])
+        ->middleware('can:estado-de-agendamento.delete')
+        ->name('estado-de-agendamentos.destroy');
+});
+
+// SalaDeAgendamento Module
+Route::middleware('auth')->group(function () {
+    Route::get('/sala-de-agendamentos', [\App\Http\Controllers\SalaDeAgendamentoController::class, 'index'])
+        ->middleware('can:sala-de-agendamento.view')
+        ->name('sala-de-agendamentos.index');
+
+    Route::get('/sala-de-agendamentos/create', [\App\Http\Controllers\SalaDeAgendamentoController::class, 'create'])
+        ->middleware('can:sala-de-agendamento.create')
+        ->name('sala-de-agendamentos.create');
+
+    Route::post('/sala-de-agendamentos', [\App\Http\Controllers\SalaDeAgendamentoController::class, 'store'])
+        ->middleware('can:sala-de-agendamento.create')
+        ->name('sala-de-agendamentos.store');
+
+    Route::get('/sala-de-agendamentos/{salaDeAgendamento}', [\App\Http\Controllers\SalaDeAgendamentoController::class, 'show'])
+        ->middleware('can:sala-de-agendamento.view')
+        ->name('sala-de-agendamentos.show');
+
+    Route::get('/sala-de-agendamentos/{salaDeAgendamento}/edit', [\App\Http\Controllers\SalaDeAgendamentoController::class, 'edit'])
+        ->middleware('can:sala-de-agendamento.update')
+        ->name('sala-de-agendamentos.edit');
+
+    Route::put('/sala-de-agendamentos/{salaDeAgendamento}', [\App\Http\Controllers\SalaDeAgendamentoController::class, 'update'])
+        ->middleware('can:sala-de-agendamento.update')
+        ->name('sala-de-agendamentos.update');
+
+    Route::delete('/sala-de-agendamentos/{salaDeAgendamento}', [\App\Http\Controllers\SalaDeAgendamentoController::class, 'destroy'])
+        ->middleware('can:sala-de-agendamento.delete')
+        ->name('sala-de-agendamentos.destroy');
+});
+
+// LocalDeAgendamento Module
+Route::middleware('auth')->group(function () {
+    Route::get('/local-de-agendamentos', [\App\Http\Controllers\LocalDeAgendamentoController::class, 'index'])
+        ->middleware('can:local-de-agendamento.view')
+        ->name('local-de-agendamentos.index');
+
+    Route::get('/local-de-agendamentos/create', [\App\Http\Controllers\LocalDeAgendamentoController::class, 'create'])
+        ->middleware('can:local-de-agendamento.create')
+        ->name('local-de-agendamentos.create');
+
+    Route::post('/local-de-agendamentos', [\App\Http\Controllers\LocalDeAgendamentoController::class, 'store'])
+        ->middleware('can:local-de-agendamento.create')
+        ->name('local-de-agendamentos.store');
+
+    Route::get('/local-de-agendamentos/{localDeAgendamento}', [\App\Http\Controllers\LocalDeAgendamentoController::class, 'show'])
+        ->middleware('can:local-de-agendamento.view')
+        ->name('local-de-agendamentos.show');
+
+    Route::get('/local-de-agendamentos/{localDeAgendamento}/edit', [\App\Http\Controllers\LocalDeAgendamentoController::class, 'edit'])
+        ->middleware('can:local-de-agendamento.update')
+        ->name('local-de-agendamentos.edit');
+
+    Route::put('/local-de-agendamentos/{localDeAgendamento}', [\App\Http\Controllers\LocalDeAgendamentoController::class, 'update'])
+        ->middleware('can:local-de-agendamento.update')
+        ->name('local-de-agendamentos.update');
+
+    Route::delete('/local-de-agendamentos/{localDeAgendamento}', [\App\Http\Controllers\LocalDeAgendamentoController::class, 'destroy'])
+        ->middleware('can:local-de-agendamento.delete')
+        ->name('local-de-agendamentos.destroy');
+});
+
+// TipoDeAgendamento Module
+Route::middleware('auth')->group(function () {
+    Route::get('/tipo-de-agendamentos', [\App\Http\Controllers\TipoDeAgendamentoController::class, 'index'])
+        ->middleware('can:tipo-de-agendamento.view')
+        ->name('tipo-de-agendamentos.index');
+
+    Route::get('/tipo-de-agendamentos/create', [\App\Http\Controllers\TipoDeAgendamentoController::class, 'create'])
+        ->middleware('can:tipo-de-agendamento.create')
+        ->name('tipo-de-agendamentos.create');
+
+    Route::post('/tipo-de-agendamentos', [\App\Http\Controllers\TipoDeAgendamentoController::class, 'store'])
+        ->middleware('can:tipo-de-agendamento.create')
+        ->name('tipo-de-agendamentos.store');
+
+    Route::get('/tipo-de-agendamentos/{tipoDeAgendamento}', [\App\Http\Controllers\TipoDeAgendamentoController::class, 'show'])
+        ->middleware('can:tipo-de-agendamento.view')
+        ->name('tipo-de-agendamentos.show');
+
+    Route::get('/tipo-de-agendamentos/{tipoDeAgendamento}/edit', [\App\Http\Controllers\TipoDeAgendamentoController::class, 'edit'])
+        ->middleware('can:tipo-de-agendamento.update')
+        ->name('tipo-de-agendamentos.edit');
+
+    Route::put('/tipo-de-agendamentos/{tipoDeAgendamento}', [\App\Http\Controllers\TipoDeAgendamentoController::class, 'update'])
+        ->middleware('can:tipo-de-agendamento.update')
+        ->name('tipo-de-agendamentos.update');
+
+    Route::delete('/tipo-de-agendamentos/{tipoDeAgendamento}', [\App\Http\Controllers\TipoDeAgendamentoController::class, 'destroy'])
+        ->middleware('can:tipo-de-agendamento.delete')
+        ->name('tipo-de-agendamentos.destroy');
+});

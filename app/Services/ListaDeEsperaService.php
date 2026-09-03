@@ -50,8 +50,15 @@ class ListaDeEsperaService
                 ] : null,
                 'agendamentos' => $listaDeEspera->agendamentos->map(fn($agendamento) => [
                     'id' => $agendamento->id,
-                    'start' => $agendamento->start->format('Y-m-d'),
-                    'end' => $agendamento->end->format('Y-m-d'),
+                    'lista_de_espera_id' => $agendamento->lista_de_espera_id,
+                    'responsavel_id' => $agendamento->responsavel_id,
+                    'tipo_de_agendamento_id' => $agendamento->tipo_de_agendamento_id,
+                    'local_de_agendamento_id' => $agendamento->local_de_agendamento_id,
+                    'sala_de_agendamento_id' => $agendamento->sala_de_agendamento_id,
+                    'periodo_de_agendamento_id' => $agendamento->periodo_de_agendamento_id,
+                    'estado_de_agendamento_id' => $agendamento->estado_de_agendamento,
+                    'start' => $agendamento->start->format('Y-m-d H:i'),
+                    'end' => $agendamento->end->format('Y-m-d H:i'),
                 ]),
             ]);
     }

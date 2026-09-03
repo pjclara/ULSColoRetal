@@ -6,6 +6,12 @@ import { useCrudForm } from '@/hooks/use-crud-form';
 import { AgendamentoItem } from '@/types/type';
 import { useEffect } from 'react';
 
+const normalizeSelectOptions = (options: Option[]) =>
+    options.map((option) => ({
+        ...option,
+        value: String(option.value),
+    }));
+
 type Props = {
     agendamento?: AgendamentoItem | null;
     isOpenAgendamento: boolean;
@@ -15,7 +21,8 @@ type Props = {
     tipoDeAgendamentoOptions: Option[];
     localDeAgendamentoOptions: Option[];
     salaDeAgendamentoOptions: Option[];
-    
+    periodoDeAgendamentoOptions: Option[];
+
     onClose: () => void;
     onSuccess: () => void;
 };
@@ -34,7 +41,7 @@ const emptyForm = (listaDeEsperaId?: number): AgendamentoItem => ({
     comentarios: null,
 });
 
-export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamento, listaDeEsperaId, onClose, onSuccess, responsavelOptions, tipoDeAgendamentoOptions, localDeAgendamentoOptions, estadoDeAgendamentoOptions, salaDeAgendamentoOptions }: Props) {
+export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamento, listaDeEsperaId, onClose, onSuccess, responsavelOptions, tipoDeAgendamentoOptions, localDeAgendamentoOptions, estadoDeAgendamentoOptions, salaDeAgendamentoOptions, periodoDeAgendamentoOptions }: Props) {
     const isEditing = Boolean(agendamento?.id);
 
     const { form, errors, loading, updateField, resetForm, submit } = useCrudForm<AgendamentoItem>(
@@ -73,16 +80,24 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
         >
             <div className="space-y-4 grid grid-cols-2 gap-4">
                 <AppInputField
-                    label="Data"
+                    label="Data de início"
                     type="datetime-local"
                     value={form.start}
                     onChange={(value) => updateField('start', String(value))}
                     error={errors.start}
                 />
 
+                <AppInputField
+                    label="Data de fim"
+                    type="datetime-local"
+                    value={form.end}
+                    onChange={(value) => updateField('end', String(value))}
+                    error={errors.end}
+                />
+
                 <AppSelectField
                     label="Responsável"
-                    value={form.responsavel_id ?? ''}
+                    value={String(form.responsavel_id ?? '')}
                     onChange={(value) => updateField('responsavel_id', value === '' ? null : Number(value))}
                     error={errors.responsavel_id}
                     options={responsavelOptions} // Substitua com as opções reais de responsáveis
@@ -110,6 +125,14 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
                     onChange={(value) => updateField('sala_de_agendamento_id', Number(value))}
                     error={errors.sala_de_agendamento_id}
                     options={salaDeAgendamentoOptions} // Substitua com as opções reais de salas de agendamento
+                />
+
+                <AppSelectField
+                    label="Período de agendamento"
+                    value={form.periodo_de_agendamento_id ?? 0}
+                    onChange={(value) => updateField('periodo_de_agendamento_id', Number(value))}
+                    error={errors.periodo_de_agendamento_id}
+                    options={periodoDeAgendamentoOptions}
                 />
 
                 <AppSelectField

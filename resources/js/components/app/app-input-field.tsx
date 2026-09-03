@@ -8,7 +8,7 @@ interface AppInputFieldProps {
     onChange: (value: string | number | Date) => void;
     error?: string;
     placeholder?: string;
-    type?: 'text' | 'email' | 'password' | 'date'   | 'number' | 'time';
+    type?: 'text' | 'email' | 'password' | 'date' | 'datetime-local' | 'number' | 'time';
     disabled?: boolean;
     required?: boolean;
     className?: string;
