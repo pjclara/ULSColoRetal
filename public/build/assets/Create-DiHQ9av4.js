@@ -1,1 +1,0 @@
-import{j as e,L as r}from"./app-D92FHMwJ.js";function i(){return e.jsxs(e.Fragment,{children:[e.jsx(r,{title:"Criar OrigemDaReferenciacao"}),e.jsx("div",{className:"p-6",children:e.jsx("h1",{className:"text-2xl font-semibold",children:"Criar OrigemDaReferenciacao"})})]})}export{i as default};

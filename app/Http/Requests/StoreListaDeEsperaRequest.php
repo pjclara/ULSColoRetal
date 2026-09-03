@@ -28,6 +28,8 @@ class StoreListaDeEsperaRequest extends FormRequest
             'cancelar_lista_espera' => ['nullable', 'boolean'],
             'comentarios' => ['nullable', 'string'],
             'responsavel_id' => ['required', 'integer', 'exists:users,id'],
+            'diagnostico_ids' => ['nullable', 'array'],
+            'diagnostico_ids.*' => ['integer', 'exists:diagnosticos,id'],
         ];
     }
 }

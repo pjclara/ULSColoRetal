@@ -12,7 +12,7 @@ class UpdateListaDeEsperaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +23,13 @@ class UpdateListaDeEsperaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'prioridade_id' => 'nullable|integer',
+            'diagnostico_ids' => 'array',
+            'responsavel_id' => 'nullable|integer',
+            'comentarios' => 'nullable|string',
+            'estado_lista_espera' => 'nullable|string',
+            'cancelar_lista_espera' => 'nullable|boolean',
+            'data_de_lista' => 'nullable|date',
         ];
     }
 }

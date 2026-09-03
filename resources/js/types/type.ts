@@ -1,5 +1,9 @@
-export type InternamentoItem = {
+export type DiagnosticoItem = {
+    id: number;
+    nome: string;
+};
 
+export type InternamentoItem = {
     id?: number;
     utente_id: number;
     cama: string | null;
@@ -33,6 +37,7 @@ export  type UtenteItem = {
     centro_de_referencia?: CentroDeReferenciaItem | null;
     lista_de_esperas?: ListaDeEsperaItem[] | null;
     responsavel?: User | null;
+
 }
 
 export type ListaDeEsperaItem = {
@@ -44,6 +49,9 @@ export type ListaDeEsperaItem = {
     comentarios?: string | null;
     responsavel_id: number | null;
     responsavel?: User | null;
+    diagnosticos?: DiagnosticoItem[] | null;
+    diagnostico_ids?: string[];
+    agendamentos?: AgendamentoItem[] | null;
 }
 
 export type OrigemDoInternamentoItem = {
@@ -128,3 +136,17 @@ export type origensDaReferenciacaoItem = {
     nome: string;
 }
  
+
+export type AgendamentoItem = {
+    id?: number;
+    lista_de_espera_id: number;
+    start: string;
+    end: string;
+    responsavel_id: number | null;
+    tipo_de_agendamento_id: number;
+    local_de_agendamento_id: number;
+    sala_de_agendamento_id: number;
+    periodo_de_agendamento_id: number;
+    estado_de_agendamento_id: number;
+    comentarios?: string | null;
+}

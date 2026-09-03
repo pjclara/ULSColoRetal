@@ -86,7 +86,7 @@ export default function CreateOrUpdateUserModal({ open, onClose, user }: Props) 
                 <AppInputField
                     label="Nome"
                     value={form.name}
-                    onChange={(value) => updateField('name', value)}
+                    onChange={(value) => updateField('name', String(value))}
                     error={errors.name}
                     placeholder="Nome completo"
                 />
@@ -95,7 +95,7 @@ export default function CreateOrUpdateUserModal({ open, onClose, user }: Props) 
                     label="Email"
                     type="email"
                     value={form.email}
-                    onChange={(value) => updateField('email', value)}
+                    onChange={(value) => updateField('email', String(value))}
                     error={errors.email}
                     placeholder="Email"
                 />
@@ -104,28 +104,28 @@ export default function CreateOrUpdateUserModal({ open, onClose, user }: Props) 
                     label="Password"
                     type="password"
                     value={form.password}
-                    onChange={(value) => updateField('password', value)}
+                    onChange={(value) => updateField('password', String(value))}
                     error={errors.password}
                     placeholder="Password"
                 />
                 <AppInputField
                     label="Username"
                     value={form.username}
-                    onChange={(value) => updateField('username', value)}
+                    onChange={(value) => updateField('username', String(value))}
                     error={errors.username}
                     placeholder="Username"
                 />
                 <AppInputField
                     label="Abrev"
                     value={form.abrev}
-                    onChange={(value) => updateField('abrev', value)}
+                    onChange={(value) => updateField('abrev', String(value))}
                     error={errors.abrev}
                     placeholder="Abrev"
                 />
                 <AppInputField
                     label="Equipa"
                     value={form.equipa}
-                    onChange={(value) => updateField('equipa', value)}
+                    onChange={(value) => updateField('equipa', String(value))}
                     error={errors.equipa}
                     placeholder="Equipa"
                 />

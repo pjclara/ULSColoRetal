@@ -1,1 +1,0 @@
-import{j as s,L as t}from"./app-D92FHMwJ.js";function i({listaDeEspera:e}){return s.jsxs(s.Fragment,{children:[s.jsx(t,{title:"Editar ListaDeEspera"}),s.jsx("div",{className:"p-6",children:s.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar ListaDeEspera #",e.id]})})]})}export{i as default};

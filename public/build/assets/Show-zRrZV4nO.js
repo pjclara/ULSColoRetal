@@ -1,0 +1,1 @@
+import{j as s,L as t}from"./app-9DO9VO8Y.js";function i({listaDeEspera:e}){return s.jsxs(s.Fragment,{children:[s.jsx(t,{title:"ListaDeEspera"}),s.jsx("div",{className:"p-6",children:s.jsxs("h1",{className:"text-2xl font-semibold",children:["ListaDeEspera #",e.id]})})]})}export{i as default};

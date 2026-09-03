@@ -9,17 +9,33 @@ class ListaDeEsperaService
 {
     public function create(array $data): ListaDeEspera
     {
+        $diagnosticoIds = $data['diagnostico_ids'] ?? [];
+        unset($data['diagnostico_ids']);
+
         $data['cancelar_lista_espera'] = ($data['cancelar_lista_espera'] ?? false) ? '1' : null;
 
-        return ListaDeEspera::create($data);
+        $listaDeEspera = ListaDeEspera::create($data);
+        $listaDeEspera->diagnosticos()->sync($diagnosticoIds);
+
+        return $listaDeEspera;
     }
 
-    public function paginate(int $perPage = 15): LengthAwarePaginator
+    public function paginate(int $perPage = 15, ?string $search = null): LengthAwarePaginator
     {
-        return ListaDeEspera::query()
+        return ListaDeEspera::with(['utente', 'diagnosticos', 'responsavel', 'agendamentos'])
+            ->when($search, fn($query) => $query->whereHas('utente', fn($utenteQuery) => $utenteQuery
+                ->where('nome', 'like', "%{$search}%")
+                ->orWhere('numero_processo', 'like', "%{$search}%")))
             ->latest()
-            ->paginate($perPage)->through(fn($listaDeEspera) => [
+            ->paginate($perPage)
+            ->withQueryString()
+            ->through(fn($listaDeEspera) => [
                 'id' => $listaDeEspera->id,
+                'data_de_lista' => $listaDeEspera->data_de_lista->format('Y-m-d'),
+                'estado_lista_espera' => $listaDeEspera->estado_lista_espera,
+                'cancelar_lista_espera' => $listaDeEspera->cancelar_lista_espera,
+                'comentarios' => $listaDeEspera->comentarios,
+                'responsavel_id' => $listaDeEspera->responsavel_id,
                 'nome' => $listaDeEspera->utente->nome_curto,
                 'utente_id' => $listaDeEspera->utente->id,
                 'numero_processo' => $listaDeEspera->utente->numero_processo,
@@ -27,12 +43,15 @@ class ListaDeEsperaService
                     'id' => $diagnostico->id,
                     'nome' => $diagnostico->nome,
                 ]),
-                'responsavel_id' => $listaDeEspera->responsavel->id ?? null,
-                'responsavel_nome' => $listaDeEspera->responsavel->abrev ?? null,
+                'responsavel' => $listaDeEspera->responsavel ? [
+                    'id' => $listaDeEspera->responsavel->id,
+                    'name' => $listaDeEspera->responsavel->name,
+                    'abrev' => $listaDeEspera->responsavel->abrev,
+                ] : null,
                 'agendamentos' => $listaDeEspera->agendamentos->map(fn($agendamento) => [
                     'id' => $agendamento->id,
-                    'start' => $agendamento->start,
-                    'end' => $agendamento->end,
+                    'start' => $agendamento->start->format('Y-m-d'),
+                    'end' => $agendamento->end->format('Y-m-d'),
                 ]),
             ]);
     }
@@ -42,17 +61,15 @@ class ListaDeEsperaService
         return ListaDeEspera::find($id);
     }
 
-
-
-    public function update(int $id, array $data): ?ListaDeEspera
+    public function update(ListaDeEspera $listaDeEspera, array $data): ?ListaDeEspera
     {
-        $listaDeEspera = $this->find($id);
-        if (!$listaDeEspera) {
-            return null;
-        }
-
         $data['cancelar_lista_espera'] = ($data['cancelar_lista_espera'] ?? false) ? '1' : null;
         $listaDeEspera->update($data);
+
+        if (isset($data['diagnostico_ids'])) {
+            $diagnosticoIds = $data['diagnostico_ids'];
+            $listaDeEspera->diagnosticos()->sync($diagnosticoIds);
+        }
 
         return $listaDeEspera;
     }
@@ -66,6 +83,4 @@ class ListaDeEsperaService
 
         return $listaDeEspera->delete();
     }
-
-
 }

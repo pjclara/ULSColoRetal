@@ -1,1 +1,0 @@
-import{j as s,L as i}from"./app-D92FHMwJ.js";function a({diagnostico:t}){return s.jsxs(s.Fragment,{children:[s.jsx(i,{title:"Editar Diagnostico"}),s.jsx("div",{className:"p-6",children:s.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar Diagnostico #",t.id]})})]})}export{a as default};

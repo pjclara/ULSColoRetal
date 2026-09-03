@@ -58,7 +58,12 @@ class UtenteService
     public function checkUtenteExists(int $utenteId): UtenteViewModel
     {
         $utente = Utente::query()
-            ->with(['centroDeReferencia.origem', 'listaDeEsperas.responsavel'])
+            ->with([
+                'centroDeReferencia.origem',
+                'listaDeEsperas.responsavel',
+                'listaDeEsperas.diagnosticos',
+                'listaDeEsperas.agendamentos',
+            ])
             ->find($utenteId);
 
         if (!$utente) {

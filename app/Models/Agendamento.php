@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Agendamento extends Model
 {
+
+    /** @use HasFactory<\Database\Factories\AgendamentoFactory> */
+    use HasFactory;
+
     protected $fillable = [
         'lista_de_espera_id',
         'start',
@@ -19,13 +23,14 @@ class Agendamento extends Model
         'estado_de_agendamento',
         'estado_de_agendamento_id',
         'comentarios',
-        'created_by_id',
-        'updated_by_id',
-        'deleted_by_id',
     ];
 
-    /** @use HasFactory<\Database\Factories\AgendamentoFactory> */
-    use HasFactory;
+    protected $casts = [
+        'start' => 'datetime',
+        'end' => 'datetime',
+    ];
+
+
 
     public function responsavel()
     {

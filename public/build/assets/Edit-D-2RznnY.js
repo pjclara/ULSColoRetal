@@ -1,0 +1,1 @@
+import{j as e,L as i}from"./app-9DO9VO8Y.js";function s({origemDaReferenciacao:a}){return e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"Editar OrigemDaReferenciacao"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar OrigemDaReferenciacao #",a.id]})})]})}export{s as default};

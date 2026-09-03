@@ -1,7 +1,6 @@
 import { AppEntitySummary } from '@/components/app/app-entity-summary';
 import { Button } from '@/components/ui/button';
 import { InternamentoOptions } from '@/types/internamento';
-
 import type { CentroDeReferenciaItem, DestinoItem, User, UtenteItem, origensDaReferenciacaoItem } from '@/types/type';
 
 import { AppEmptyState } from '@/components/app/app-empty-state';
@@ -118,7 +117,15 @@ export default function CreateOrUpdateCentroDeReferencia({
                     }
                 />
             ) : (
-                <AppEmptyState
+                <>
+                    <div className="mb-4">
+                        <p className="text-sm text-neutral-500 flex justify-end">
+                            <Button type="button" variant="info" onClick={() => setShowCentroModal(true)}>
+                                Criar centro de referência
+                            </Button>
+                        </p>
+                    </div>
+                    <AppEmptyState
                     title="Nenhum centro de referência encontrado."
                     description="Crie um novo centro de referência para continuar."
                     actions={[
@@ -130,15 +137,11 @@ export default function CreateOrUpdateCentroDeReferencia({
                             label: 'Continuar',
                             variant: 'outline',
                             onClick: onContinue,
-                        },
-                        {
-                            label: 'Criar centro de referência',
-                            variant: 'info',
-                            onClick: () => setShowCentroModal(true),
-                        },
+                        }
                         
                     ]}
                 />
+                </>
             )}
             <CentroDeReferenciaModal
                 open={showCentroModal}

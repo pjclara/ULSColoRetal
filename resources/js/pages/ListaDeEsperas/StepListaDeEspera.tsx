@@ -11,47 +11,74 @@ type Props = {
     centroDeReferencia?: CentroDeReferenciaItem | null;
     estadoOptions: Option[];
     responsavelOptions: Option[];
-    onContinue: () => void;
+    diagnosticosOptions: Option[];
+    onContinue: (lista: ListaDeEsperaItem) => void;
     onBack: () => void;
 };
 
-const columns: AppTableColumn<ListaDeEsperaItem>[] = [
-    {
-        label: 'Data de lista',
-        key: 'data_de_lista',
-    },
-    {
-        label: 'Estado da lista de espera',
-        key: 'estado_lista_espera',
-    },
-    {
-        label: 'Cancelar lista de espera',
-        key: 'cancelar_lista_espera',
-    },
-    {
-        label: 'Comentários',
-        key: 'comentarios',
-    },
-    {
-        label: 'Responsável',
-        key: 'responsavel',
-        render: (listaDeEsperaItem) => listaDeEsperaItem.responsavel?.name ?? '',
-    },
-];
-
-export default function StepListaDeEspera({
-    utente,
-    centroDeReferencia,
-    estadoOptions,
-    responsavelOptions,
-    onBack,
-    onContinue,
-}: Props) {
+export default function StepListaDeEspera({ utente, centroDeReferencia, estadoOptions, responsavelOptions, diagnosticosOptions, onBack, onContinue }: Props) {
+    const [currentListaDeEspera, setCurrentListaDeEspera] = useState<ListaDeEsperaItem | null>(null);
     const [showCreateListaDeEsperaModal, setShowCreateListaDeEsperaModal] = useState(false);
     const handleCreateListaDeEsperaSuccess = () => {
         setShowCreateListaDeEsperaModal(false);
-        onContinue();
     };
+
+    const columns: AppTableColumn<ListaDeEsperaItem>[] = [
+        {
+            label: 'Data de lista',
+            key: 'data_de_lista',
+        },
+
+        {
+            label: 'Diagnósticos',
+            key: 'diagnosticos',
+            render: (listaDeEsperaItem) => listaDeEsperaItem.diagnosticos?.map((d) => d.nome).join(', ') ?? 'sem dia',
+        },
+
+        {
+            label: 'Estado da lista de espera',
+            key: 'estado_lista_espera',
+            render: (listaDeEsperaItem) => listaDeEsperaItem.estado_lista_espera ?? '',
+        },
+        {
+            label: 'Responsável',
+            key: 'responsavel',
+            render: (listaDeEsperaItem) => listaDeEsperaItem.responsavel?.abrev ?? '',
+        },
+                {
+            label: 'Comentários',
+            key: 'comentarios',
+        },
+        {
+            label: 'Ações',
+            key: 'acoes',
+            render: (listaDeEsperaItem) => (
+               <div>
+                   <Button
+                       type="button"
+                       variant="outline"
+                       onClick={() => {
+                           setShowCreateListaDeEsperaModal(true);
+                           setCurrentListaDeEspera(listaDeEsperaItem);
+                       }}
+                   >
+                       Editar
+                   </Button>
+                   <Button
+                       type="button"
+                       variant="outline"
+                       onClick={() => {
+                           setCurrentListaDeEspera(listaDeEsperaItem);
+                           onContinue(listaDeEsperaItem);
+                       }}
+                   >
+                       Agendamento
+                   </Button>
+               </div>
+               
+            ),
+        },
+    ];
     return (
         <div className="space-y-6">
             <div>
@@ -108,39 +135,44 @@ export default function StepListaDeEspera({
                     ]}
                 />
             ) : (
-                <AppEmptyState
-                    title="Centro de referência"
-                    description="Não foi selecionado nenhum centro de referência para este utente."
-                    actions={[
-                        {
-                            label: 'Voltar',
-                            onClick: onBack,
-                        },
-                        {
-                            label: 'Continuar',
-                            onClick: onContinue,
-                        },
-                    ]}
-                />
+                <AppEmptyState title="Centro de referência" description="Utente não faz parte do centro de referência." />
             )}
-            {utente.lista_de_esperas?.length === 0 && (
+            {utente.lista_de_esperas?.length === 0 ? (
                 <AppEmptyState
                     title="Listas de espera"
                     description="Não há listas de espera para este utente."
                     actions={[
                         {
                             label: 'Adicionar lista de espera',
-                            onClick: () => setShowCreateListaDeEsperaModal(true),
+                            onClick: () => {
+                                setCurrentListaDeEspera(null);
+                                setShowCreateListaDeEsperaModal(true);
+                            },
                         },
                     ]}
                 />
+            ) : (
+                <div>
+                    <div className="mb-4 flex justify-end">
+                        <Button
+                            variant={'info'}
+                            onClick={() => {
+                                setCurrentListaDeEspera(null);
+                                setShowCreateListaDeEsperaModal(true);
+                            }}
+                        >
+                            Adicionar lista de espera
+                        </Button>
+                    </div>
+                    <AppTable columns={columns} data={utente.lista_de_esperas ?? []} />
+                </div>
             )}
-
-            {utente.lista_de_esperas && utente.lista_de_esperas.length > 0 && <AppTable columns={columns} data={utente.lista_de_esperas} />}
 
             {showCreateListaDeEsperaModal && (
                 <CreateOrUpdateListaDeEspera
+                    diagnosticosOptions={diagnosticosOptions}
                     isOpenListaDeEspera={showCreateListaDeEsperaModal}
+                    listaDeEspera={currentListaDeEspera}
                     utenteId={utente.id}
                     onClose={() => setShowCreateListaDeEsperaModal(false)}
                     onSuccess={handleCreateListaDeEsperaSuccess}
