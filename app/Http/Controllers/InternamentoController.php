@@ -36,7 +36,7 @@ class InternamentoController extends Controller
             50,
             $search ?: null,
             $minhaEquipa,
-            $request->user()?->id,
+            $request->user()?->equipa,
         );
 
         return inertia('Internamentos/Index', [

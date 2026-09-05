@@ -73,30 +73,48 @@ export default function AddBlocoOperatorioToInternamento({ internamento, options
         setForm(emptyForm);
     };
 
+    // Só recarrega os dados — nunca fecha o modal. O modal só fecha pelo X/overlay/Escape (onClose),
+    // para se poder continuar a preencher CRS/descrição logo a seguir, sem passos extra.
     const refresh = () => (onSave ? onSave() : router.reload({ only: ['internamentos'] }));
 
     const handleSave = () => {
         setLoading(true);
 
-        const requestOptions = {
-            preserveScroll: true,
-            onError: (formErrors: Record<string, string>) => setErrors(formErrors),
-            onSuccess: () => {
-                setForm(emptyForm);
-                setEditingId(null);
-                refresh();
-            },
-            onFinish: () => setLoading(false),
-        };
-
         if (isEditing) {
-            router.put(route('bloco-operatorios.update', editingId as number), form, requestOptions);
-        } else {
-            router.post(route('bloco-operatorios.store'), { internamento_id: internamento.id, ...form }, requestOptions);
+            router.put(route('bloco-operatorios.update', editingId as number), form, {
+                preserveScroll: true,
+                onError: (formErrors: Record<string, string>) => setErrors(formErrors),
+                onSuccess: refresh,
+                onFinish: () => setLoading(false),
+            });
+            return;
         }
+
+        router.post(
+            route('bloco-operatorios.store'),
+            { internamento_id: internamento.id, ...form },
+            {
+                preserveScroll: true,
+                onError: (formErrors: Record<string, string>) => setErrors(formErrors),
+                onSuccess: (page) => {
+                    // Transita logo para "editar" o bloco acabado de criar, para os formulários de
+                    // Centro de Referência (se aplicável) aparecerem sem ser preciso reabrir.
+                    const flash = (page.props as { flash?: { blocoOperatorio?: { id: number } } }).flash;
+                    if (flash?.blocoOperatorio?.id) {
+                        setEditingId(flash.blocoOperatorio.id);
+                    }
+                    refresh();
+                },
+                onFinish: () => setLoading(false),
+            },
+        );
     };
 
     const handleRemove = (blocoOperatorioId: number) => {
+        if (!window.confirm('Remover esta cirurgia? Os dados de centro de referência associados também serão removidos.')) {
+            return;
+        }
+
         router.delete(route('bloco-operatorios.destroy', blocoOperatorioId), {
             preserveScroll: true,
             onSuccess: () => {
@@ -110,6 +128,11 @@ export default function AddBlocoOperatorioToInternamento({ internamento, options
 
     // intervenções desta cirurgia que são de centro de referência + resseção: exigem os formulários extra.
     const intervencoesCDR = editingBloco?.intervencoes.filter((i) => i.centro_de_referencia && i.cirurgia_de_ressecao) ?? [];
+
+    // aviso antecipado: alguma das intervenções selecionadas (ainda por guardar) vai pedir estes dados.
+    const vaiPedirDadosCDR =
+        !isEditing &&
+        options.intervencoes.some((i) => form.intervencao_ids.includes(String(i.id)) && i.centro_de_referencia && i.cirurgia_de_ressecao);
 
     return (
         <AppModal title="Bloco Operatório" description="Registe as cirurgias associadas a este internamento." open onClose={onClose} maxWidth="5xl">
@@ -170,6 +193,11 @@ export default function AddBlocoOperatorioToInternamento({ internamento, options
                                 emptyMessage="Nenhuma intervenção encontrada."
                                 error={errors.intervencao_ids}
                             />
+                            {vaiPedirDadosCDR && (
+                                <p className="mt-1.5 text-xs text-amber-700 dark:text-amber-400">
+                                    Depois de guardar, vão aparecer aqui os dados adicionais de Centro de Referência para esta cirurgia.
+                                </p>
+                            )}
                         </div>
                         <div className="sm:col-span-2">
                             <AppInputField

@@ -53,7 +53,12 @@ export default function Index({ internamentos, filters, diagnosticosAgrupados, b
     const [selectedInternamento, setSelectedInternamento] = useState<InternamentoItem | null>(null);
 
     const [diagnosticoTarget, setDiagnosticoTarget] = useState<InternamentoItem | null>(null);
-    const [blocoTarget, setBlocoTarget] = useState<InternamentoItem | null>(null);
+
+    // guarda-se só o id: o objeto é sempre derivado dos dados mais recentes de `internamentos`,
+    // para que o modal veja de imediato o bloco recém-criado (com as suas intervenções e ids de
+    // pivot) sem ser preciso fechar e reabrir "Editar".
+    const [blocoTargetId, setBlocoTargetId] = useState<number | null>(null);
+    const blocoTarget = blocoTargetId != null ? (internamentos.data.find((item) => item.id === blocoTargetId) ?? null) : null;
 
     const grupos = useMemo(() => {
         const map = new Map<string, InternamentoItem[]>();
@@ -245,7 +250,7 @@ export default function Index({ internamentos, filters, diagnosticosAgrupados, b
                                                         ))}
                                                         <button
                                                             type="button"
-                                                            onClick={() => setBlocoTarget(item)}
+                                                            onClick={() => item.id && setBlocoTargetId(item.id)}
                                                             className="inline-flex items-center gap-1 text-xs font-medium text-blue-600 hover:underline dark:text-blue-400"
                                                         >
                                                             <Scissors className="size-3.5" />
@@ -317,11 +322,8 @@ export default function Index({ internamentos, filters, diagnosticosAgrupados, b
                     <AddBlocoOperatorioToInternamento
                         internamento={{ id: blocoTarget.id, bloco_operatorios: blocoTarget.bloco_operatorios ?? [] }}
                         options={blocoOperatorioOptions}
-                        onClose={() => setBlocoTarget(null)}
-                        onSave={() => {
-                            setBlocoTarget(null);
-                            router.reload({ only: ['internamentos'] });
-                        }}
+                        onClose={() => setBlocoTargetId(null)}
+                        onSave={() => router.reload({ only: ['internamentos'] })}
                     />
                 )}
             </div>

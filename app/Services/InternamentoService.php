@@ -10,7 +10,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class InternamentoService
 {
-    public function paginate(int $perPage = 15, ?string $search = null, bool $minhaEquipa = false, ?int $userId = null): LengthAwarePaginator
+    public function paginate(int $perPage = 15, ?string $search = null, bool $minhaEquipa = false, ?string $equipa = null): LengthAwarePaginator
     {
         return Internamento::query()
             ->where('data_de_saida', null)
@@ -33,7 +33,7 @@ class InternamentoService
                         ->where('nome', 'like', "%{$search}%")
                         ->orWhere('numero_processo', 'like', "%{$search}%"));
             }))
-            ->when($minhaEquipa && $userId, fn($query) => $query->where('responsavel_id', $userId))
+            ->when($minhaEquipa && $equipa, fn($query) => $query->whereHas('responsavel', fn($responsavelQuery) => $responsavelQuery->where('equipa', $equipa)))
             ->join('localizacaos', 'localizacaos.id', '=', 'internamentos.localizacao_id')
             ->orderBy('localizacaos.nome')
             ->orderBy('internamentos.cama')
