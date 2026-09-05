@@ -48,4 +48,10 @@ class ListaDeEspera extends Model
         return $this->hasMany(Agendamento::class);
     }
 
+    // intervenções propostas para a lista de espera
+    public function intervencoes()
+    {
+        return $this->belongsToMany(Intervencao::class, 'intervencao_lista_de_espera');
+    }
+
 }

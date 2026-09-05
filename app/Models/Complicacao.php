@@ -13,10 +13,17 @@ class Complicacao extends Model
     protected $table = 'complicacaos';
     protected $fillable = [
         'nome',
-    ];  
+        'abrev',
+        'grupo_complicacao_id',
+    ];
 
     public function internamentos()
     {
         return $this->belongsToMany(Internamento::class);
+    }
+
+    public function grupoComplicacao()
+    {
+        return $this->belongsTo(GrupoComplicacao::class);
     }
 }

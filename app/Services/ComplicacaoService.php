@@ -13,4 +13,24 @@ class ComplicacaoService
             ->latest()
             ->paginate($perPage);
     }
+
+    public function getComplicacoesAgrupadas(): array
+    {
+        $complicacoes = Complicacao::with('grupoComplicacao')
+            ->orderBy('grupo_complicacao_id')
+            ->orderBy('nome')
+            ->get();
+
+        $complicacoesAgrupadas = [];
+
+        foreach ($complicacoes as $complicacao) {
+            $grupoNome = $complicacao->grupoComplicacao->nome ?? 'Sem Grupo';
+            if (!isset($complicacoesAgrupadas[$grupoNome])) {
+                $complicacoesAgrupadas[$grupoNome] = [];
+            }
+            $complicacoesAgrupadas[$grupoNome][] = $complicacao;
+        }
+
+        return $complicacoesAgrupadas;
+    }
 }

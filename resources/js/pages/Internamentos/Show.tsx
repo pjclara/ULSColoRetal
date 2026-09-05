@@ -6,16 +6,26 @@ import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import CentroDeReferenciaModal from '../CentroDeReferencias/CentroDeReferenciaModal';
 import AddDiagnosticosToInternamento from '../Diagnosticos/AddDiagnosticosToInternamento';
+import AddComplicacoesToInternamento from '../Complicacoes/AddComplicacoesToInternamento';
 import CreateOrUpdateUtente from '../Utentes/CreateOrUpdateUtente';
 import CreateOrUpdateInternamentoModal from './CreateOrUpdateInternamentoModal';
 import { InternamentoOptions } from '@/types/internamento';
+import type { CentroDeReferenciaItem, DestinoItem, OrigemDoInternamentoItem, User, UtenteItem } from '@/types/type';
+
+type CentroDeReferenciaOptions = {
+    origens: OrigemDoInternamentoItem[];
+    destinos: DestinoItem[];
+    responsaveis: User[];
+};
 
 type Props = {
     internamento: any;
-    utente: any;
-    centroDeReferencia: any;
+    utente: UtenteItem;
+    centroDeReferencia: CentroDeReferenciaItem | null;
     diagnosticosAgrupados: Record<string, any[]>;
-    options: InternamentoOptions
+    complicacoesAgrupadas: Record<string, any[]>;
+    internamentoOptions: InternamentoOptions;
+    centroDeReferenciaOptions: CentroDeReferenciaOptions;
 };
 
 const breadcrumbs = [
@@ -23,7 +33,15 @@ const breadcrumbs = [
     { title: 'Detalhes do Internamento', href: '' },
 ];
 
-export default function ShowInternamento({ internamento, utente, centroDeReferencia, options, diagnosticosAgrupados }: Props) {
+export default function ShowInternamento({
+    internamento,
+    utente,
+    centroDeReferencia,
+    internamentoOptions,
+    centroDeReferenciaOptions,
+    diagnosticosAgrupados,
+    complicacoesAgrupadas,
+}: Props) {
     const [showCentroModal, setShowCentroModal] = useState(false);
     const [isOpenUtente, setIsOpenUtente] = useState(false);
     const [isInternamentoOpen, setIsInternamentoOpen] = useState(false);
@@ -31,6 +49,7 @@ export default function ShowInternamento({ internamento, utente, centroDeReferen
     const openCentroModal = () => setShowCentroModal(true);
     const closeCentroModal = () => setShowCentroModal(false);
     const [showDiagnosticosToInternamentoModal, setShowDiagnosticosToInternamentoModal] = useState(false);
+    const [showComplicacoesToInternamentoModal, setShowComplicacoesToInternamentoModal] = useState(false);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -99,17 +118,11 @@ export default function ShowInternamento({ internamento, utente, centroDeReferen
                     <AppEntitySummary
                         title="Bloco Operatório"
                         fields={[
-                            { label: 'N.º de Cirurgias', value: internamento.bloco_operatorios_count },
-                            { label: 'Última Cirurgia', value: internamento.ultima_cirurgia },
+                            { label: 'N.º de Cirurgias', value: internamento.bloco_operatorios_count ?? '—' },
+                            { label: 'Bloco Operatório', value: internamento.bloco_operatorios.map((bloco: any) => bloco.data_de_inicio).join(', ') || '—' },
                         ]}
-                        action={
-                            <div className="flex flex-col gap-2 p-3">
-                                <Button variant="outline" onClick={() => router.get(`/internamentos/${internamento.id}/cirurgias`)}>
-                                    Ver Cirurgias
-                                </Button>
-                            </div>
-                        }
                     />
+                    {/* Funcionalidade de Cirurgias/Bloco Operatório ainda não existe no backend. */}
 
                     {/* CENTRO DE REFERÊNCIA */}
 
@@ -135,10 +148,10 @@ export default function ShowInternamento({ internamento, utente, centroDeReferen
                     {/* COMPLICAÇÕES */}
                     <AppEntitySummary
                         title="Complicações"
-                        fields={[{ label: 'N.º de Complicações', value: internamento.complicacaos_count }]}
+                        fields={[{ label: 'N.º de Complicações', value: internamento.complicacaos_count ?? 0 }]}
                         action={
                             <div className="flex flex-col gap-2 p-3">
-                                <Button variant="outline" onClick={() => router.get(`/internamentos/${internamento.id}/complicacoes`)}>
+                                <Button variant="outline" onClick={() => setShowComplicacoesToInternamentoModal(true)}>
                                     Ver Complicações
                                 </Button>
                             </div>
@@ -151,9 +164,9 @@ export default function ShowInternamento({ internamento, utente, centroDeReferen
                         onClose={closeCentroModal}
                         utente={utente}
                         centroDeReferencia={centroDeReferencia}
-                        origens={options.origens}
-                        destinos={options.destinos}
-                        responsaveis={options.responsaveis}
+                        origens={centroDeReferenciaOptions.origens}
+                        destinos={centroDeReferenciaOptions.destinos}
+                        responsaveis={centroDeReferenciaOptions.responsaveis}
                         onSuccess={() => {
                             closeCentroModal();
                             router.reload({ only: ['centroDeReferencia'] });
@@ -165,8 +178,9 @@ export default function ShowInternamento({ internamento, utente, centroDeReferen
                     <CreateOrUpdateInternamentoModal
                         open={isInternamentoOpen}
                         internamento={internamento}
+                        utenteId={internamento.utente?.id ?? null}
                         onClose={() => setIsInternamentoOpen(false)}
-                        internamentoOptions={options}
+                        internamentoOptions={internamentoOptions}
                         onSubmit={() => {
                             router.reload({ only: ['internamento'] });
                             setIsInternamentoOpen(false);
@@ -178,6 +192,15 @@ export default function ShowInternamento({ internamento, utente, centroDeReferen
                         <AddDiagnosticosToInternamento
                             internamento={internamento}
                             diagnosticosAgrupados={diagnosticosAgrupados}
+                            onSave={() => router.reload({ only: ['internamento'] })}
+                        />
+                    )}
+                    {/* Modal complicações */}
+                    {showComplicacoesToInternamentoModal && (
+                        <AddComplicacoesToInternamento
+                            internamento={internamento}
+                            complicacoesAgrupadas={complicacoesAgrupadas}
+                            onClose={() => setShowComplicacoesToInternamentoModal(false)}
                             onSave={() => router.reload({ only: ['internamento'] })}
                         />
                     )}

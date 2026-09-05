@@ -25,10 +25,11 @@ class InternamentoService
                     'origem_do_internamento_id' => $internamento->origem_do_internamento_id ?? 'N/A',
                     'data_alta' => $internamento->data_alta ?? 'N/A',
                     'motivo_internamento' => $internamento->motivo_internamento ?? 'N/A',
-                    'observacoes' => $internamento->observacoes ?? 'N/A',
+                    'observacoes' => $internamento->observacoes ?? null,
                     'responsavel_id' => $internamento->responsavel_id ?? 'N/A',
                     'responsavel' => $internamento->responsavel->abrev ?? 'N/A',
-                    'localizacao_id' => $internamento->localizacao_id ?? 'N/A',
+                    'localizacao' => $internamento->localizacao->nome ?? 'N/A',
+                    'dias_internamento' => $internamento->dias_internamento ?? 'N/A',
                     'diagnosticos' => $internamento->diagnosticos->map(function ($diagnostico) {
                         return [
                             'id' => $diagnostico->id,
@@ -198,5 +199,17 @@ class InternamentoService
     public function removeDiagnostico(Internamento $internamento, int $diagnosticoId)
     {
          $internamento->diagnosticos()->detach($diagnosticoId);
+    }
+
+    // add complicacao to internamento
+    public function addComplicacao(Internamento $internamento, int $complicacaoId)
+    {
+        $internamento->complicacaos()->syncWithoutDetaching($complicacaoId);
+    }
+
+    // remove complicacao from internamento
+    public function removeComplicacao(Internamento $internamento, int $complicacaoId)
+    {
+        $internamento->complicacaos()->detach($complicacaoId);
     }
 }

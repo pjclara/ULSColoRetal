@@ -10,9 +10,14 @@ class Diagnostico extends Model
     protected $fillable = [
         'nome',
         'grupo_diagnostico_id',
-        'tipo_diagnostico_id',
+        'tipo_de_diagnostico_id',
         'abrev',
-        'centro_referencia',];
+        'centro_de_referencia',
+    ];
+
+    protected $casts = [
+        'centro_de_referencia' => 'boolean',
+    ];
 
     /** @use HasFactory<\Database\Factories\DiagnosticoFactory> */
     use HasFactory;
@@ -25,6 +30,11 @@ class Diagnostico extends Model
     public function grupoDiagnostico()
     {
         return $this->belongsTo(GrupoDiagnostico::class);
+    }
+
+    public function tipoDeDiagnostico()
+    {
+        return $this->belongsTo(TipoDeDiagnostico::class);
     }
 
     public function listaDeEsperas()

@@ -129,6 +129,8 @@ export type CentroDeReferenciaItem = {
     responsavel_id: number;
     comentarios: string;
     origem?: OrigemDoInternamentoItem;
+    destino?: DestinoItem;
+    responsavel?: User;
 }
 
 export type origensDaReferenciacaoItem = {

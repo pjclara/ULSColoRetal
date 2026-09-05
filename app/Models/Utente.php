@@ -59,4 +59,10 @@ class Utente extends Model
     {
         return $this->hasMany(ListaDeEspera::class);
     }
+
+    // internamentos do utente
+    public function internamentos()
+    {
+        return $this->hasMany(Internamento::class);
+    }
 }

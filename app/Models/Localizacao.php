@@ -11,6 +11,7 @@ class Localizacao extends Model
     use HasFactory;
 
     protected $table = 'localizacaos';
+    
     protected $fillable = [
         'nome',
     ];

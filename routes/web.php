@@ -110,6 +110,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/internamentos/{internamento}/diagnosticos', [\App\Http\Controllers\InternamentoController::class, 'removeDiagnostico'])
         ->middleware('can:internamento.update')
         ->name('internamentos.removeDiagnostico');
+
+    Route::post('/internamentos/{internamento}/complicacoes', [\App\Http\Controllers\InternamentoController::class, 'addComplicacao'])
+        ->middleware('can:internamento.update')
+        ->name('internamentos.addComplicacao');
+
+    Route::delete('/internamentos/{internamento}/complicacoes', [\App\Http\Controllers\InternamentoController::class, 'removeComplicacao'])
+        ->middleware('can:internamento.update')
+        ->name('internamentos.removeComplicacao');
 });
 
 
@@ -607,4 +615,97 @@ Route::middleware('auth')->group(function () {
     Route::delete('/tipo-de-agendamentos/{tipoDeAgendamento}', [\App\Http\Controllers\TipoDeAgendamentoController::class, 'destroy'])
         ->middleware('can:tipo-de-agendamento.delete')
         ->name('tipo-de-agendamentos.destroy');
+});
+
+// BlocoOperatorio Module
+Route::middleware('auth')->group(function () {
+    Route::get('/bloco-operatorios', [\App\Http\Controllers\BlocoOperatorioController::class, 'index'])
+        ->middleware('can:bloco-operatorio.view')
+        ->name('bloco-operatorios.index');
+
+    Route::get('/bloco-operatorios/create', [\App\Http\Controllers\BlocoOperatorioController::class, 'create'])
+        ->middleware('can:bloco-operatorio.create')
+        ->name('bloco-operatorios.create');
+
+    Route::post('/bloco-operatorios', [\App\Http\Controllers\BlocoOperatorioController::class, 'store'])
+        ->middleware('can:bloco-operatorio.create')
+        ->name('bloco-operatorios.store');
+
+    Route::get('/bloco-operatorios/{blocoOperatorio}', [\App\Http\Controllers\BlocoOperatorioController::class, 'show'])
+        ->middleware('can:bloco-operatorio.view')
+        ->name('bloco-operatorios.show');
+
+    Route::get('/bloco-operatorios/{blocoOperatorio}/edit', [\App\Http\Controllers\BlocoOperatorioController::class, 'edit'])
+        ->middleware('can:bloco-operatorio.update')
+        ->name('bloco-operatorios.edit');
+
+    Route::put('/bloco-operatorios/{blocoOperatorio}', [\App\Http\Controllers\BlocoOperatorioController::class, 'update'])
+        ->middleware('can:bloco-operatorio.update')
+        ->name('bloco-operatorios.update');
+
+    Route::delete('/bloco-operatorios/{blocoOperatorio}', [\App\Http\Controllers\BlocoOperatorioController::class, 'destroy'])
+        ->middleware('can:bloco-operatorio.delete')
+        ->name('bloco-operatorios.destroy');
+});
+
+// BlocoOperatorioCRS Module
+Route::middleware('auth')->group(function () {
+    Route::get('/bloco-operatorio-c-rs', [\App\Http\Controllers\BlocoOperatorioCRSController::class, 'index'])
+        ->middleware('can:bloco-operatorio-c-r.view')
+        ->name('bloco-operatorio-c-rs.index');
+
+    Route::get('/bloco-operatorio-c-rs/create', [\App\Http\Controllers\BlocoOperatorioCRSController::class, 'create'])
+        ->middleware('can:bloco-operatorio-c-r.create')
+        ->name('bloco-operatorio-c-rs.create');
+
+    Route::post('/bloco-operatorio-c-rs', [\App\Http\Controllers\BlocoOperatorioCRSController::class, 'store'])
+        ->middleware('can:bloco-operatorio-c-r.create')
+        ->name('bloco-operatorio-c-rs.store');
+
+    Route::get('/bloco-operatorio-c-rs/{blocoOperatorioCRS}', [\App\Http\Controllers\BlocoOperatorioCRSController::class, 'show'])
+        ->middleware('can:bloco-operatorio-c-r.view')
+        ->name('bloco-operatorio-c-rs.show');
+
+    Route::get('/bloco-operatorio-c-rs/{blocoOperatorioCRS}/edit', [\App\Http\Controllers\BlocoOperatorioCRSController::class, 'edit'])
+        ->middleware('can:bloco-operatorio-c-r.update')
+        ->name('bloco-operatorio-c-rs.edit');
+
+    Route::put('/bloco-operatorio-c-rs/{blocoOperatorioCRS}', [\App\Http\Controllers\BlocoOperatorioCRSController::class, 'update'])
+        ->middleware('can:bloco-operatorio-c-r.update')
+        ->name('bloco-operatorio-c-rs.update');
+
+    Route::delete('/bloco-operatorio-c-rs/{blocoOperatorioCRS}', [\App\Http\Controllers\BlocoOperatorioCRSController::class, 'destroy'])
+        ->middleware('can:bloco-operatorio-c-r.delete')
+        ->name('bloco-operatorio-c-rs.destroy');
+});
+
+// Intervencao Module
+Route::middleware('auth')->group(function () {
+    Route::get('/intervencaos', [\App\Http\Controllers\IntervencaoController::class, 'index'])
+        ->middleware('can:intervencao.view')
+        ->name('intervencaos.index');
+
+    Route::get('/intervencaos/create', [\App\Http\Controllers\IntervencaoController::class, 'create'])
+        ->middleware('can:intervencao.create')
+        ->name('intervencaos.create');
+
+    Route::post('/intervencaos', [\App\Http\Controllers\IntervencaoController::class, 'store'])
+        ->middleware('can:intervencao.create')
+        ->name('intervencaos.store');
+
+    Route::get('/intervencaos/{intervencao}', [\App\Http\Controllers\IntervencaoController::class, 'show'])
+        ->middleware('can:intervencao.view')
+        ->name('intervencaos.show');
+
+    Route::get('/intervencaos/{intervencao}/edit', [\App\Http\Controllers\IntervencaoController::class, 'edit'])
+        ->middleware('can:intervencao.update')
+        ->name('intervencaos.edit');
+
+    Route::put('/intervencaos/{intervencao}', [\App\Http\Controllers\IntervencaoController::class, 'update'])
+        ->middleware('can:intervencao.update')
+        ->name('intervencaos.update');
+
+    Route::delete('/intervencaos/{intervencao}', [\App\Http\Controllers\IntervencaoController::class, 'destroy'])
+        ->middleware('can:intervencao.delete')
+        ->name('intervencaos.destroy');
 });

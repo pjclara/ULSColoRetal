@@ -12,7 +12,7 @@ class StoreEstadoDeAgendamentoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**

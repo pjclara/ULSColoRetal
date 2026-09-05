@@ -37,6 +37,16 @@ export default function Index({ internamentos, internamentoOptions }: Props) {
         setSelectedInternamento(null);
     };
 
+    const formatDate = (date: string) => {
+        if (!date) return '-';
+
+        return new Intl.DateTimeFormat('pt-PT', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+        }).format(new Date(date));
+    };
+
     const columns: AppTableColumn<InternamentoItem>[] = [
         {
             label: 'Utente',
@@ -45,24 +55,32 @@ export default function Index({ internamentos, internamentoOptions }: Props) {
         {
             label: 'Processo',
             key: 'numero_processo',
+            render: (item) => <span className="font-medium text-neutral-700 dark:text-neutral-300">#{item.numero_processo}</span>,
         },
         {
             label: 'Data de entrada',
             key: 'data_de_entrada',
+            render: (internamento) => formatDate(internamento.data_de_entrada),
         },
-        {
-            label: 'Motivo',
-            key: 'motivo_internamento',
-        },
+
         {
             label: 'Diagnósticos',
             key: 'diagnosticos',
-            render: (internamento) => (
-                <ul className="list-inside list-disc text-sm text-gray-600">
-                    {internamento?.diagnosticos?.map((diagnostico) => (
-                        <li key={diagnostico.id}>{diagnostico.nome}</li>
-                    ))}
-                </ul>
+            render: (item) => (
+                <div className="flex flex-wrap gap-1.5">
+                    {item.diagnosticos?.length ? (
+                        item.diagnosticos.map((diagnostico) => (
+                            <span
+                                key={diagnostico.id}
+                                className="rounded-md bg-neutral-100 px-2 py-1 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
+                            >
+                                {diagnostico.nome}
+                            </span>
+                        ))
+                    ) : (
+                        <span className="text-neutral-400">—</span>
+                    )}
+                </div>
             ),
         },
         {
@@ -74,13 +92,23 @@ export default function Index({ internamentos, internamentoOptions }: Props) {
             key: 'actions',
             render: (internamento) => (
                 <div className="flex justify-end gap-2">
-                    <Button type="button" size="sm" variant="outline" onClick={() => router.get(route('internamentos.show', internamento.id))}>
-                        Ver detalhes
-                    </Button>
+                    <div className="flex items-center justify-end gap-2">
+                        <Button type="button" size="sm" onClick={() => openInternamento(internamento)}>
+                            Editar
+                        </Button>
+                    </div>
+                </div>
+            ),
+        },
+        {
+            label: 'Motivo',
+            key: 'motivo_internamento',
+            fullRow: true,
+            render: (item) => (
+                <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold tracking-wide text-neutral-400 uppercase">Motivo</span>
 
-                    <Button type="button" size="sm" onClick={() => openInternamento(internamento)}>
-                        Editar
-                    </Button>
+                    <span className="text-sm text-neutral-600 dark:text-neutral-400">{item.motivo_internamento || 'Sem motivo registado'}</span>
                 </div>
             ),
         },

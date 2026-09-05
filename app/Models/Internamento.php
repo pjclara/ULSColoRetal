@@ -85,8 +85,21 @@ class Internamento extends Model
     public function getDiasInternamentoAttribute()
     {
         if ($this->data_de_entrada && $this->data_de_saida) {
-            return $this->data_de_entrada->diffInDays($this->data_de_saida);
+            return round($this->data_de_entrada->diffInDays($this->data_de_saida));
+        }
+        elseif ($this->data_de_entrada) {
+            return round($this->data_de_entrada->diffInDays(now()));
         }
         return null;
+    }
+
+    public function blocoOperatorios()
+    {
+        return $this->hasMany(BlocoOperatorio::class)->with('intervencoesCirurgicas');
+    }
+
+    public function localizacao()
+    {
+        return $this->belongsTo(Localizacao::class, 'localizacao_id');
     }
 }

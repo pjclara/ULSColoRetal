@@ -9,6 +9,7 @@ use App\Models\Destino;
 use App\Models\Internamento;
 use App\Models\OrigemDoInternamento;
 use App\Models\User;
+use App\Services\ComplicacaoService;
 use App\Services\DiagnosticoService;
 use App\Services\InternamentoService;
 use App\Services\UtenteService;
@@ -20,7 +21,8 @@ class InternamentoController extends Controller
     public function __construct(
         private InternamentoService $service,
         private UtenteService $utenteService,
-        private DiagnosticoService $diagnosticoService
+        private DiagnosticoService $diagnosticoService,
+        private ComplicacaoService $complicacaoService
     ) {}
     /**
      * Display a listing of the resource.
@@ -97,6 +99,10 @@ class InternamentoController extends Controller
      */
     public function show(Internamento $internamento)
     {
+        $internamento->loadCount('complicacaos');
+        $internamento->loadCount('blocoOperatorios');
+        $internamento->loadCount('diagnosticos');
+
         return Inertia::render('Internamentos/Show', [
             'internamento' => $internamento->load([
                 'utente',
@@ -104,17 +110,29 @@ class InternamentoController extends Controller
                 'diagnosticos',
                 'destino',
                 'responsavel',
+                'blocoOperatorios',
                 'clavienDindo',
                 'complicacaos',
             ]),
             'utente' => new UtenteResource($internamento->utente),
-            'centroDeReferencia' => $internamento->centroDeReferencia,
-            'options' => [
+            'centroDeReferencia' => $internamento->utente->centroDeReferencia?->load(['origem', 'destino', 'responsavel']),
+            'centroDeReferenciaOptions' => [
                 'origens' => OrigemDoInternamento::select('id', 'nome')->get(),
                 'destinos' => Destino::select('id', 'nome')->get(),
                 'responsaveis' => User::select('id', 'name')->get(),
             ],
+            'internamentoOptions' => [
+                'origensInternamento' => $this->service->getOrigensInternamento(),
+                'estadosAlta' => $this->service->getEstadosAlta(),
+                'responsaveis' => $this->service->getResponsaveis(),
+                'clavienDindo' => $this->service->getClavienDindo(),
+                'destinos' => $this->service->getDestinos(),
+                'casosSociais' => $this->service->getCasosSociais(),
+                'localizacoes' => $this->service->getLocalizacoes(),
+                'origensDaReferenciacao' => $this->service->getOrigensDaReferenciacao(),
+            ],
              'diagnosticosAgrupados' => $this->diagnosticoService->getDiagnosticosAgrupados(),
+             'complicacoesAgrupadas' => $this->complicacaoService->getComplicacoesAgrupadas(),
         ]);
     }
 
@@ -173,7 +191,29 @@ class InternamentoController extends Controller
             ->with('success', 'Diagnóstico removido com sucesso do internamento.');
     }
 
-    
+    public function addComplicacao(Request $request, Internamento $internamento)
+    {
+        $request->validate([
+            'complicacaoId' => 'required|exists:complicacaos,id',
+        ]);
 
+        $this->service->addComplicacao($internamento, $request->input('complicacaoId'));
 
+        return redirect()
+            ->route('internamentos.show', $internamento->id)
+            ->with('success', 'Complicação adicionada com sucesso ao internamento.');
+    }
+
+    public function removeComplicacao(Request $request, Internamento $internamento)
+    {
+        $request->validate([
+            'complicacaoId' => 'required|exists:complicacaos,id',
+        ]);
+
+        $this->service->removeComplicacao($internamento, $request->input('complicacaoId'));
+
+        return redirect()
+            ->route('internamentos.show', $internamento->id)
+            ->with('success', 'Complicação removida com sucesso do internamento.');
+    }
 }

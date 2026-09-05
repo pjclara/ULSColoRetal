@@ -9,7 +9,6 @@ class GrupoDiagnostico extends Model
     protected $table = 'grupo_diagnosticos';
     protected $fillable = [
         'nome',
-        'descricao',
     ];
 
     public function diagnosticos()

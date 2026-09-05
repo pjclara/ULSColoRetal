@@ -31,6 +31,16 @@ class CentroDeReferencia extends Model
 
     public function origem()
     {
-        return $this->belongsTo(OrigemDoInternamento::class, 'origem_id');
+        return $this->belongsTo(OrigemDaReferenciacao::class, 'origem_id');
+    }
+
+    public function destino()
+    {
+        return $this->belongsTo(Destino::class, 'destino_id');
+    }
+
+    public function responsavel()
+    {
+        return $this->belongsTo(User::class, 'responsavel_id');
     }
 }
