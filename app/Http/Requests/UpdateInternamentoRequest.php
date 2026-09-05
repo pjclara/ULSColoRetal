@@ -35,7 +35,7 @@ class UpdateInternamentoRequest extends FormRequest
             'responsavel_id' => ['nullable', 'exists:users,id'],
             'clavien_dindo_id' => ['nullable', 'exists:clavien_dindos,id'],
             'destino_id' => ['nullable', 'exists:destinos,id'],
-            'caso_social_id' => ['nullable', 'exists:casos_sociais,id'],
+            'caso_social_id' => ['nullable', 'exists:caso_socials,id'],
             'localizacao_id' => ['nullable', 'exists:localizacaos,id'],
             'complicacao_ids' => ['nullable', 'array'],
             'complicacao_ids.*' => ['integer', 'exists:complicacaos,id'],

@@ -9,4 +9,6 @@ class CasoSocial extends Model
 {
     /** @use HasFactory<\Database\Factories\CasoSocialFactory> */
     use HasFactory;
+
+    protected $table = 'caso_socials';
 }

@@ -334,6 +334,7 @@ class InternamentoService
     {
         return Internamento::query()
             ->whereHas('blocoOperatorios')
+            ->where('estado_da_alta_id', 1) // Concluída
             ->whereNotNull('data_de_alta')
             ->whereDate('data_de_alta', '>=', '2024-01-01')
             ->whereDate('data_de_alta', '<', now()->subDays(30)->toDateString())
