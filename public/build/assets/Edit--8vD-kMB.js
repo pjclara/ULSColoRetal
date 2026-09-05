@@ -1,0 +1,1 @@
+import{j as i,L as s}from"./app-C9kEM_Zy.js";function a({clavienDindo:e}){return i.jsxs(i.Fragment,{children:[i.jsx(s,{title:"Editar ClavienDindo"}),i.jsx("div",{className:"p-6",children:i.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar ClavienDindo #",e.id]})})]})}export{a as default};

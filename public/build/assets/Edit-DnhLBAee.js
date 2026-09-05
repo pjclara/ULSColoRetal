@@ -1,1 +1,0 @@
-import{j as s,L as e}from"./app-9DO9VO8Y.js";function r({destino:t}){return s.jsxs(s.Fragment,{children:[s.jsx(e,{title:"Editar Destino"}),s.jsx("div",{className:"p-6",children:s.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar Destino #",t.id]})})]})}export{r as default};

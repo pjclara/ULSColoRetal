@@ -13,7 +13,7 @@ const normalizeSelectOptions = (options: Option[]) =>
     }));
 
 type Props = {
-    agendamento?: AgendamentoItem | null;
+    agendamento?: Partial<AgendamentoItem> | null;
     isOpenAgendamento: boolean;
     listaDeEsperaId?: number;
     estadoDeAgendamentoOptions: Option[];
@@ -22,6 +22,11 @@ type Props = {
     localDeAgendamentoOptions: Option[];
     salaDeAgendamentoOptions: Option[];
     periodoDeAgendamentoOptions: Option[];
+    /** Quando fornecido, mostra um seletor de Lista de Espera/Utente (ex: ao criar a partir do calendário). */
+    listaDeEsperaOptions?: Option[];
+    /** Mostra um botão "Remover" no rodapé (ex: ao editar um agendamento a partir do calendário). */
+    onDelete?: () => void;
+    deleting?: boolean;
 
     onClose: () => void;
     onSuccess: (agendamento?: AgendamentoItem) => void;
@@ -41,7 +46,7 @@ const emptyForm = (listaDeEsperaId?: number): AgendamentoItem => ({
     comentarios: null,
 });
 
-export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamento, listaDeEsperaId, onClose, onSuccess, responsavelOptions, tipoDeAgendamentoOptions, localDeAgendamentoOptions, estadoDeAgendamentoOptions, salaDeAgendamentoOptions, periodoDeAgendamentoOptions }: Props) {
+export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamento, listaDeEsperaId, onClose, onSuccess, responsavelOptions, tipoDeAgendamentoOptions, localDeAgendamentoOptions, estadoDeAgendamentoOptions, salaDeAgendamentoOptions, periodoDeAgendamentoOptions, listaDeEsperaOptions, onDelete, deleting }: Props) {
     const isEditing = Boolean(agendamento?.id);
 
     const { form, errors, loading, updateField, resetForm, submit } = useCrudForm<AgendamentoItem>(
@@ -80,22 +85,43 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
             onSubmit={submit}
             loading={loading}
             submitLabel={isEditing ? 'Guardar alterações' : 'Criar agendamento'}
+            footerStart={
+                isEditing && onDelete ? (
+                    <button
+                        type="button"
+                        onClick={onDelete}
+                        disabled={deleting}
+                        className="text-sm font-medium text-red-600 hover:text-red-700 disabled:opacity-50 dark:text-red-400 dark:hover:text-red-300"
+                    >
+                        {deleting ? 'A remover...' : 'Remover agendamento'}
+                    </button>
+                ) : undefined
+            }
         >
             <div className="space-y-4 grid grid-cols-2 gap-4">
+                {listaDeEsperaOptions && (
+                    <div className="col-span-2">
+                        <AppSelectField
+                            label="Utente / Lista de espera"
+                            value={String(form.lista_de_espera_id || '')}
+                            onChange={(value) => updateField('lista_de_espera_id', Number(value))}
+                            error={errors.lista_de_espera_id}
+                            options={normalizeSelectOptions(listaDeEsperaOptions)}
+                        />
+                    </div>
+                )}
+
+                {/* Um agendamento é um ponto no tempo (o "fim" acompanha sempre o início — ver AgendamentoService), por isso não há um campo separado para a data de fim. */}
                 <AppInputField
-                    label="Data de início"
+                    label="Data e hora"
                     type="datetime-local"
                     value={form.start}
-                    onChange={(value) => updateField('start', String(value))}
+                    onChange={(value) => {
+                        const start = String(value);
+                        updateField('start', start);
+                        updateField('end', start);
+                    }}
                     error={errors.start}
-                />
-
-                <AppInputField
-                    label="Data de fim"
-                    type="datetime-local"
-                    value={form.end}
-                    onChange={(value) => updateField('end', String(value))}
-                    error={errors.end}
                 />
 
                 <AppSelectField

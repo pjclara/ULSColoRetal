@@ -32,6 +32,9 @@ interface AppModalFormProps {
         | 'full';
 
     submitDisabled?: boolean;
+
+    /** Conteúdo opcional (ex: botão "Remover") alinhado à esquerda do rodapé, antes de cancelar/guardar. */
+    footerStart?: ReactNode;
 }
 
 export function AppModalForm({
@@ -47,6 +50,7 @@ export function AppModalForm({
     cancelLabel = 'Cancelar',
     maxWidth = '4xl',
     submitDisabled = false,
+    footerStart,
 }: AppModalFormProps) {
     return (
         <AppModal
@@ -61,22 +65,26 @@ export function AppModalForm({
                     {children}
                 </div>
 
-                <div className="mt-8 flex items-center justify-end gap-3 border-t border-neutral-200 pt-5 dark:border-neutral-800">
-                    <Button
-                        type="button"
-                        variant="outline"
-                        onClick={onClose}
-                        disabled={loading}
-                    >
-                        {cancelLabel}
-                    </Button>
+                <div className="mt-8 flex items-center justify-between gap-3 border-t border-neutral-200 pt-5 dark:border-neutral-800">
+                    <div>{footerStart}</div>
 
-                    <Button
-                        type="submit"
-                        disabled={loading || submitDisabled}
-                    >
-                        {loading ? loadingLabel : submitLabel}
-                    </Button>
+                    <div className="flex items-center gap-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={onClose}
+                            disabled={loading}
+                        >
+                            {cancelLabel}
+                        </Button>
+
+                        <Button
+                            type="submit"
+                            disabled={loading || submitDisabled}
+                        >
+                            {loading ? loadingLabel : submitLabel}
+                        </Button>
+                    </div>
                 </div>
             </form>
         </AppModal>

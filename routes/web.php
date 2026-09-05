@@ -477,6 +477,10 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:agendamento.create')
         ->name('agendamentos.create');
 
+    Route::get('/agendamentos/calendario', [\App\Http\Controllers\AgendamentoController::class, 'calendar'])
+        ->middleware('can:agendamento.view')
+        ->name('agendamentos.calendar');
+
     Route::post('/agendamentos', [\App\Http\Controllers\AgendamentoController::class, 'store'])
         ->middleware('can:agendamento.create')
         ->name('agendamentos.store');

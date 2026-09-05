@@ -25,7 +25,8 @@ class StoreAgendamentoRequest extends FormRequest
         return [
             'lista_de_espera_id' => ['required', 'integer', 'exists:lista_de_esperas,id'],
             'start' => ['required', 'date'],
-            'end' => ['required', 'date', 'after_or_equal:start'],
+            // 'end' acompanha sempre 'start' (ver AgendamentoService::withMatchingEnd) — não é pedido ao cliente.
+            'end' => ['nullable', 'date'],
             'responsavel_id' => ['required', 'integer', 'exists:users,id'],
             'tipo_de_agendamento_id' => ['required', 'integer', 'exists:tipo_de_agendamentos,id'],
             'local_de_agendamento_id' => ['required', 'integer', 'exists:local_de_agendamentos,id'],

@@ -1,1 +1,0 @@
-import{j as s,L as a}from"./app-9DO9VO8Y.js";function i({complicacao:e}){return s.jsxs(s.Fragment,{children:[s.jsx(a,{title:"Complicacao"}),s.jsx("div",{className:"p-6",children:s.jsxs("h1",{className:"text-2xl font-semibold",children:["Complicacao #",e.id]})})]})}export{i as default};

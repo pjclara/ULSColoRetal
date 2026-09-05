@@ -1,1 +1,0 @@
-import{j as t,L as s}from"./app-9DO9VO8Y.js";function r({utente:e}){return t.jsxs(t.Fragment,{children:[t.jsx(s,{title:"Editar Utente"}),t.jsx("div",{className:"p-6",children:t.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar Utente #",e.id]})})]})}export{r as default};

@@ -1,0 +1,1 @@
+import{j as e,L as r}from"./app-C9kEM_Zy.js";function s(){return e.jsxs(e.Fragment,{children:[e.jsx(r,{title:"Criar Intervencao"}),e.jsx("div",{className:"p-6",children:e.jsx("h1",{className:"text-2xl font-semibold",children:"Criar Intervencao"})})]})}export{s as default};

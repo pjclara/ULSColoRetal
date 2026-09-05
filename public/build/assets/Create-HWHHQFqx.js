@@ -1,0 +1,1 @@
+import{j as s,L as a}from"./app-C9kEM_Zy.js";function r(){return s.jsxs(s.Fragment,{children:[s.jsx(a,{title:"Criar CasoSocial"}),s.jsx("div",{className:"p-6",children:s.jsx("h1",{className:"text-2xl font-semibold",children:"Criar CasoSocial"})})]})}export{r as default};

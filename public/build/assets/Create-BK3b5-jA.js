@@ -1,0 +1,1 @@
+import{j as e,L as i}from"./app-C9kEM_Zy.js";function s(){return e.jsxs(e.Fragment,{children:[e.jsx(i,{title:"Criar ClavienDindo"}),e.jsx("div",{className:"p-6",children:e.jsx("h1",{className:"text-2xl font-semibold",children:"Criar ClavienDindo"})})]})}export{s as default};

@@ -1,0 +1,1 @@
+import{j as a,L as t}from"./app-C9kEM_Zy.js";function e({localizacao:s}){return a.jsxs(a.Fragment,{children:[a.jsx(t,{title:"Editar Localizacao"}),a.jsx("div",{className:"p-6",children:a.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar Localizacao #",s.id]})})]})}export{e as default};

@@ -41,4 +41,29 @@ class Agendamento extends Model
     {
         return $this->belongsTo(ListaDeEspera::class);
     }
+
+    public function tipoDeAgendamento()
+    {
+        return $this->belongsTo(TipoDeAgendamento::class);
+    }
+
+    public function localDeAgendamento()
+    {
+        return $this->belongsTo(LocalDeAgendamento::class);
+    }
+
+    public function salaDeAgendamento()
+    {
+        return $this->belongsTo(SalaDeAgendamento::class);
+    }
+
+    public function periodoDeAgendamento()
+    {
+        return $this->belongsTo(PeriodoDeAgendamento::class);
+    }
+
+    public function estadoDeAgendamento()
+    {
+        return $this->belongsTo(EstadoDeAgendamento::class);
+    }
 }

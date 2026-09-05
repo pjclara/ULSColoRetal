@@ -1,0 +1,1 @@
+import{j as e,L as a}from"./app-C9kEM_Zy.js";function r(){return e.jsxs(e.Fragment,{children:[e.jsx(a,{title:"Criar LocalDeAgendamento"}),e.jsx("div",{className:"p-6",children:e.jsx("h1",{className:"text-2xl font-semibold",children:"Criar LocalDeAgendamento"})})]})}export{r as default};

@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Agendamento;
 use App\Models\EstadoDeAgendamento;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 
 class AgendamentoService
 {
@@ -18,9 +20,30 @@ class AgendamentoService
             ->paginate($perPage);
     }
 
+    /**
+     * Agendamentos cujo intervalo [start, end] intersecta a janela pedida (usado pelo calendário).
+     */
+    public function betweenDates(Carbon $start, Carbon $end): Collection
+    {
+        return Agendamento::query()
+            ->with([
+                'listaDeEspera.utente',
+                'responsavel',
+                'tipoDeAgendamento',
+                'localDeAgendamento',
+                'salaDeAgendamento',
+                'periodoDeAgendamento',
+                'estadoDeAgendamento',
+            ])
+            ->where('start', '<=', $end)
+            ->where('end', '>=', $start)
+            ->orderBy('start')
+            ->get();
+    }
+
     public function create(array $data): Agendamento
     {
-        $agendamento = Agendamento::create($data);
+        $agendamento = Agendamento::create($this->withMatchingEnd($data));
 
         $this->syncEstadoListaDeEspera($agendamento);
 
@@ -29,11 +52,25 @@ class AgendamentoService
 
     public function update(Agendamento $agendamento, array $data): Agendamento
     {
-        $agendamento->update($data);
+        $agendamento->update($this->withMatchingEnd($data));
 
         $this->syncEstadoListaDeEspera($agendamento);
 
         return $agendamento;
+    }
+
+    /**
+     * Um agendamento é um ponto no tempo, não um intervalo: `end` acompanha sempre `start`,
+     * independentemente do que o cliente envie (o formulário e o arrastar no calendário já
+     * não pedem/enviam um fim distinto).
+     */
+    private function withMatchingEnd(array $data): array
+    {
+        if (array_key_exists('start', $data)) {
+            $data['end'] = $data['start'];
+        }
+
+        return $data;
     }
 
     /**
@@ -60,4 +97,4 @@ class AgendamentoService
     {
         return $agendamento->delete();
     }
-}melhorar o aspecto estetico de modo mais moderno e
+}

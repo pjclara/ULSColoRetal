@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BarChart3, Folder, LayoutGrid, UserCog, Users } from 'lucide-react';
+import { BarChart3, CalendarDays, Folder, LayoutGrid, UserCog, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 
@@ -24,6 +24,11 @@ const blocoNavItems: NavItem[] = [
         title: 'Lista de espera',
         url: '/lista-de-esperas',
         icon: Folder,
+    },
+    {
+        title: 'Calendário',
+        url: '/agendamentos/calendario',
+        icon: CalendarDays,
     },
 ];
 
