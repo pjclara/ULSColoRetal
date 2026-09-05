@@ -84,6 +84,11 @@ export type InternamentoItem = {
         id: number;
         nome: string;
     }[];
+    complicacaos?: {
+        id: number;
+        nome: string;
+    }[];
+    complicacao_ids?: string[];
     bloco_operatorios?: {
         id: number;
         data_de_inicio: string | null;

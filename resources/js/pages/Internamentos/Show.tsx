@@ -9,7 +9,7 @@ import AddDiagnosticosToInternamento from '../Diagnosticos/AddDiagnosticosToInte
 import AddComplicacoesToInternamento from '../Complicacoes/AddComplicacoesToInternamento';
 import CreateOrUpdateUtente from '../Utentes/CreateOrUpdateUtente';
 import CreateOrUpdateInternamentoModal from './CreateOrUpdateInternamentoModal';
-import { InternamentoOptions } from '@/types/internamento';
+import { InternamentoOptions, LookupOption } from '@/types/internamento';
 import type { CentroDeReferenciaItem, DestinoItem, OrigemDoInternamentoItem, User, UtenteItem } from '@/types/type';
 
 type CentroDeReferenciaOptions = {
@@ -24,6 +24,7 @@ type Props = {
     centroDeReferencia: CentroDeReferenciaItem | null;
     diagnosticosAgrupados: Record<string, any[]>;
     complicacoesAgrupadas: Record<string, any[]>;
+    complicacoesOptions: LookupOption[];
     internamentoOptions: InternamentoOptions;
     centroDeReferenciaOptions: CentroDeReferenciaOptions;
 };
@@ -41,6 +42,7 @@ export default function ShowInternamento({
     centroDeReferenciaOptions,
     diagnosticosAgrupados,
     complicacoesAgrupadas,
+    complicacoesOptions,
 }: Props) {
     const [showCentroModal, setShowCentroModal] = useState(false);
     const [isOpenUtente, setIsOpenUtente] = useState(false);
@@ -181,6 +183,7 @@ export default function ShowInternamento({
                         utenteId={internamento.utente?.id ?? null}
                         onClose={() => setIsInternamentoOpen(false)}
                         internamentoOptions={internamentoOptions}
+                        complicacoesOptions={complicacoesOptions}
                         onSubmit={() => {
                             router.reload({ only: ['internamento'] });
                             setIsInternamentoOpen(false);

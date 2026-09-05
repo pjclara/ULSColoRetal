@@ -37,6 +37,8 @@ class StoreInternamentoRequest extends FormRequest
             'destino_id' => ['nullable', 'exists:destinos,id'],
             'caso_social_id' => ['nullable', 'exists:casos_sociais,id'],
             'localizacao_id' => ['nullable', 'exists:localizacaos,id'],
+            'complicacao_ids' => ['nullable', 'array'],
+            'complicacao_ids.*' => ['integer', 'exists:complicacaos,id'],
         ];
     }
 }

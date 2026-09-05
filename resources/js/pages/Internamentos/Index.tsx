@@ -4,7 +4,7 @@ import { AppPageHeader } from '@/components/app/app-page-header';
 import { AppPagination } from '@/components/app/app-pagination';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import type { BlocoOperatorioOptions, InternamentoOptions } from '@/types/internamento';
+import type { BlocoOperatorioOptions, InternamentoOptions, LookupOption } from '@/types/internamento';
 import { InternamentoItem, Pagination } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { FileDown, Pencil, Plus, Scissors, Search, Stethoscope, Trash2 } from 'lucide-react';
@@ -27,6 +27,7 @@ type Props = {
         minhaEquipa?: boolean;
     };
     diagnosticosAgrupados: Record<string, { id: number; nome: string; abrev?: string }[]>;
+    complicacoesOptions: LookupOption[];
     blocoOperatorioOptions: BlocoOperatorioOptions;
     internamentoOptions: InternamentoOptions;
 };
@@ -45,7 +46,7 @@ function formatEntrada(item: InternamentoItem) {
     return item.dias_desde_entrada != null ? `${formatted} (${item.dias_desde_entrada} d)` : formatted;
 }
 
-export default function Index({ internamentos, filters, diagnosticosAgrupados, blocoOperatorioOptions, internamentoOptions }: Props) {
+export default function Index({ internamentos, filters, diagnosticosAgrupados, complicacoesOptions, blocoOperatorioOptions, internamentoOptions }: Props) {
     const [search, setSearch] = useState(filters.search ?? '');
     const [minhaEquipa, setMinhaEquipa] = useState(Boolean(filters.minhaEquipa));
 
@@ -303,6 +304,7 @@ export default function Index({ internamentos, filters, diagnosticosAgrupados, b
                         internamento={selectedInternamento}
                         utenteId={selectedInternamento.utente_id}
                         internamentoOptions={internamentoOptions}
+                        complicacoesOptions={complicacoesOptions}
                     />
                 )}
 

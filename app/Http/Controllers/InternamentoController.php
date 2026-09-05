@@ -46,6 +46,7 @@ class InternamentoController extends Controller
                 'minhaEquipa' => $minhaEquipa,
             ],
             'diagnosticosAgrupados' => $this->diagnosticoService->getDiagnosticosAgrupados(),
+            'complicacoesOptions' => $this->complicacaoService->getComplicacoesOptions(),
             'blocoOperatorioOptions' => [
                 'tiposDeCirurgia' => $this->service->getTiposDeCirurgia(),
                 'tiposDeAbordagem' => $this->service->getTiposDeAbordagem(),
@@ -169,6 +170,7 @@ class InternamentoController extends Controller
             ],
              'diagnosticosAgrupados' => $this->diagnosticoService->getDiagnosticosAgrupados(),
              'complicacoesAgrupadas' => $this->complicacaoService->getComplicacoesAgrupadas(),
+             'complicacoesOptions' => $this->complicacaoService->getComplicacoesOptions(),
         ]);
     }
 
@@ -188,9 +190,10 @@ class InternamentoController extends Controller
     {
         $internamento = $this->service->update($internamento, $request->validated());
 
-        return redirect()
-            ->route('internamentos.index')
-            ->with('success', 'Internamento atualizado com sucesso.');
+        // back() em vez de redirecionar sempre para a lista: este modal é usado a partir de
+        // várias páginas (lista de internamentos, detalhe, dashboard) e deve manter o utilizador
+        // onde estava.
+        return back()->with('success', 'Internamento atualizado com sucesso.');
     }
 
     /**

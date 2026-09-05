@@ -10,9 +10,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('users', UserController::class)->only(['store']);
 });
@@ -71,6 +69,13 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:users.manage');
 
     Route::resource('users', UserController::class)->only(['index', 'store', 'update']);
+});
+
+// Auditoria Module
+Route::middleware('auth')->group(function () {
+    Route::get('/auditoria', [\App\Http\Controllers\AuditoriaController::class, 'index'])
+        ->middleware('can:auditoria.view')
+        ->name('auditoria.index');
 });
 
 // Internamento Module

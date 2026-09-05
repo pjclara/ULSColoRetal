@@ -14,6 +14,14 @@ class ComplicacaoService
             ->paginate($perPage);
     }
 
+    public function getComplicacoesOptions()
+    {
+        return Complicacao::query()
+            ->where('nome', '!=', 'Sem complicações')
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
+    }
+
     public function getComplicacoesAgrupadas(): array
     {
         $complicacoes = Complicacao::with('grupoComplicacao')

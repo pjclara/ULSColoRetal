@@ -7,6 +7,10 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class BlocoOperatorioService
 {
+    public function __construct(
+        private InternamentoService $internamentoService
+    ) {}
+
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
         return BlocoOperatorio::query()
@@ -21,6 +25,9 @@ class BlocoOperatorioService
 
         $blocoOperatorio = BlocoOperatorio::create($data);
         $blocoOperatorio->intervencoesCirurgicas()->sync($intervencaoIds);
+
+        // ter um bloco operatório torna o doente "operado" — o estado da alta passa a Pendente.
+        $this->internamentoService->atualizarEstadoDaAlta($blocoOperatorio->internamento);
 
         return $blocoOperatorio->load(['tipoDeCirurgia', 'intervencoesCirurgicas']);
     }
@@ -39,6 +46,13 @@ class BlocoOperatorioService
 
     public function delete(BlocoOperatorio $blocoOperatorio): bool
     {
-        return $blocoOperatorio->delete();
+        $internamento = $blocoOperatorio->internamento;
+
+        $deleted = $blocoOperatorio->delete();
+
+        // se este era o último bloco operatório do internamento, deixa de estar "operado".
+        $this->internamentoService->atualizarEstadoDaAlta($internamento);
+
+        return $deleted;
     }
 }

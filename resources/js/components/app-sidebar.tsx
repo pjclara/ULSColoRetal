@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Folder, LayoutGrid, UserCog, Users } from 'lucide-react';
+import { BarChart3, Folder, LayoutGrid, UserCog, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 
@@ -34,6 +34,11 @@ const mainNavItems: NavItem[] = [
         title: 'Internamentos',
         url: '/internamentos',
         icon: Folder,
+    },
+    {
+        title: 'Auditoria',
+        url: '/auditoria',
+        icon: BarChart3,
     },
 ];
 

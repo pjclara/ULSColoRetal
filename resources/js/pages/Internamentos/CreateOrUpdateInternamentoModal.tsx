@@ -1,8 +1,9 @@
 import { AppInputField } from '@/components/app/app-input-field';
 import { AppSelectField } from '@/components/app/app-input-select';
 import { AppModalForm } from '@/components/app/app-modal-form';
+import AppMultiSelect from '@/components/app/app-multi-select';
 import { useCrudForm } from '@/hooks/use-crud-form';
-import type { InternamentoOptions } from '@/types/internamento';
+import type { InternamentoOptions, LookupOption } from '@/types/internamento';
 import type { InternamentoItem } from '@/types/type';
 import { useEffect } from 'react';
 
@@ -12,7 +13,23 @@ interface Props {
     utenteId: number | null;
     internamento?: InternamentoItem | null;
     internamentoOptions: InternamentoOptions;
+    complicacoesOptions?: LookupOption[];
     onSubmit?: () => void;
+}
+
+/** Dias corridos desde uma data (string "YYYY-MM-DD") até hoje. */
+function diasDesde(data: string | null | undefined): number | null {
+    if (!data) {
+        return null;
+    }
+
+    const inicio = new Date(data);
+
+    if (Number.isNaN(inicio.getTime())) {
+        return null;
+    }
+
+    return Math.floor((Date.now() - inicio.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 const emptyOptions: InternamentoOptions = {
@@ -41,9 +58,10 @@ const emptyForm = (utenteId: number | null): InternamentoItem => ({
     bloquear_tabela: false,
     comentarios: '',
     localizacao_id: null,
+    complicacao_ids: [],
 });
 
-export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteId, internamento, internamentoOptions }: Props) {
+export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteId, internamento, internamentoOptions, complicacoesOptions = [], onSubmit }: Props) {
     const isEdit = !!internamento;
     const options = internamentoOptions ?? emptyOptions;
 
@@ -51,7 +69,10 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
         url: isEdit && internamento ? route('internamentos.update', (internamento as InternamentoItem & { id: number }).id) : route('internamentos.store'),
         isEditing: isEdit,
         successMessage: isEdit ? 'Internamento atualizado com sucesso.' : 'Internamento criado com sucesso.',
-        onSuccess: () => onClose(),
+        onSuccess: () => {
+            onSubmit?.();
+            onClose();
+        },
     });
 
     useEffect(() => {
@@ -90,12 +111,23 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                 comentarios: internamento.comentarios ?? '',
 
                 localizacao_id: internamento.localizacao_id != null ? Number(internamento.localizacao_id) : null,
+
+                complicacao_ids: internamento.complicacaos?.map((complicacao) => String(complicacao.id)) ?? [],
             });
         } else {
             resetForm(emptyForm(utenteId));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open, internamento, utenteId]);
+
+    // O estado da alta é sempre calculado automaticamente (ver InternamentoService::atualizarEstadoDaAlta):
+    // operado -> Pendente, não operado -> Concluída. Não é escolhido aqui.
+    const operado = (internamento?.bloco_operatorios?.length ?? 0) > 0;
+    const estadoAltaLabel = operado ? 'Pendente (doente operado)' : 'Concluída (doente não operado)';
+
+    // Clavien-Dindo só é avaliável depois de passarem 30 dias sobre a alta (morbilidade cirúrgica aos 30 dias).
+    const diasDesdeAlta = diasDesde(form.data_de_alta);
+    const clavienDindoDisponivel = diasDesdeAlta !== null && diasDesdeAlta >= 30;
 
     if (!open) {
         return null;
@@ -180,27 +212,40 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                         error={errors.data_de_saida}
                     />
 
-                    <AppSelectField
-                        label="Estado da alta"
-                        value={form.estado_da_alta_id ?? ''}
-                        onChange={(value) => updateField('estado_da_alta_id', value === '' ? null : Number(value))}
-                        error={errors.estado_da_alta_id}
-                        options={options.estadosAlta.map((option) => ({
-                            value: option.id,
-                            label: option.nome,
-                        }))}
-                    />
+                    <div>
+                        <span className="mb-2 block text-sm font-medium">Estado da alta</span>
+                        <div className="border-input bg-muted text-muted-foreground flex h-10 items-center rounded-md border px-3 text-sm">
+                            {estadoAltaLabel}
+                        </div>
+                        <p className="text-muted-foreground mt-1 text-xs">
+                            Calculado automaticamente: fica Pendente enquanto houver blocos operatórios associados.
+                        </p>
+                    </div>
 
-                    <AppSelectField
-                        label="Clavien-Dindo"
-                        value={form.clavien_dindo_id ?? ''}
-                        onChange={(value) => updateField('clavien_dindo_id', value === '' ? null : Number(value))}
-                        error={errors.clavien_dindo_id}
-                        options={options.clavienDindo.map((option) => ({
-                            value: option.id,
-                            label: option.nome,
-                        }))}
-                    />
+                    {clavienDindoDisponivel ? (
+                        <AppSelectField
+                            label="Clavien-Dindo"
+                            value={form.clavien_dindo_id ?? ''}
+                            onChange={(value) => updateField('clavien_dindo_id', value === '' ? null : Number(value))}
+                            error={errors.clavien_dindo_id}
+                            options={options.clavienDindo.map((option) => ({
+                                value: option.id,
+                                label: option.nome,
+                            }))}
+                        />
+                    ) : (
+                        <div>
+                            <span className="mb-2 block text-sm font-medium">Clavien-Dindo</span>
+                            <div className="border-input bg-muted text-muted-foreground flex h-10 items-center rounded-md border px-3 text-sm">
+                                Ainda não disponível
+                            </div>
+                            <p className="text-muted-foreground mt-1 text-xs">
+                                {form.data_de_alta
+                                    ? `Disponível a partir de 30 dias após a alta (faltam ${30 - (diasDesdeAlta ?? 0)} dia(s)).`
+                                    : 'Disponível 30 dias depois de preencher a data de alta (morbilidade cirúrgica aos 30 dias).'}
+                            </p>
+                        </div>
+                    )}
 
                     <AppSelectField
                         label="Destino"
@@ -223,6 +268,22 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                             label: option.nome,
                         }))}
                     />
+
+                    <div className="md:col-span-2">
+                        <AppMultiSelect
+                            label="Complicações"
+                            value={form.complicacao_ids ?? []}
+                            onChange={(value) => updateField('complicacao_ids', value)}
+                            options={complicacoesOptions.map((option) => ({
+                                value: String(option.id),
+                                label: option.nome,
+                            }))}
+                            placeholder="Selecionar complicações..."
+                            searchPlaceholder="Pesquisar complicação..."
+                            emptyMessage="Nenhuma complicação encontrada."
+                            error={errors.complicacao_ids}
+                        />
+                    </div>
                 </div>
             )}
             <div className="mt-6">
