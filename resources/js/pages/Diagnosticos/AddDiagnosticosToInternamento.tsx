@@ -17,9 +17,10 @@ type Props = {
     };
     diagnosticosAgrupados?: Record<string, Diagnostico[]> | null;
     onSave?: () => void;
+    onClose?: () => void;
 };
 
-export default function ShowDiagnosticos({ internamento, diagnosticosAgrupados, onSave }: Props) {
+export default function ShowDiagnosticos({ internamento, diagnosticosAgrupados, onSave, onClose }: Props) {
     const gruposAgrupados = diagnosticosAgrupados ?? {};
     const grupos = Object.keys(gruposAgrupados);
 
@@ -62,7 +63,11 @@ export default function ShowDiagnosticos({ internamento, diagnosticosAgrupados, 
     };
 
     return (
-        <AppModal title="Diagnósticos do Internamento" open={true} onClose={() => router.get(`/internamentos/${internamento.id}`)}>
+        <AppModal
+            title="Diagnósticos do Internamento"
+            open={true}
+            onClose={onClose ?? (() => router.get(`/internamentos/${internamento.id}`))}
+        >
             <div className="space-y-6 p-2">
                 {/* Filtros */}
                 <div className="rounded-xl border bg-neutral-50 p-4 dark:bg-neutral-900">

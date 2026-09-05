@@ -20,3 +20,43 @@ export type InternamentoOptions = {
     localizacoes: LocalizacaoItem[];
     origensDaReferenciacao?: origensDaReferenciacaoItem[];
 };
+
+export type LookupOption = {
+    id: number;
+    nome: string;
+};
+
+export type IntervencaoOption = LookupOption & {
+    centro_de_referencia: boolean;
+    cirurgia_de_ressecao: boolean;
+};
+
+export type BlocoOperatorioCRSOptions = {
+    intencoes: LookupOption[];
+    estomasDeProtecao: LookupOption[];
+    locaisExtracaoPeca: LookupOption[];
+    tiposDeDreno: LookupOption[];
+    aderencias: LookupOption[];
+    tiposDeResseccao: LookupOption[];
+    neoplasiasResiduais: LookupOption[];
+    perdasHematicas: LookupOption[];
+};
+
+export type IntervencaoDescricaoOptions = {
+    anastemoseModos: LookupOption[];
+    anastemoseVias: LookupOption[];
+    anastemoseSentidos: LookupOption[];
+    tiposDeReconstrucao: LookupOption[];
+    localizacoesAnastemose: LookupOption[];
+    confirmacoesAnastemose: LookupOption[];
+    qualidadesPecaOperatoria: LookupOption[];
+};
+
+export type BlocoOperatorioOptions = {
+    tiposDeCirurgia: LookupOption[];
+    tiposDeAbordagem: LookupOption[];
+    reIntervencoesNaoProgramadas: LookupOption[];
+    intervencoes: IntervencaoOption[];
+    crs: BlocoOperatorioCRSOptions;
+    descricao: IntervencaoDescricaoOptions;
+};

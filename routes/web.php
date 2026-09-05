@@ -679,6 +679,21 @@ Route::middleware('auth')->group(function () {
         ->name('bloco-operatorio-c-rs.destroy');
 });
 
+// IntervencaoDescricao Module (descrição da anastomose de uma intervenção concreta num bloco operatório)
+Route::middleware('auth')->group(function () {
+    Route::post('/intervencao-descricaos', [\App\Http\Controllers\IntervencaoDescricaoController::class, 'store'])
+        ->middleware('can:intervencao-descricao.create')
+        ->name('intervencao-descricaos.store');
+
+    Route::put('/intervencao-descricaos/{intervencaoDescricao}', [\App\Http\Controllers\IntervencaoDescricaoController::class, 'update'])
+        ->middleware('can:intervencao-descricao.update')
+        ->name('intervencao-descricaos.update');
+
+    Route::delete('/intervencao-descricaos/{intervencaoDescricao}', [\App\Http\Controllers\IntervencaoDescricaoController::class, 'destroy'])
+        ->middleware('can:intervencao-descricao.delete')
+        ->name('intervencao-descricaos.destroy');
+});
+
 // Intervencao Module
 Route::middleware('auth')->group(function () {
     Route::get('/intervencaos', [\App\Http\Controllers\IntervencaoController::class, 'index'])

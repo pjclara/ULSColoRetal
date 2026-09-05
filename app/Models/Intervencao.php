@@ -12,6 +12,8 @@ class Intervencao extends Model
 
     protected $table = 'intervencaos';
 
+    public $timestamps = false;
+
     protected $fillable = [
         'nome',
         'grupo_intervencao_id',

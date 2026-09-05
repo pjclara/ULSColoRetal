@@ -27,14 +27,50 @@ class InternamentoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $search = $request->string('search')->trim()->toString();
+        $minhaEquipa = $request->boolean('minhaEquipa');
 
-        $internamentos = $this->service->paginate(10);
-
+        $internamentos = $this->service->paginate(
+            50,
+            $search ?: null,
+            $minhaEquipa,
+            $request->user()?->id,
+        );
 
         return inertia('Internamentos/Index', [
             'internamentos' => $internamentos,
+            'filters' => [
+                'search' => $search,
+                'minhaEquipa' => $minhaEquipa,
+            ],
+            'diagnosticosAgrupados' => $this->diagnosticoService->getDiagnosticosAgrupados(),
+            'blocoOperatorioOptions' => [
+                'tiposDeCirurgia' => $this->service->getTiposDeCirurgia(),
+                'tiposDeAbordagem' => $this->service->getTiposDeAbordagem(),
+                'reIntervencoesNaoProgramadas' => $this->service->getReIntervencoesNaoProgramadas(),
+                'intervencoes' => $this->service->getIntervencoes(),
+                'crs' => [
+                    'intencoes' => $this->service->getIntencoes(),
+                    'estomasDeProtecao' => $this->service->getEstomasDeProtecao(),
+                    'locaisExtracaoPeca' => $this->service->getLocaisExtracaoPeca(),
+                    'tiposDeDreno' => $this->service->getTiposDeDreno(),
+                    'aderencias' => $this->service->getAderencias(),
+                    'tiposDeResseccao' => $this->service->getTiposDeResseccao(),
+                    'neoplasiasResiduais' => $this->service->getNeoplasiasResiduais(),
+                    'perdasHematicas' => $this->service->getPerdasHematicas(),
+                ],
+                'descricao' => [
+                    'anastemoseModos' => $this->service->getAnastemoseModos(),
+                    'anastemoseVias' => $this->service->getAnastemoseVias(),
+                    'anastemoseSentidos' => $this->service->getAnastemoseSentidos(),
+                    'tiposDeReconstrucao' => $this->service->getTiposDeReconstrucao(),
+                    'localizacoesAnastemose' => $this->service->getLocalizacoesAnastemose(),
+                    'confirmacoesAnastemose' => $this->service->getConfirmacoesAnastemose(),
+                    'qualidadesPecaOperatoria' => $this->service->getQualidadesPecaOperatoria(),
+                ],
+            ],
             'internamentoOptions' => [
                 'origensInternamento' => $this->service->getOrigensInternamento(),
                 'estadosAlta' => $this->service->getEstadosAlta(),
@@ -162,7 +198,9 @@ class InternamentoController extends Controller
      */
     public function destroy(Internamento $internamento)
     {
-        //
+        $internamento->delete();
+
+        return back()->with('success', 'Internamento removido com sucesso.');
     }
 
     public function addDiagnostico(Request $request, Internamento $internamento)

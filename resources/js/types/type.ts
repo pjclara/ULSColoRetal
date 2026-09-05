@@ -3,17 +3,77 @@ export type DiagnosticoItem = {
     nome: string;
 };
 
+export type IntervencaoDescricaoData = {
+    id: number;
+    anastemose_modo_id: number | null;
+    anastemose_via_id: number | null;
+    anastemose_sentido_id: number | null;
+    tipo_de_reconstrucao_id: number | null;
+    reforco_anastemose: string | null;
+    localizacao_anastemose_id: number | null;
+    confirmacao_anastemose_id: number | null;
+    libertacao_angulo: string | null;
+    numero_cargas: number | null;
+    distancia_linha_pectinea_anastemose: number | null;
+    distancia_linha_pectinea_tumor: number | null;
+    qualidade_peca_operatoria_id: number | null;
+    comentarios: string | null;
+};
+
+export type BlocoOperatorioIntervencaoItem = {
+    pivot_id: number;
+    intervencao_id: number;
+    nome: string | null;
+    centro_de_referencia: boolean;
+    cirurgia_de_ressecao: boolean;
+    descricao: IntervencaoDescricaoData | null;
+};
+
+export type BlocoOperatorioCRSData = {
+    id: number;
+    experiencia_cirurgiao_id: number | null;
+    asa: number | null;
+    mortalidade: number | null;
+    score_fisiologico: number | null;
+    score_gravidade_cirurgico: number | null;
+    preparacao_intestinal_id: number | null;
+    intencao_id: number | null;
+    paleativa_causa: string | null;
+    duracao: number | null;
+    estoma_de_protecao_id: number | null;
+    local_extracao_peca_id: number | null;
+    tipo_de_dreno_id: number | null;
+    resseccao_multi_orgao: string | null;
+    resseccao_multi_orgao_quais: string | null;
+    aderencia_id: number | null;
+    tipo_de_resseccao_id: number | null;
+    neoplasia_residual_id: number | null;
+    perdas_hematica_id: number | null;
+    transfusao_intra_operatoria: string | null;
+    unidades_globulos: number | null;
+    protector_de_parede: string | null;
+    complicacoes: string | null;
+    complicacoes_quais: string | null;
+};
+
 export type InternamentoItem = {
     id?: number;
     utente_id: number;
+    nome?: string;
+    nome_curto?: string;
+    numero_processo?: number | null;
     cama: string | null;
     localizacao_id: number | null;
+    localizacao?: string;
     origem_do_internamento_id: number | null;
     data_de_entrada: string;
+    dias_desde_entrada?: number | null;
+    dias_internamento?: number | null;
     data_de_alta?: string | null;
     data_de_saida?: string | null;
     estado_da_alta_id?: number | null;
     responsavel_id: number | null;
+    responsavel?: string;
     motivo_internamento: string;
     clavien_dindo_id?: number | null;
     destino_id?: number | null;
@@ -23,6 +83,19 @@ export type InternamentoItem = {
     diagnosticos?: {
         id: number;
         nome: string;
+    }[];
+    bloco_operatorios?: {
+        id: number;
+        data_de_inicio: string | null;
+        tipo_de_cirurgia: string | null;
+        tipo_de_cirurgia_id: number | null;
+        tipo_de_abordagem_id: number | null;
+        re_intervencao_nao_programada_id: number | null;
+        resseccao_de_orgao?: string | null;
+        causa_de_conversao?: string | null;
+        comentarios?: string | null;
+        intervencoes: BlocoOperatorioIntervencaoItem[];
+        bloco_operatorio_c_r_s: BlocoOperatorioCRSData | null;
     }[];
 }
 
