@@ -20,12 +20,13 @@ class ListaDeEsperaService
         return $listaDeEspera;
     }
 
-    public function paginate(int $perPage = 15, ?string $search = null): LengthAwarePaginator
+    public function paginate(int $perPage = 15, ?string $search = null, $estado =null): LengthAwarePaginator
     {
         return ListaDeEspera::with(['utente', 'diagnosticos', 'responsavel', 'agendamentos'])
             ->when($search, fn($query) => $query->whereHas('utente', fn($utenteQuery) => $utenteQuery
                 ->where('nome', 'like', "%{$search}%")
                 ->orWhere('numero_processo', 'like', "%{$search}%")))
+            ->when($estado, fn($query) => $query->where('estado_lista_espera', $estado))
             ->latest()
             ->paginate($perPage)
             ->withQueryString()

@@ -30,7 +30,14 @@ class UtenteController extends Controller
      */
     public function store(StoreUtenteRequest $request)
     {
-        $utente = Utente::create($request->validated());
+        $data = $request->validated();
+
+        // 'slug' é obrigatório na tabela mas não é preenchido pelo utilizador; segue o mesmo
+        // formato do acessor Utente::getNomeCurtoAttribute() (1º + último nome).
+        $nomes = explode(' ', trim($data['nome']));
+        $data['slug'] = $nomes[0] . ' ' . end($nomes);
+
+        $utente = Utente::create($data);
 
         return back()
             ->with('utente', $utente)

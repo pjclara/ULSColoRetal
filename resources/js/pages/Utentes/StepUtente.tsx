@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { useServerSearch } from '@/hooks/use-server-search';
 import { useState } from 'react';
 
-import type { UtenteItem } from '@/types/type';
+import type { Option, UtenteItem } from '@/types/type';
 import CreateOrUpdateUtente from './CreateOrUpdateUtente';
 
 type Props = {
@@ -40,6 +40,7 @@ type Props = {
 
     onContinue?: () => void;
     url: string;
+    concelhoOptions: Option[];
 };
 
 export function StepUtente({
@@ -50,6 +51,7 @@ export function StepUtente({
     onCreate,
     onContinue,
     url,
+    concelhoOptions,
 }: Props) {
     const { search, setSearch, searching, handleSearch, handleReset } = useServerSearch({
         url,
@@ -191,6 +193,7 @@ export function StepUtente({
                 isOpenUtente={showCreateModal}
                 onClose={() => setShowCreateModal(false)}
                 onSubmit={handleUtenteCriado}
+                concelhoOptions={concelhoOptions}
             />
         </div>
     );

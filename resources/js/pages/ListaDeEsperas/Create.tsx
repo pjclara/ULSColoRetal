@@ -29,6 +29,7 @@ type Props = {
     salaDeAgendamentoOptions: Option[];
     periodoDeAgendamentoOptions: Option[];
     estadoDeAgendamentoOptions: Option[];
+    concelhoOptions: Option[];
 };
 
 const breadcrumbs = [
@@ -85,6 +86,7 @@ export default function Index({
     salaDeAgendamentoOptions,
     periodoDeAgendamentoOptions,
     estadoDeAgendamentoOptions,
+    concelhoOptions,
 }: Props) {
     const [currentStep, setCurrentStep] = useState(0);
     const [utenteState, setUtente] = useState<UtenteItem | null>(utente ?? null);
@@ -158,6 +160,7 @@ export default function Index({
                                 onSelect={handleSelectUtente}
                                 onContinue={handleContinue}
                                 url={route('lista-de-esperas.create')}
+                                concelhoOptions={concelhoOptions}
                             />
                         )}
 

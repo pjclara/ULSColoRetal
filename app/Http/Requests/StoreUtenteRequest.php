@@ -23,7 +23,12 @@ class StoreUtenteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'nome' => ['required', 'string', 'max:255'],
+            'numero_utente' => ['required', 'numeric'],
+            'numero_processo' => ['required', 'numeric'],
+            'data_nascimento' => ['required', 'date'],
+            'sexo_id' => ['required', 'integer', 'exists:sexos,id'],
+            'concelho_id' => ['required', 'integer', 'exists:concelhos,id'],
         ];
     }
 }

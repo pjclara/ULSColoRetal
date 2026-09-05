@@ -9,6 +9,7 @@ use App\Services\UtenteService;
 use App\Services\ListaDeEsperaService;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Concelho;
 use App\Models\OrigemDaReferenciacao;
 use App\Models\Diagnostico;
 use App\Models\Destino;
@@ -30,12 +31,14 @@ class ListaDeEsperaController extends Controller
     public function index(Request $request)
     {
         $search = $request->string('search')->trim()->toString();
-        $listaDeEsperas = $this->service->paginate(15, $search);
+        $listaDeEsperas = $this->service->paginate(15, $search, $request->string('estado')->trim()->toString());
 
         return inertia('ListaDeEsperas/Index', [
             'listaDeEsperas' => $listaDeEsperas,
             'filters' => [
                 'search' => $search,
+                'estado' => $request->string('estado')->trim()->toString(),
+                'page' => $request->integer('page', 1),
             ],
             'estadoOptions' => [
                 ['value' => '1', 'label' => 'Pendente'],
@@ -109,6 +112,13 @@ class ListaDeEsperaController extends Controller
             'origems' => OrigemDaReferenciacao::pluck('nome', 'id'),
             'destinos' => Destino::pluck('nome', 'id'),
             'users' => User::query()->whereActivo(true)->orderBy('name')->get(['id', 'name']),
+            'concelhoOptions' => Concelho::query()
+                ->orderBy('nome')
+                ->get(['id', 'nome'])
+                ->map(fn(Concelho $concelho) => [
+                    'value' => $concelho->id,
+                    'label' => $concelho->nome,
+                ]),
             'diagnosticosOptions' => Diagnostico::query()
                 ->orderBy('nome')
                 ->get(['id', 'nome'])

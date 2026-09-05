@@ -1,3 +1,5 @@
+import { AppAvatar } from '@/components/app/app-avatar';
+import { AppBadge, AppBadgeTone } from '@/components/app/app-badge';
 import { AppFilters } from '@/components/app/app-filters';
 import { AppPageHeader } from '@/components/app/app-page-header';
 import { AppPagination } from '@/components/app/app-pagination';
@@ -7,10 +9,19 @@ import AppLayout from '@/layouts/app-layout';
 import { ListaDeEsperaItem, Option } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { AgendamentoItem } from '@/types/type';
+import { CalendarClock, Pencil, Plus, Search } from 'lucide-react';
 import { useState } from 'react';
 
 import CreateOrUpdateAgendamento from '../Agendamentos/CreateOrUpdateAgendamento';
 import CreateOrUpdateListaDeEspera from './CreateOrUpdateListaDeEspera';
+
+/** Tom do badge por valor de `estado_lista_espera` (ver estadoOptions no ListaDeEsperaController). */
+const ESTADO_TONE: Record<string, AppBadgeTone> = {
+    '1': 'warning', // Pendente
+    '2': 'info', // Em espera
+    '3': 'success', // Concluída
+    '4': 'danger', // Cancelada
+};
 
 type PaginationLink = {
     url: string | null;
@@ -28,6 +39,7 @@ type Props = {
     };
     filters: {
         search?: string;
+        estado?: string;
     };
     estadoOptions: Option[];
     estadoDeAgendamentoOptions: Option[];
@@ -140,6 +152,12 @@ export default function Index({
         {
             label: 'Nome',
             key: 'nome',
+            render: (item) => (
+                <div className="flex items-center gap-3">
+                    <AppAvatar name={item.nome ?? '?'} />
+                    <span className="font-medium text-neutral-900 dark:text-white">{item.nome}</span>
+                </div>
+            ),
         },
         {
             label: 'Número de Processo',
@@ -156,6 +174,32 @@ export default function Index({
                     : '-',
         },
         {
+            label: 'Estado',
+            key: 'estado_lista_espera',
+            render: (item) => {
+                const estado = estadoOptions.find(
+                    (option) => option.value === item.estado_lista_espera,
+                );
+
+                return (
+                    <AppBadge tone={ESTADO_TONE[item.estado_lista_espera] ?? 'neutral'}>
+                        {estado ? estado.label : '-'}
+                    </AppBadge>
+                );
+            },
+        },
+        // data agendamento
+        {
+            label: 'Data Agendamento',
+            key: 'data_agendamento',
+            render: (item) => {
+                const agendamento = item.agendamentos?.[0];
+                return agendamento?.start
+                    ? new Date(agendamento.start).toLocaleDateString()
+                    : '-';
+            },
+        },
+        {
             label: 'Responsável',
             key: 'responsavel_nome',
             render: (item) => item.responsavel?.abrev ?? '-',
@@ -170,6 +214,7 @@ export default function Index({
                     variant="ghost"
                     onClick={() => openEdit(item)}
                 >
+                    <Pencil className="size-3.5" />
                     Editar
                 </Button>
             ),
@@ -185,19 +230,21 @@ export default function Index({
                 return temAgendamento ? (
                     <Button
                         type="button"
-                        size="lg"
+                        size="sm"
                         variant="success"
                         onClick={() => openAgendamento(item)}
                     >
+                        <CalendarClock className="size-4" />
                         Ver
                     </Button>
                 ) : (
                     <Button
                         type="button"
-                        size="lg"
+                        size="sm"
                         variant="outline"
                         onClick={() => openAgendamento(item)}
                     >
+                        <CalendarClock className="size-4" />
                         Agendar
                     </Button>
                 );
@@ -223,6 +270,7 @@ export default function Index({
                                 )
                             }
                         >
+                            <Plus className="size-4" />
                             Novo registo
                         </Button>
                     }
@@ -235,7 +283,8 @@ export default function Index({
                     }}
                     onReset={resetFilters}
                 >
-                    <div className="w-full md:w-80">
+                    <div className="relative w-full md:w-80">
+                        <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-neutral-400" />
                         <input
                             type="text"
                             value={filtroNomeOuProcesso}
@@ -243,8 +292,36 @@ export default function Index({
                                 setFiltroNomeOuProcesso(event.target.value)
                             }
                             placeholder="Filtrar por nome ou processo"
-                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-md border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-full border py-2 pr-3 pl-9 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
                         />
+                    </div>
+                    <div className="w-full md:w-64">
+                        <select
+                            value={filters.estado || ''}
+                            onChange={(event) => {
+                                const estado = event.target.value;
+                                router.get(
+                                    route('lista-de-esperas.index'),
+                                    estado ? { estado } : {},
+                                    {
+                                        preserveState: true,
+                                        preserveScroll: true,
+                                        replace: true,
+                                    },
+                                );
+                            }}
+                            className="border-input bg-background ring-offset-background placeholder:text-muted-foreground focus-visible:ring-ring w-full rounded-full border px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
+                        >
+                            <option value="">Todos os estados</option>
+                            {estadoOptions.map((option) => (
+                                <option
+                                    key={option.value}
+                                    value={option.value}
+                                >
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 </AppFilters>
 

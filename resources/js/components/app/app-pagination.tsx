@@ -44,9 +44,9 @@ export function AppPagination({
             <div className="text-sm text-neutral-500 dark:text-neutral-400">
                 {from && to && total !== undefined ? (
                     <>
-                        A mostrar <strong>{from}</strong> a{' '}
-                        <strong>{to}</strong> de{' '}
-                        <strong>{total}</strong> registos
+                        Mostrando <strong className="text-neutral-700 dark:text-neutral-300">{from}</strong> a{' '}
+                        <strong className="text-neutral-700 dark:text-neutral-300">{to}</strong> de{' '}
+                        <strong className="text-neutral-700 dark:text-neutral-300">{total}</strong> registos
                     </>
                 ) : null}
             </div>
@@ -69,10 +69,10 @@ export function AppPagination({
                                 link.active ? 'page' : undefined
                             }
                             className={`
-                                min-w-9 rounded-md px-3 py-2 text-sm transition
+                                min-w-9 rounded-full px-3 py-2 text-sm font-medium transition
                                 ${
                                     link.active
-                                        ? 'bg-blue-600 text-white'
+                                        ? 'bg-primary text-primary-foreground shadow-sm'
                                         : link.url
                                           ? 'border border-neutral-200 bg-white text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800'
                                           : 'cursor-not-allowed text-neutral-300 dark:text-neutral-700'

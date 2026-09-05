@@ -43,6 +43,8 @@ export  type UtenteItem = {
 export type ListaDeEsperaItem = {
     id?: number;
     utente_id: number;
+    nome?: string;
+    numero_processo?: number | null;
     data_de_lista: string;
     estado_lista_espera: string;
     cancelar_lista_espera: boolean;
