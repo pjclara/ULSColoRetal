@@ -23,7 +23,16 @@ class UpdateAgendamentoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'lista_de_espera_id' => ['sometimes', 'integer', 'exists:lista_de_esperas,id'],
+            'start' => ['required', 'date'],
+            'end' => ['required', 'date', 'after_or_equal:start'],
+            'responsavel_id' => ['nullable', 'integer', 'exists:users,id'],
+            'tipo_de_agendamento_id' => ['required', 'integer', 'exists:tipo_de_agendamentos,id'],
+            'local_de_agendamento_id' => ['required', 'integer', 'exists:local_de_agendamentos,id'],
+            'sala_de_agendamento_id' => ['required', 'integer', 'exists:sala_de_agendamentos,id'],
+            'periodo_de_agendamento_id' => ['required', 'integer'],
+            'estado_de_agendamento_id' => ['nullable', 'integer', 'exists:estado_de_agendamentos,id'],
+            'comentarios' => ['nullable', 'string'],
         ];
     }
 }

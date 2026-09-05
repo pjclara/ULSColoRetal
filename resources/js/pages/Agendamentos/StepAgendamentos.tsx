@@ -2,13 +2,20 @@ import { AppEmptyState } from '@/components/app/app-empty-state';
 import { AppEntitySummary } from '@/components/app/app-entity-summary';
 import { AppTable, AppTableColumn } from '@/components/app/app-table';
 import { Button } from '@/components/ui/button';
-import type { AgendamentoItem, CentroDeReferenciaItem, ListaDeEsperaItem, UtenteItem } from '@/types/type';
+import type { AgendamentoItem, CentroDeReferenciaItem, ListaDeEsperaItem, Option, UtenteItem } from '@/types/type';
+import { useState } from 'react';
+import CreateOrUpdateAgendamento from './CreateOrUpdateAgendamento';
 
 type Props = {
     utente: UtenteItem;
     centroDeReferencia?: CentroDeReferenciaItem | null;
     listaDeEspera: ListaDeEsperaItem;
-    agendamentos?: AgendamentoItem[] | null;
+    responsavelOptions: Option[];
+    tipoDeAgendamentoOptions: Option[];
+    localDeAgendamentoOptions: Option[];
+    salaDeAgendamentoOptions: Option[];
+    periodoDeAgendamentoOptions: Option[];
+    estadoDeAgendamentoOptions: Option[];
     onContinue: () => void;
     onBack: () => void;
 };
@@ -17,12 +24,38 @@ export default function StepAgendamentos({
     utente,
     centroDeReferencia,
     listaDeEspera,
+    responsavelOptions,
+    tipoDeAgendamentoOptions,
+    localDeAgendamentoOptions,
+    salaDeAgendamentoOptions,
+    periodoDeAgendamentoOptions,
+    estadoDeAgendamentoOptions,
     onBack,
     onContinue,
 }: Props) {
-    const agendamentos = listaDeEspera.agendamentos ?? [];
+    const [agendamentos, setAgendamentos] = useState<AgendamentoItem[]>(listaDeEspera.agendamentos ?? []);
+    const [showAgendamentoModal, setShowAgendamentoModal] = useState(false);
+    const [currentAgendamento, setCurrentAgendamento] = useState<AgendamentoItem | null>(null);
 
-    const columns: AppTableColumn<NonNullable<ListaDeEsperaItem['agendamentos']>[number]>[] = [
+    const handleAgendamentoSuccess = (agendamento?: AgendamentoItem) => {
+        setShowAgendamentoModal(false);
+
+        if (!agendamento) {
+            return;
+        }
+
+        setAgendamentos((current) => {
+            const existeIndex = current.findIndex((item) => item.id === agendamento.id);
+
+            if (existeIndex === -1) {
+                return [...current, agendamento];
+            }
+
+            return current.map((item, index) => (index === existeIndex ? agendamento : item));
+        });
+    };
+
+    const columns: AppTableColumn<AgendamentoItem>[] = [
         {
             label: 'Data',
             key: 'data',
@@ -33,14 +66,32 @@ export default function StepAgendamentos({
             label: 'Comentários',
             key: 'comentarios',
         },
+        {
+            label: 'Ações',
+            key: 'acoes',
+            render: (agendamentoItem) => (
+                <Button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => {
+                        setCurrentAgendamento(agendamentoItem);
+                        setShowAgendamentoModal(true);
+                    }}
+                >
+                    Editar
+                </Button>
+            ),
+        },
     ];
+
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-xl font-semibold">Lista de espera</h2>
+                <h2 className="text-xl font-semibold">Agendamento</h2>
 
                 <p className="mt-1 text-sm text-neutral-500">
-                    Confirme o utente e o respetivo centro de referência antes de preencher os dados da lista de espera.
+                    Confirme os dados recolhidos e indique se pretende agendar já uma consulta para este utente.
                 </p>
             </div>
             <AppEntitySummary
@@ -120,26 +171,63 @@ export default function StepAgendamentos({
 
             {agendamentos.length === 0 ? (
                 <AppEmptyState
-                    title="Agendamentos"
-                    description="Não há agendamentos para este utente. Pode continuar para a confirmação."
+                    title="Ainda não há agendamentos para este utente."
+                    description="Deseja agendar já uma consulta? Pode continuar sem agendar e fazê-lo mais tarde."
+                    actions={[
+                        {
+                            label: 'Sim, agendar agora',
+                            onClick: () => {
+                                setCurrentAgendamento(null);
+                                setShowAgendamentoModal(true);
+                            },
+                        },
+                        {
+                            label: 'Não, continuar sem agendar',
+                            variant: 'outline',
+                            onClick: onContinue,
+                        },
+                    ]}
                 />
             ) : (
                 <div>
                     <div className="mb-4 flex justify-end">
-                        <span className="text-sm text-neutral-500">Agendamentos existentes</span>
+                        <Button
+                            type="button"
+                            variant="info"
+                            onClick={() => {
+                                setCurrentAgendamento(null);
+                                setShowAgendamentoModal(true);
+                            }}
+                        >
+                            Adicionar outro agendamento
+                        </Button>
                     </div>
                     <AppTable columns={columns} data={agendamentos} />
                 </div>
             )}
 
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
                 <Button type="button" variant="outline" onClick={onBack}>
                     Voltar à lista de espera
                 </Button>
-                <Button type="button" className="ml-2" onClick={onContinue}>
+                <Button type="button" onClick={onContinue}>
                     Continuar para confirmação
                 </Button>
             </div>
+
+            <CreateOrUpdateAgendamento
+                agendamento={currentAgendamento}
+                isOpenAgendamento={showAgendamentoModal}
+                listaDeEsperaId={listaDeEspera.id}
+                onClose={() => setShowAgendamentoModal(false)}
+                onSuccess={handleAgendamentoSuccess}
+                responsavelOptions={responsavelOptions}
+                tipoDeAgendamentoOptions={tipoDeAgendamentoOptions}
+                localDeAgendamentoOptions={localDeAgendamentoOptions}
+                salaDeAgendamentoOptions={salaDeAgendamentoOptions}
+                periodoDeAgendamentoOptions={periodoDeAgendamentoOptions}
+                estadoDeAgendamentoOptions={estadoDeAgendamentoOptions}
+            />
         </div>
     );
 }

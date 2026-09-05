@@ -24,7 +24,7 @@ const emptyUtente: UtenteItem = {
     centro_de_referencia: null,
 };
 
-export default function CreateOrUpdateUtente({ utente, onClose, isOpenUtente: isOpenUtenteProp }: CreateOrUpdateUtenteProps) {
+export default function CreateOrUpdateUtente({ utente, onClose, onSubmit, isOpenUtente: isOpenUtenteProp }: CreateOrUpdateUtenteProps) {
     const isEditing = Boolean(utente?.id);
 
     const { form, errors, loading, updateField, resetForm, submit } = useCrudForm<UtenteItem>(
@@ -33,7 +33,15 @@ export default function CreateOrUpdateUtente({ utente, onClose, isOpenUtente: is
             url: isEditing && utente ? route('utentes.update', (utente as UtenteItem & { id: number }).id) : route('utentes.store'),
             isEditing,
             successMessage: isEditing ? 'Utente atualizado com sucesso.' : 'Utente criado com sucesso.',
-            onSuccess: () => onClose(),
+            onSuccess: (page) => {
+                const created = (page.props as { flash?: { utente?: UtenteItem } }).flash?.utente;
+
+                if (created) {
+                    onSubmit?.(created);
+                }
+
+                onClose();
+            },
         },
     );
 

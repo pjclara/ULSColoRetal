@@ -23,6 +23,12 @@ type Props = {
     users: User[];
     estadoOptions: Option[];
     diagnosticosOptions: Option[];
+    responsavelOptions: Option[];
+    tipoDeAgendamentoOptions: Option[];
+    localDeAgendamentoOptions: Option[];
+    salaDeAgendamentoOptions: Option[];
+    periodoDeAgendamentoOptions: Option[];
+    estadoDeAgendamentoOptions: Option[];
 };
 
 const breadcrumbs = [
@@ -64,7 +70,22 @@ const steps = [
     },
 ];
 
-export default function Index({ utentes, filters, utente, origems, destinos, users, estadoOptions, diagnosticosOptions }: Props) {
+export default function Index({
+    utentes,
+    filters,
+    utente,
+    origems,
+    destinos,
+    users,
+    estadoOptions,
+    diagnosticosOptions,
+    responsavelOptions,
+    tipoDeAgendamentoOptions,
+    localDeAgendamentoOptions,
+    salaDeAgendamentoOptions,
+    periodoDeAgendamentoOptions,
+    estadoDeAgendamentoOptions,
+}: Props) {
     const [currentStep, setCurrentStep] = useState(0);
     const [utenteState, setUtente] = useState<UtenteItem | null>(utente ?? null);
     const [selectedListaDeEspera, setSelectedListaDeEspera] = useState<ListaDeEsperaItem | null>(utente?.lista_de_esperas?.[0] ?? null);
@@ -176,6 +197,12 @@ export default function Index({ utentes, filters, utente, origems, destinos, use
                                     utente={utenteState}
                                     centroDeReferencia={utenteState.centro_de_referencia}
                                     listaDeEspera={selectedListaDeEspera}
+                                    responsavelOptions={responsavelOptions}
+                                    tipoDeAgendamentoOptions={tipoDeAgendamentoOptions}
+                                    localDeAgendamentoOptions={localDeAgendamentoOptions}
+                                    salaDeAgendamentoOptions={salaDeAgendamentoOptions}
+                                    periodoDeAgendamentoOptions={periodoDeAgendamentoOptions}
+                                    estadoDeAgendamentoOptions={estadoDeAgendamentoOptions}
                                     onContinue={() => setCurrentStep(4)}
                                     onBack={() => setCurrentStep(2)}
                                 />
@@ -194,12 +221,35 @@ export default function Index({ utentes, filters, utente, origems, destinos, use
                                         title: 'Utente',
                                         fields: [
                                             { label: 'Nome', value: utenteState?.nome ?? '' },
-                                            { label: 'Numero_processo', value: utenteState?.numero_processo ?? '' },
+                                            { label: 'N.º de Processo', value: utenteState?.numero_processo ?? '' },
                                         ],
                                     },
                                     {
                                         title: 'Centro de Referência',
-                                        fields: [{ label: 'Nome', value: utenteState?.centro_de_referencia?.id ?? '' }],
+                                        fields: [
+                                            {
+                                                label: 'Referenciação',
+                                                value: utenteState?.centro_de_referencia?.data_de_referenciacao ?? 'Não associado',
+                                            },
+                                        ],
+                                    },
+                                    {
+                                        title: 'Lista de Espera',
+                                        fields: [
+                                            { label: 'Data de lista', value: selectedListaDeEspera?.data_de_lista ?? '' },
+                                            { label: 'Estado', value: selectedListaDeEspera?.estado_lista_espera ?? '' },
+                                        ],
+                                    },
+                                    {
+                                        title: 'Agendamento',
+                                        fields: [
+                                            {
+                                                label: 'Agendamentos criados',
+                                                value: selectedListaDeEspera?.agendamentos?.length
+                                                    ? `${selectedListaDeEspera.agendamentos.length}`
+                                                    : 'Nenhum agendamento criado',
+                                            },
+                                        ],
                                     },
                                 ]}
                             />

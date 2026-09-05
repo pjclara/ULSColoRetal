@@ -56,9 +56,9 @@ export default function CreateOrUpdateCentroDeReferencia({
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-xl font-semibold">Selecionar internamento</h2>
+                <h2 className="text-xl font-semibold">Centro de referência</h2>
 
-                <p className="mt-1 text-sm text-neutral-500">Selecione um internamento existente para o utente ou crie um novo.</p>
+                <p className="mt-1 text-sm text-neutral-500">Verifique se o utente já está associado a um centro de referência ou associe-o agora.</p>
             </div>
             <AppEntitySummary
                 title="Utente selecionado"
@@ -117,31 +117,21 @@ export default function CreateOrUpdateCentroDeReferencia({
                     }
                 />
             ) : (
-                <>
-                    <div className="mb-4">
-                        <p className="text-sm text-neutral-500 flex justify-end">
-                            <Button type="button" variant="info" onClick={() => setShowCentroModal(true)}>
-                                Criar centro de referência
-                            </Button>
-                        </p>
-                    </div>
-                    <AppEmptyState
-                    title="Nenhum centro de referência encontrado."
-                    description="Crie um novo centro de referência para continuar."
+                <AppEmptyState
+                    title="Este utente não está associado a nenhum centro de referência."
+                    description="Deseja associar agora o utente a um centro de referência? Pode continuar sem o fazer."
                     actions={[
                         {
-                            label: 'Voltar',
-                            onClick: onBack,
+                            label: 'Sim, associar agora',
+                            onClick: () => setShowCentroModal(true),
                         },
                         {
-                            label: 'Continuar',
+                            label: 'Não, continuar sem associar',
                             variant: 'outline',
                             onClick: onContinue,
-                        }
-                        
+                        },
                     ]}
                 />
-                </>
             )}
             <CentroDeReferenciaModal
                 open={showCentroModal}

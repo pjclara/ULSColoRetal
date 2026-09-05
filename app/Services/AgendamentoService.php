@@ -13,4 +13,21 @@ class AgendamentoService
             ->latest()
             ->paginate($perPage);
     }
+
+    public function create(array $data): Agendamento
+    {
+        return Agendamento::create($data);
+    }
+
+    public function update(Agendamento $agendamento, array $data): Agendamento
+    {
+        $agendamento->update($data);
+
+        return $agendamento;
+    }
+
+    public function delete(Agendamento $agendamento): bool
+    {
+        return $agendamento->delete();
+    }
 }

@@ -2,17 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAgendamentoRequest;
+use App\Http\Requests\UpdateAgendamentoRequest;
 use App\Models\Agendamento;
-use Illuminate\Http\Request;
+use App\Services\AgendamentoService;
 
 class AgendamentoController extends Controller
 {
+    public function __construct(
+        private AgendamentoService $service
+    ) {}
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return inertia('Agendamentos/Index', [
+            'agendamentos' => $this->service->paginate(15),
+        ]);
     }
 
     /**
@@ -26,9 +34,13 @@ class AgendamentoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreAgendamentoRequest $request)
     {
-        //
+        $agendamento = $this->service->create($request->validated());
+
+        return back()
+            ->with('agendamento', $agendamento)
+            ->with('success', 'Agendamento criado com sucesso.');
     }
 
     /**
@@ -50,9 +62,13 @@ class AgendamentoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Agendamento $agendamento)
+    public function update(UpdateAgendamentoRequest $request, Agendamento $agendamento)
     {
-        //
+        $agendamento = $this->service->update($agendamento, $request->validated());
+
+        return back()
+            ->with('agendamento', $agendamento)
+            ->with('success', 'Agendamento atualizado com sucesso.');
     }
 
     /**
@@ -60,6 +76,8 @@ class AgendamentoController extends Controller
      */
     public function destroy(Agendamento $agendamento)
     {
-        //
+        $this->service->delete($agendamento);
+
+        return back()->with('success', 'Agendamento removido com sucesso.');
     }
 }

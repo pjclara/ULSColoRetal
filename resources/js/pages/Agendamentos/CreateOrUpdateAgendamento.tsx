@@ -24,7 +24,7 @@ type Props = {
     periodoDeAgendamentoOptions: Option[];
 
     onClose: () => void;
-    onSuccess: () => void;
+    onSuccess: (agendamento?: AgendamentoItem) => void;
 };
 
 const emptyForm = (listaDeEsperaId?: number): AgendamentoItem => ({
@@ -56,7 +56,10 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
 
             successMessage: isEditing ? 'Agendamento atualizado com sucesso.' : 'Agendamento criado com sucesso.',
 
-            onSuccess,
+            onSuccess: (page) => {
+                const created = (page.props as { flash?: { agendamento?: AgendamentoItem } }).flash?.agendamento;
+                onSuccess(created);
+            },
         },
     );
 

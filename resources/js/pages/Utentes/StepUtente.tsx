@@ -1,5 +1,6 @@
 
 import { AppEmptyState } from '@/components/app/app-empty-state';
+import { AppEntitySummary } from '@/components/app/app-entity-summary';
 import { AppFilters } from '@/components/app/app-filters';
 import { AppFormField } from '@/components/app/app-form-field';
 import { AppPagination } from '@/components/app/app-pagination';
@@ -7,8 +8,10 @@ import { AppTable, AppTableColumn } from '@/components/app/app-table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useServerSearch } from '@/hooks/use-server-search';
+import { useState } from 'react';
 
 import type { UtenteItem } from '@/types/type';
+import CreateOrUpdateUtente from './CreateOrUpdateUtente';
 
 type Props = {
     utentes:
@@ -43,12 +46,22 @@ export function StepUtente({
     utentes,
     filters,
     onSelect,
+    selectedUtente,
+    onCreate,
+    onContinue,
     url,
 }: Props) {
     const { search, setSearch, searching, handleSearch, handleReset } = useServerSearch({
         url,
         initialSearch: filters.search ?? '',
     });
+
+    const [showCreateModal, setShowCreateModal] = useState(false);
+
+    const handleUtenteCriado = (utente: UtenteItem) => {
+        setShowCreateModal(false);
+        onCreate ? onCreate(utente) : onSelect(utente);
+    };
 
     /**
      * Os resultados já vêm filtrados do backend.
@@ -91,15 +104,40 @@ export function StepUtente({
 
     return (
         <div className="space-y-6">
-            <div>
-                <h2 className="text-xl font-semibold">
-                    Selecionar utente
-                </h2>
+            <div className="flex items-start justify-between gap-4">
+                <div>
+                    <h2 className="text-xl font-semibold">
+                        Selecionar utente
+                    </h2>
 
-                <p className="mt-1 text-sm text-neutral-500">
-                    Pesquise pelo nome ou número de processo.
-                </p>
+                    <p className="mt-1 text-sm text-neutral-500">
+                        Pesquise pelo nome ou número de processo. Se o utente não existir, pode criá-lo de imediato.
+                    </p>
+                </div>
+
+                <Button type="button" variant="info" onClick={() => setShowCreateModal(true)}>
+                    Criar novo utente
+                </Button>
             </div>
+
+            {selectedUtente && (
+                <AppEntitySummary
+                    title="Utente selecionado"
+                    fields={[
+                        { label: 'Nome', value: selectedUtente.nome },
+                        { label: 'N.º Processo', value: selectedUtente.numero_processo ?? '' },
+                    ]}
+                    action={
+                        onContinue && (
+                            <div className="mt-4 flex shrink-0 justify-end gap-2">
+                                <Button type="button" onClick={onContinue}>
+                                    Continuar com este utente
+                                </Button>
+                            </div>
+                        )
+                    }
+                />
+            )}
 
             <AppFilters
                 onSubmit={handleSearch}
@@ -120,13 +158,19 @@ export function StepUtente({
             {utentesList.length === 0 ? (
                 <AppEmptyState
                     title="Nenhum utente encontrado."
-                    description="Altere os critérios de pesquisa e tente novamente."
+                    description="Altere os critérios de pesquisa ou crie um novo utente."
+                    actions={[
+                        {
+                            label: 'Criar novo utente',
+                            onClick: () => setShowCreateModal(true),
+                        },
+                    ]}
                 />
             ) : (
                 <>
                     <AppTable
                         columns={columns}
-                        data={utentesList}                        
+                        data={utentesList}
                     />
 
                     {!Array.isArray(utentes) && (
@@ -142,6 +186,12 @@ export function StepUtente({
                     )}
                 </>
             )}
+
+            <CreateOrUpdateUtente
+                isOpenUtente={showCreateModal}
+                onClose={() => setShowCreateModal(false)}
+                onSubmit={handleUtenteCriado}
+            />
         </div>
     );
 }

@@ -32,7 +32,7 @@ export default function StepListaDeEspera({ utente, centroDeReferencia, estadoOp
         {
             label: 'Diagnósticos',
             key: 'diagnosticos',
-            render: (listaDeEsperaItem) => listaDeEsperaItem.diagnosticos?.map((d) => d.nome).join(', ') ?? 'sem dia',
+            render: (listaDeEsperaItem) => listaDeEsperaItem.diagnosticos?.map((d) => d.nome).join(', ') || '-',
         },
 
         {
@@ -53,29 +53,25 @@ export default function StepListaDeEspera({ utente, centroDeReferencia, estadoOp
             label: 'Ações',
             key: 'acoes',
             render: (listaDeEsperaItem) => (
-               <div>
-                   <Button
-                       type="button"
-                       variant="outline"
-                       onClick={() => {
-                           setShowCreateListaDeEsperaModal(true);
-                           setCurrentListaDeEspera(listaDeEsperaItem);
-                       }}
-                   >
-                       Editar
-                   </Button>
-                   <Button
-                       type="button"
-                       variant="outline"
-                       onClick={() => {
-                           setCurrentListaDeEspera(listaDeEsperaItem);
-                           onContinue(listaDeEsperaItem);
-                       }}
-                   >
-                       Agendamento
-                   </Button>
-               </div>
-               
+                <div className="flex gap-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                            setCurrentListaDeEspera(listaDeEsperaItem);
+                            setShowCreateListaDeEsperaModal(true);
+                        }}
+                    >
+                        Editar
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => onContinue(listaDeEsperaItem)}
+                    >
+                        Agendamento
+                    </Button>
+                </div>
             ),
         },
     ];

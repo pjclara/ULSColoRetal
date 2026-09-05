@@ -31,8 +31,10 @@ class UtenteController extends Controller
     public function store(StoreUtenteRequest $request)
     {
         $utente = Utente::create($request->validated());
-        
-        return back()->with('success', 'Utente created successfully.');
+
+        return back()
+            ->with('utente', $utente)
+            ->with('success', 'Utente criado com sucesso.');
     }
 
     /**

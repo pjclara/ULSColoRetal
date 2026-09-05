@@ -122,7 +122,34 @@ class ListaDeEsperaController extends Controller
                 ['value' => '3', 'label' => 'Concluída'],
                 ['value' => '4', 'label' => 'Cancelada'],
             ],
-
+            'responsavelOptions' => User::query()
+                ->whereActivo(true)
+                ->orderBy('name')
+                ->get(['id', 'name'])
+                ->map(fn(User $user) => [
+                    'value' => $user->id,
+                    'label' => $user->name,
+                ]),
+            'tipoDeAgendamentoOptions' => TipoDeAgendamento::all()->map(fn(TipoDeAgendamento $tipo) => [
+                'value' => $tipo->id,
+                'label' => $tipo->nome,
+            ]),
+            'localDeAgendamentoOptions' => LocalDeAgendamento::all()->map(fn(LocalDeAgendamento $local) => [
+                'value' => $local->id,
+                'label' => $local->nome,
+            ]),
+            'salaDeAgendamentoOptions' => SalaDeAgendamento::all()->map(fn(SalaDeAgendamento $sala) => [
+                'value' => $sala->id,
+                'label' => $sala->nome,
+            ]),
+            'periodoDeAgendamentoOptions' => [
+                ['value' => '1', 'label' => 'Manhã'],
+                ['value' => '2', 'label' => 'Tarde'],
+            ],
+            'estadoDeAgendamentoOptions' => EstadoDeAgendamento::all()->map(fn(EstadoDeAgendamento $estado) => [
+                'value' => $estado->id,
+                'label' => $estado->nome,
+            ]),
         ]);
     }
 
