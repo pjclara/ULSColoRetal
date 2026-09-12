@@ -39,7 +39,7 @@ class Agendamento extends Model
 
     public function listaDeEspera()
     {
-        return $this->belongsTo(ListaDeEspera::class);
+        return $this->belongsTo(ListaDeEspera::class)->with('intervencoes');
     }
 
     public function tipoDeAgendamento()

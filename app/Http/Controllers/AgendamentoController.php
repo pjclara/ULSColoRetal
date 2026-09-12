@@ -58,6 +58,7 @@ class AgendamentoController extends Controller
                 'end' => optional($agendamento->end)->toIso8601String(),
                 'extendedProps' => [
                     'lista_de_espera_id' => $agendamento->lista_de_espera_id,
+                    'intervencaos' => $agendamento->listaDeEspera?->intervencoes,
                     'utente_nome' => $utente?->nome_curto ?? 'Utente desconhecido',
                     'numero_processo' => $utente?->numero_processo,
                     'responsavel_id' => $agendamento->responsavel_id,

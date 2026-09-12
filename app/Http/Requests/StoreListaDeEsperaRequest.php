@@ -25,8 +25,6 @@ class StoreListaDeEsperaRequest extends FormRequest
             'utente_id' => ['required', 'integer', 'exists:utentes,id'],
             'data_de_lista' => ['required', 'date'],
             // Ignorado: ao inscrever em lista o estado fica sempre "Pendente" (ver ListaDeEsperaService::create).
-            'estado_lista_espera' => ['sometimes', 'in:1,2,3,4'],
-            'cancelar_lista_espera' => ['nullable', 'boolean'],
             'comentarios' => ['nullable', 'string'],
             'responsavel_id' => ['required', 'integer', 'exists:users,id'],
             'diagnostico_ids' => ['nullable', 'array'],

@@ -29,7 +29,6 @@ const emptyForm = (utenteId?: number | null): ListaDeEsperaItem => ({
     diagnostico_ids: [],
 });
 
-
 export default function CreateOrUpdateListaDeEspera({
     listaDeEspera,
     isOpenListaDeEspera,
@@ -93,12 +92,14 @@ export default function CreateOrUpdateListaDeEspera({
                     <p className="text-xs text-neutral-400">Só muda automaticamente conforme o estado do agendamento associado.</p>
                 </div>
             )}
-            <AppCheckboxField
-                label="Cancelar Lista de Espera"
-                checked={form.cancelar_lista_espera}
-                onChange={(value) => updateField('cancelar_lista_espera', Boolean(value))}
-                error={errors.cancelar_lista_espera}
-            />
+            {isEditing && (
+                <AppCheckboxField
+                    label="Cancelar Lista de Espera"
+                    checked={form.cancelar_lista_espera}
+                    onChange={(value) => updateField('cancelar_lista_espera', Boolean(value))}
+                    error={errors.cancelar_lista_espera}
+                />
+            )}
             <AppMultiSelect
                 label="Diagnósticos"
                 value={form.diagnostico_ids ?? []}

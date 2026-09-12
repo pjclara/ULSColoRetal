@@ -42,6 +42,7 @@ type CalendarEventProps = {
     estado_de_agendamento_id: number | null;
     estado: string | null;
     comentarios: string | null;
+    intervencaos: any[];
 };
 
 type CalendarEvent = {
@@ -297,12 +298,19 @@ export default function Calendar({
 
     const renderEventContent = (arg: EventContentArg) => {
         const props = arg.event.extendedProps as CalendarEventProps;
+        const intervencaos = props.intervencaos ?? [];
         const details = [props.tipo, props.sala ? `Sala ${props.sala}` : null].filter(Boolean).join(' · ');
+        
 
         return (
             <div className="overflow-hidden px-1 py-0.5 text-xs leading-tight">
                 <div className="truncate font-medium">{arg.timeText ? `${arg.timeText} ${arg.event.title}` : arg.event.title}</div>
                 {details && <div className="truncate opacity-80">{details}</div>}
+                {intervencaos.map((intervencao) => (
+                    <div key={intervencao.id} className="truncate opacity-80">
+                        {intervencao.nome}
+                    </div>
+                ))}
             </div>
         );
     };
