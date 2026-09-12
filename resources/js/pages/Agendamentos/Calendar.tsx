@@ -78,8 +78,8 @@ function colorFor(estado: string | null) {
     if (!estado) {
         return DEFAULT_ESTADO_COLOR;
     }
-
-    return ESTADO_COLORS[estado.trim().toLowerCase()] ?? DEFAULT_ESTADO_COLOR;
+    const color = ESTADO_COLORS[estado.trim().toLowerCase()] ?? DEFAULT_ESTADO_COLOR;
+    return color;
 }
 
 /** Converte uma data (ISO ou objeto Date) para o formato esperado pelo input datetime-local, em hora local. */
@@ -379,6 +379,7 @@ export default function Calendar({
                             right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
                         }}
                         height="auto"
+                        eventDisplay="block"
                         editable
                         eventStartEditable
                         eventDurationEditable={false}

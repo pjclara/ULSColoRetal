@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\EstadoDeAgendamento;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateAgendamentoRequest extends FormRequest
 {
@@ -32,8 +34,8 @@ class UpdateAgendamentoRequest extends FormRequest
             'local_de_agendamento_id' => ['required', 'integer', 'exists:local_de_agendamentos,id'],
             'sala_de_agendamento_id' => ['required', 'integer', 'exists:sala_de_agendamentos,id'],
             'periodo_de_agendamento_id' => ['required', 'integer'],
-            'estado_de_agendamento_id' => ['nullable', 'integer', 'exists:estado_de_agendamentos,id'],
-            'estado_de_agendamento' => ['nullable', 'integer', 'exists:estado_de_agendamentos,id'],
+            // Só "Agendado", "Operado" ou "Cancelado" — ver EstadoDeAgendamento::optionsParaAgendamento().
+            'estado_de_agendamento_id' => ['required', 'integer', Rule::in(EstadoDeAgendamento::optionsParaAgendamento()->pluck('value'))],
             'comentarios' => ['nullable', 'string'],
         ];
     }

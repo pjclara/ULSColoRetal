@@ -42,6 +42,10 @@ export default function CreateOrUpdateListaDeEspera({
 }: Props) {
     const isEditing = Boolean(listaDeEspera?.id);
 
+    // O estado não é editável aqui: ao inscrever fica sempre "Pendente" e só muda depois por
+    // reflexo do estado do agendamento associado (ver AgendamentoService::syncEstadoListaDeEspera).
+    const estadoLabel = estadoOptions.find((option) => String(option.value) === String(listaDeEspera?.estado_lista_espera))?.label;
+
     const { form, errors, loading, updateField, resetForm, submit } = useCrudForm<ListaDeEsperaItem>(
         {
             ...emptyForm(utenteId),
@@ -83,16 +87,12 @@ export default function CreateOrUpdateListaDeEspera({
                 onChange={(value) => updateField('data_de_lista', String(value))}
                 error={errors.data_de_lista}
             />
-            <AppSelectField
-                label="Estado da Lista de Espera"
-                value={String(form.estado_lista_espera)}
-                onChange={(value) => updateField('estado_lista_espera', String(value))}
-                error={errors.estado_lista_espera}
-                options={estadoOptions.map((option) => ({
-                    value: String(option.value),
-                    label: option.label,
-                }))}
-            />
+            {isEditing && (
+                <div className="text-sm text-neutral-600 dark:text-neutral-400">
+                    Estado da Lista de Espera: <span className="font-medium text-neutral-900 dark:text-neutral-100">{estadoLabel ?? '—'}</span>
+                    <p className="text-xs text-neutral-400">Só muda automaticamente conforme o estado do agendamento associado.</p>
+                </div>
+            )}
             <AppCheckboxField
                 label="Cancelar Lista de Espera"
                 checked={form.cancelar_lista_espera}

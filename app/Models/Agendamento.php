@@ -64,6 +64,6 @@ class Agendamento extends Model
 
     public function estadoDeAgendamento()
     {
-        return $this->belongsTo(EstadoDeAgendamento::class);
+        return $this->belongsTo(EstadoDeAgendamento::class, 'estado_de_agendamento_id');
     }
 }

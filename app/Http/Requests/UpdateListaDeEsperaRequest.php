@@ -27,7 +27,9 @@ class UpdateListaDeEsperaRequest extends FormRequest
             'diagnostico_ids' => 'array',
             'responsavel_id' => 'nullable|integer',
             'comentarios' => 'nullable|string',
-            'estado_lista_espera' => 'nullable|string',
+            // Não editável manualmente: só muda por reflexo do estado do agendamento associado
+            // (ver ListaDeEsperaService::update / AgendamentoService::syncEstadoListaDeEspera).
+            'estado_lista_espera' => 'sometimes|string',
             'cancelar_lista_espera' => 'nullable|boolean',
             'data_de_lista' => 'nullable|date',
         ];

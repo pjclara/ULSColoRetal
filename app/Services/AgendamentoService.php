@@ -10,8 +10,18 @@ use Illuminate\Support\Carbon;
 
 class AgendamentoService
 {
-    /** Valor de `lista_de_esperas.estado_lista_espera` que representa "Concluída" (ver ListaDeEsperaController). */
-    private const ESTADO_LISTA_ESPERA_CONCLUIDA = '3';
+    /** Valor de `lista_de_esperas.estado_lista_espera` que representa "Pendente" (ver ListaDeEsperaController). */
+    private const ESTADO_LISTA_ESPERA_PENDENTE = '1';
+
+    /**
+     * Nome do estado do agendamento (em minúsculas) => valor correspondente em
+     * `lista_de_esperas.estado_lista_espera` (ver ListaDeEsperaController).
+     */
+    private const ESTADO_AGENDAMENTO_PARA_LISTA = [
+        'agendado' => '2',
+        'operado' => '3',
+        'cancelado' => '4',
+    ];
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
@@ -74,9 +84,10 @@ class AgendamentoService
     }
 
     /**
-     * Quando o agendamento fica "Operado", marca a lista de espera associada como "Concluída".
-     * O estado é resolvido pelo nome (não pelo id) porque `estado_de_agendamentos` é uma tabela
-     * gerida livremente pelo utilizador, sem ids fixos garantidos entre ambientes.
+     * O estado do agendamento (agendado/operado/cancelado) reflete-se sempre na lista de espera
+     * associada, ficando os dois iguais. O estado é resolvido pelo nome (não pelo id) porque
+     * `estado_de_agendamentos` é uma tabela gerida livremente pelo utilizador, sem ids fixos
+     * garantidos entre ambientes.
      */
     private function syncEstadoListaDeEspera(Agendamento $agendamento): void
     {
@@ -84,17 +95,29 @@ class AgendamentoService
             return;
         }
 
-        $estadoOperadoId = EstadoDeAgendamento::whereRaw('LOWER(nome) = ?', ['operado'])->value('id');
+        $nomeEstado = strtolower(trim(
+            EstadoDeAgendamento::find($agendamento->estado_de_agendamento_id)?->nome ?? ''
+        ));
+        $estadoLista = self::ESTADO_AGENDAMENTO_PARA_LISTA[$nomeEstado] ?? null;
 
-        if ($estadoOperadoId && (int) $agendamento->estado_de_agendamento_id === (int) $estadoOperadoId) {
-            $agendamento->listaDeEspera?->update([
-                'estado_lista_espera' => self::ESTADO_LISTA_ESPERA_CONCLUIDA,
-            ]);
+        if ($estadoLista) {
+            $agendamento->listaDeEspera?->update(['estado_lista_espera' => $estadoLista]);
         }
     }
 
+    /**
+     * Ao eliminar o agendamento, a lista de espera associada volta a "Pendente".
+     */
     public function delete(Agendamento $agendamento): bool
     {
-        return $agendamento->delete();
+        $listaDeEspera = $agendamento->listaDeEspera;
+
+        if (!$agendamento->delete()) {
+            return false;
+        }
+
+        $listaDeEspera?->update(['estado_lista_espera' => self::ESTADO_LISTA_ESPERA_PENDENTE]);
+
+        return true;
     }
 }

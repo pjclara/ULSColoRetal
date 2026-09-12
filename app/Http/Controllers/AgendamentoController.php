@@ -53,7 +53,7 @@ class AgendamentoController extends Controller
 
             return [
                 'id' => $agendamento->id,
-                'title' => $utente?->nome ?? 'Sem utente',
+                'title' => $utente?->nome_curto ?? 'Sem utente',
                 'start' => optional($agendamento->start)->toIso8601String(),
                 'end' => optional($agendamento->end)->toIso8601String(),
                 'extendedProps' => [
@@ -116,10 +116,7 @@ class AgendamentoController extends Controller
                 'value' => $periodo->id,
                 'label' => $periodo->nome,
             ]),
-            'estadoDeAgendamentoOptions' => EstadoDeAgendamento::all()->map(fn(EstadoDeAgendamento $estado) => [
-                'value' => $estado->id,
-                'label' => $estado->nome,
-            ]),
+            'estadoDeAgendamentoOptions' => EstadoDeAgendamento::optionsParaAgendamento(),
         ]);
     }
 

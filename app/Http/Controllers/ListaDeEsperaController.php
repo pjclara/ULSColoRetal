@@ -42,9 +42,9 @@ class ListaDeEsperaController extends Controller
             ],
             'estadoOptions' => [
                 ['value' => '1', 'label' => 'Pendente'],
-                ['value' => '2', 'label' => 'Em espera'],
-                ['value' => '3', 'label' => 'Concluída'],
-                ['value' => '4', 'label' => 'Cancelada'],
+                ['value' => '2', 'label' => 'Agendado'],
+                ['value' => '3', 'label' => 'Operado'],
+                ['value' => '4', 'label' => 'Cancelado'],
             ],
             'responsavelOptions' => User::query()
                 ->whereActivo(true)
@@ -84,10 +84,7 @@ class ListaDeEsperaController extends Controller
                 ['value' => '1', 'label' => 'Manhã'],
                 ['value' => '2', 'label' => 'Tarde'],
             ],
-            'estadoDeAgendamentoOptions' => EstadoDeAgendamento::all()->map(fn(EstadoDeAgendamento $estado) => [
-                'value' => $estado->id,
-                'label' => $estado->nome,
-            ]),
+            'estadoDeAgendamentoOptions' => EstadoDeAgendamento::optionsParaAgendamento(),
 
         ]);
     }
@@ -128,9 +125,9 @@ class ListaDeEsperaController extends Controller
                 ]),
             'estadoOptions' => [
                 ['value' => '1', 'label' => 'Pendente'],
-                ['value' => '2', 'label' => 'Em espera'],
-                ['value' => '3', 'label' => 'Concluída'],
-                ['value' => '4', 'label' => 'Cancelada'],
+                ['value' => '2', 'label' => 'Agendado'],
+                ['value' => '3', 'label' => 'Operado'],
+                ['value' => '4', 'label' => 'Cancelado'],
             ],
             'responsavelOptions' => User::query()
                 ->whereActivo(true)
@@ -156,10 +153,7 @@ class ListaDeEsperaController extends Controller
                 ['value' => '1', 'label' => 'Manhã'],
                 ['value' => '2', 'label' => 'Tarde'],
             ],
-            'estadoDeAgendamentoOptions' => EstadoDeAgendamento::all()->map(fn(EstadoDeAgendamento $estado) => [
-                'value' => $estado->id,
-                'label' => $estado->nome,
-            ]),
+            'estadoDeAgendamentoOptions' => EstadoDeAgendamento::optionsParaAgendamento(),
         ]);
     }
 

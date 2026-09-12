@@ -7,12 +7,20 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ListaDeEsperaService
 {
+    /**
+     * Valor de `estado_lista_espera` para "Pendente" (ver ListaDeEsperaController::estadoOptions).
+     * É o único estado atribuível ao inscrever em lista — depois só muda por reflexo do estado do
+     * agendamento associado (ver AgendamentoService::syncEstadoListaDeEspera).
+     */
+    private const ESTADO_LISTA_ESPERA_PENDENTE = '1';
+
     public function create(array $data): ListaDeEspera
     {
         $diagnosticoIds = $data['diagnostico_ids'] ?? [];
         unset($data['diagnostico_ids']);
 
         $data['cancelar_lista_espera'] = ($data['cancelar_lista_espera'] ?? false) ? '1' : null;
+        $data['estado_lista_espera'] = self::ESTADO_LISTA_ESPERA_PENDENTE;
 
         $listaDeEspera = ListaDeEspera::create($data);
         $listaDeEspera->diagnosticos()->sync($diagnosticoIds);
@@ -72,6 +80,9 @@ class ListaDeEsperaService
     public function update(ListaDeEspera $listaDeEspera, array $data): ?ListaDeEspera
     {
         $data['cancelar_lista_espera'] = ($data['cancelar_lista_espera'] ?? false) ? '1' : null;
+        // Não editável manualmente: só muda por reflexo do estado do agendamento associado
+        // (ver AgendamentoService::syncEstadoListaDeEspera).
+        unset($data['estado_lista_espera']);
         $listaDeEspera->update($data);
 
         if (isset($data['diagnostico_ids'])) {

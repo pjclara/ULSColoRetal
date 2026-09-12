@@ -36,7 +36,11 @@ class Utente extends Model
     // devolver 1º e ultimo nome do utente
     public function getNomeCurtoAttribute()
     {
-        $nomes = explode(' ', $this->nome);
+        // remover espaços extras e dividir o nome em partes
+        $nomes = explode(' ', trim($this->nome));
+        if (count($nomes) === 2) {
+            return $nomes[0] . ' ' . $nomes[1];
+        }
         return $nomes[0] . ' ' . end($nomes);
     }
 

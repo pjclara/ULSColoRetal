@@ -32,7 +32,13 @@ type Props = {
     onSuccess: (agendamento?: AgendamentoItem) => void;
 };
 
-const emptyForm = (listaDeEsperaId?: number): AgendamentoItem => ({
+/** Nova marcação começa sempre "Agendado" (ver EstadoDeAgendamento::optionsParaAgendamento). */
+const estadoAgendadoId = (estadoDeAgendamentoOptions: Option[]): number => {
+    const option = estadoDeAgendamentoOptions.find((o) => o.label.trim().toLowerCase() === 'agendado');
+    return option ? Number(option.value) : 0;
+};
+
+const emptyForm = (listaDeEsperaId: number | undefined, estadoDeAgendamentoOptions: Option[]): AgendamentoItem => ({
     id: 0,
     lista_de_espera_id: listaDeEsperaId ?? 0,
     start: '',
@@ -42,7 +48,7 @@ const emptyForm = (listaDeEsperaId?: number): AgendamentoItem => ({
     local_de_agendamento_id: 0,
     sala_de_agendamento_id: 0,
     periodo_de_agendamento_id: 0,
-    estado_de_agendamento_id: 0,
+    estado_de_agendamento_id: estadoAgendadoId(estadoDeAgendamentoOptions),
     comentarios: null,
 });
 
@@ -51,7 +57,7 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
 
     const { form, errors, loading, updateField, resetForm, submit } = useCrudForm<AgendamentoItem>(
         {
-            ...emptyForm(listaDeEsperaId),
+            ...emptyForm(listaDeEsperaId, estadoDeAgendamentoOptions),
             ...agendamento,
         },
         {
@@ -70,11 +76,11 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
 
     useEffect(() => {
         resetForm({
-            ...emptyForm(listaDeEsperaId),
+            ...emptyForm(listaDeEsperaId, estadoDeAgendamentoOptions),
             ...agendamento,
             lista_de_espera_id: agendamento?.lista_de_espera_id ?? listaDeEsperaId ?? 0,
         });
-    }, [agendamento, listaDeEsperaId, resetForm]);
+    }, [agendamento, listaDeEsperaId, estadoDeAgendamentoOptions, resetForm]);
 
     return (
         <AppModalForm
@@ -129,47 +135,47 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
                     value={String(form.responsavel_id ?? '')}
                     onChange={(value) => updateField('responsavel_id', value === '' ? null : Number(value))}
                     error={errors.responsavel_id}
-                    options={responsavelOptions} // Substitua com as opções reais de responsáveis
+                    options={normalizeSelectOptions(responsavelOptions)} // Substitua com as opções reais de responsáveis
                 />
 
                 <AppSelectField
                     label="Tipo de agendamento"
-                    value={form.tipo_de_agendamento_id ?? 0}
+                    value={String(form.tipo_de_agendamento_id ?? 0)}
                     onChange={(value) => updateField('tipo_de_agendamento_id',Number(value))}
                     error={errors.tipo_de_agendamento_id}
-                    options={tipoDeAgendamentoOptions} // Substitua com as opções reais de tipos de agendamento
+                    options={normalizeSelectOptions(tipoDeAgendamentoOptions)} // Substitua com as opções reais de tipos de agendamento
                 />
 
                 <AppSelectField
                     label="Local de agendamento"
-                    value={form.local_de_agendamento_id ?? 0}
+                    value={String(form.local_de_agendamento_id ?? 0)}
                     onChange={(value) => updateField('local_de_agendamento_id', Number(value))}
                     error={errors.local_de_agendamento_id}
-                    options={localDeAgendamentoOptions} // Substitua com as opções reais de locais de agendamento
+                    options={normalizeSelectOptions(localDeAgendamentoOptions)} // Substitua com as opções reais de locais de agendamento
                 />
 
                 <AppSelectField
                     label="Sala de agendamento"
-                    value={form.sala_de_agendamento_id ?? 0}
+                    value={String(form.sala_de_agendamento_id ?? 0)}
                     onChange={(value) => updateField('sala_de_agendamento_id', Number(value))}
                     error={errors.sala_de_agendamento_id}
-                    options={salaDeAgendamentoOptions} // Substitua com as opções reais de salas de agendamento
+                    options={normalizeSelectOptions(salaDeAgendamentoOptions)} // Substitua com as opções reais de salas de agendamento
                 />
 
                 <AppSelectField
                     label="Período de agendamento"
-                    value={form.periodo_de_agendamento_id ?? 0}
+                    value={String(form.periodo_de_agendamento_id ?? 0)}
                     onChange={(value) => updateField('periodo_de_agendamento_id', Number(value))}
                     error={errors.periodo_de_agendamento_id}
-                    options={periodoDeAgendamentoOptions}
+                    options={normalizeSelectOptions(periodoDeAgendamentoOptions)}
                 />
 
                 <AppSelectField
                     label="Estado de agendamento"
-                    value={form.estado_de_agendamento_id ?? 0}
+                    value={String(form.estado_de_agendamento_id ?? 0)}
                     onChange={(value) => updateField('estado_de_agendamento_id', Number(value))}
                     error={errors.estado_de_agendamento_id}
-                    options={estadoDeAgendamentoOptions} // Substitua com as opções reais de estados de agendamento
+                    options={normalizeSelectOptions(estadoDeAgendamentoOptions)}
                 />
 
                 <AppInputField
