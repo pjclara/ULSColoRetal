@@ -28,6 +28,7 @@ type Props = {
     };
     diagnosticosAgrupados: Record<string, { id: number; nome: string; abrev?: string }[]>;
     complicacoesOptions: LookupOption[];
+    resolucoesComplicacaoOptions: LookupOption[];
     blocoOperatorioOptions: BlocoOperatorioOptions;
     internamentoOptions: InternamentoOptions;
 };
@@ -46,7 +47,15 @@ function formatEntrada(item: InternamentoItem) {
     return item.dias_desde_entrada != null ? `${formatted} (${item.dias_desde_entrada} d)` : formatted;
 }
 
-export default function Index({ internamentos, filters, diagnosticosAgrupados, complicacoesOptions, blocoOperatorioOptions, internamentoOptions }: Props) {
+export default function Index({
+    internamentos,
+    filters,
+    diagnosticosAgrupados,
+    complicacoesOptions,
+    resolucoesComplicacaoOptions,
+    blocoOperatorioOptions,
+    internamentoOptions,
+}: Props) {
     const [search, setSearch] = useState(filters.search ?? '');
     const [minhaEquipa, setMinhaEquipa] = useState(Boolean(filters.minhaEquipa));
 
@@ -305,6 +314,7 @@ export default function Index({ internamentos, filters, diagnosticosAgrupados, c
                         utenteId={selectedInternamento.utente_id}
                         internamentoOptions={internamentoOptions}
                         complicacoesOptions={complicacoesOptions}
+                        resolucoesComplicacaoOptions={resolucoesComplicacaoOptions}
                     />
                 )}
 

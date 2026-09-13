@@ -62,7 +62,9 @@ class Internamento extends Model
 
     public function complicacaos()
     {
-        return $this->belongsToMany(Complicacao::class);
+        return $this->belongsToMany(Complicacao::class)
+            ->using(ComplicacaoInternamento::class)
+            ->withPivot('resolucao');
     }
 
     public function origemDoInternamento()

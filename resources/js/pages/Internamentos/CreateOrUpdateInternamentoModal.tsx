@@ -14,6 +14,7 @@ interface Props {
     internamento?: InternamentoItem | null;
     internamentoOptions: InternamentoOptions;
     complicacoesOptions?: LookupOption[];
+    resolucoesComplicacaoOptions?: LookupOption[];
     onSubmit?: () => void;
 }
 
@@ -58,15 +59,27 @@ const emptyForm = (utenteId: number | null): InternamentoItem => ({
     bloquear_tabela: false,
     comentarios: '',
     localizacao_id: null,
-    complicacao_ids: [],
+    complicacoes: [],
 });
 
-export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteId, internamento, internamentoOptions, complicacoesOptions = [], onSubmit }: Props) {
+export default function CreateOrUpdateInternamentoModal({
+    open,
+    onClose,
+    utenteId,
+    internamento,
+    internamentoOptions,
+    complicacoesOptions = [],
+    resolucoesComplicacaoOptions = [],
+    onSubmit,
+}: Props) {
     const isEdit = !!internamento;
     const options = internamentoOptions ?? emptyOptions;
 
     const { form, errors, loading, updateField, resetForm, submit } = useCrudForm<InternamentoItem>(emptyForm(utenteId), {
-        url: isEdit && internamento ? route('internamentos.update', (internamento as InternamentoItem & { id: number }).id) : route('internamentos.store'),
+        url:
+            isEdit && internamento
+                ? route('internamentos.update', (internamento as InternamentoItem & { id: number }).id)
+                : route('internamentos.store'),
         isEditing: isEdit,
         successMessage: isEdit ? 'Internamento atualizado com sucesso.' : 'Internamento criado com sucesso.',
         onSuccess: () => {
@@ -112,7 +125,11 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
 
                 localizacao_id: internamento.localizacao_id != null ? Number(internamento.localizacao_id) : null,
 
-                complicacao_ids: internamento.complicacaos?.map((complicacao) => String(complicacao.id)) ?? [],
+                complicacoes:
+                    internamento.complicacaos?.map((complicacao) => ({
+                        id: String(complicacao.id),
+                        resolucao_ids: (complicacao.resolucao_ids ?? complicacao.pivot?.resolucao ?? []).map(String),
+                    })) ?? [],
             });
         } else {
             resetForm(emptyForm(utenteId));
@@ -128,6 +145,25 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
     // Clavien-Dindo só é avaliável depois de passarem 30 dias sobre a alta (morbilidade cirúrgica aos 30 dias).
     const diasDesdeAlta = diasDesde(form.data_de_alta);
     const clavienDindoDisponivel = diasDesdeAlta !== null && diasDesdeAlta >= 30;
+
+    // Complicações selecionadas + resolução(ões) de cada uma (guardadas na pivot complicacao_internamento).
+    const complicacoesSelecionadas = form.complicacoes ?? [];
+
+    const handleComplicacoesChange = (ids: string[]) => {
+        updateField(
+            'complicacoes',
+            ids.map((id) => complicacoesSelecionadas.find((complicacao) => complicacao.id === id) ?? { id, resolucao_ids: [] }),
+        );
+    };
+
+    const handleResolucaoIdsChange = (complicacaoId: string, resolucaoIds: string[]) => {
+        updateField(
+            'complicacoes',
+            complicacoesSelecionadas.map((complicacao) =>
+                complicacao.id === complicacaoId ? { ...complicacao, resolucao_ids: resolucaoIds } : complicacao,
+            ),
+        );
+    };
 
     if (!open) {
         return null;
@@ -221,31 +257,32 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                             Calculado automaticamente: fica Pendente enquanto houver blocos operatórios associados.
                         </p>
                     </div>
-
-                    {clavienDindoDisponivel ? (
-                        <AppSelectField
-                            label="Clavien-Dindo"
-                            value={form.clavien_dindo_id ?? ''}
-                            onChange={(value) => updateField('clavien_dindo_id', value === '' ? null : Number(value))}
-                            error={errors.clavien_dindo_id}
-                            options={options.clavienDindo.map((option) => ({
-                                value: option.id,
-                                label: option.nome,
-                            }))}
-                        />
-                    ) : (
-                        <div>
-                            <span className="mb-2 block text-sm font-medium">Clavien-Dindo</span>
-                            <div className="border-input bg-muted text-muted-foreground flex h-10 items-center rounded-md border px-3 text-sm">
-                                Ainda não disponível
+                    {operado ? (
+                        clavienDindoDisponivel ? (
+                            <AppSelectField
+                                label="Clavien-Dindo"
+                                value={form.clavien_dindo_id ?? ''}
+                                onChange={(value) => updateField('clavien_dindo_id', value === '' ? null : Number(value))}
+                                error={errors.clavien_dindo_id}
+                                options={options.clavienDindo.map((option) => ({
+                                    value: option.id,
+                                    label: option.nome,
+                                }))}
+                            />
+                        ) : (
+                            <div>
+                                <span className="mb-2 block text-sm font-medium">Clavien-Dindo</span>
+                                <div className="border-input bg-muted text-muted-foreground flex h-10 items-center rounded-md border px-3 text-sm">
+                                    Ainda não disponível
+                                </div>
+                                <p className="text-muted-foreground mt-1 text-xs">
+                                    {form.data_de_alta
+                                        ? `Disponível a partir de 30 dias após a alta (faltam ${30 - (diasDesdeAlta ?? 0)} dia(s)).`
+                                        : 'Disponível 30 dias depois de preencher a data de alta (morbilidade cirúrgica aos 30 dias).'}
+                                </p>
                             </div>
-                            <p className="text-muted-foreground mt-1 text-xs">
-                                {form.data_de_alta
-                                    ? `Disponível a partir de 30 dias após a alta (faltam ${30 - (diasDesdeAlta ?? 0)} dia(s)).`
-                                    : 'Disponível 30 dias depois de preencher a data de alta (morbilidade cirúrgica aos 30 dias).'}
-                            </p>
-                        </div>
-                    )}
+                        )
+                    ) : null}
 
                     <AppSelectField
                         label="Destino"
@@ -269,11 +306,11 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                         }))}
                     />
 
-                    <div className="md:col-span-2">
+                    <div className="space-y-4 md:col-span-2">
                         <AppMultiSelect
                             label="Complicações"
-                            value={form.complicacao_ids ?? []}
-                            onChange={(value) => updateField('complicacao_ids', value)}
+                            value={complicacoesSelecionadas.map((complicacao) => complicacao.id)}
+                            onChange={handleComplicacoesChange}
                             options={complicacoesOptions.map((option) => ({
                                 value: String(option.id),
                                 label: option.nome,
@@ -281,8 +318,38 @@ export default function CreateOrUpdateInternamentoModal({ open, onClose, utenteI
                             placeholder="Selecionar complicações..."
                             searchPlaceholder="Pesquisar complicação..."
                             emptyMessage="Nenhuma complicação encontrada."
-                            error={errors.complicacao_ids}
+                            error={errors.complicacoes}
                         />
+
+                        {complicacoesSelecionadas.length > 0 && (
+                            <div className="space-y-3 rounded-md border border-dashed p-3">
+                                <span className="text-sm font-medium">Resolução por complicação</span>
+
+                                {complicacoesSelecionadas.map((complicacao) => {
+                                    const nome = complicacoesOptions.find((option) => String(option.id) === complicacao.id)?.nome ?? complicacao.id;
+
+                                    return (
+                                        <div key={complicacao.id} className="grid gap-1 md:grid-cols-3 md:items-start md:gap-4">
+                                            <span className="text-sm md:col-span-1 md:pt-2">{nome}</span>
+
+                                            <div className="md:col-span-2">
+                                                <AppMultiSelect
+                                                    value={complicacao.resolucao_ids}
+                                                    onChange={(value) => handleResolucaoIdsChange(complicacao.id, value)}
+                                                    options={resolucoesComplicacaoOptions.map((option) => ({
+                                                        value: String(option.id),
+                                                        label: option.nome,
+                                                    }))}
+                                                    placeholder="Selecionar resolução..."
+                                                    searchPlaceholder="Pesquisar resolução..."
+                                                    emptyMessage="Nenhuma resolução encontrada."
+                                                />
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

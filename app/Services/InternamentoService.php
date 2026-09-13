@@ -88,6 +88,7 @@ class InternamentoService
                 return [
                     'id' => $complicacao->id,
                     'nome' => $complicacao->nome,
+                    'resolucao_ids' => $complicacao->pivot->resolucao ?? [],
                 ];
             }),
             'bloco_operatorios' => $internamento->blocoOperatorios->map(function ($bloco) {
@@ -285,11 +286,11 @@ class InternamentoService
 
     public function create(array $data): Internamento
     {
-        $complicacaoIds = $data['complicacao_ids'] ?? [];
-        unset($data['complicacao_ids']);
+        $complicacoes = $this->complicacoesParaSync($data['complicacoes'] ?? []);
+        unset($data['complicacoes']);
 
         $internamento = Internamento::create($data);
-        $internamento->complicacaos()->sync($complicacaoIds);
+        $internamento->complicacaos()->sync($complicacoes);
 
         $this->atualizarEstadoDaAlta($internamento);
 
@@ -298,9 +299,9 @@ class InternamentoService
 
     public function update(Internamento $internamento, array $data): Internamento
     {
-        if (array_key_exists('complicacao_ids', $data)) {
-            $internamento->complicacaos()->sync($data['complicacao_ids'] ?? []);
-            unset($data['complicacao_ids']);
+        if (array_key_exists('complicacoes', $data)) {
+            $internamento->complicacaos()->sync($this->complicacoesParaSync($data['complicacoes'] ?? []));
+            unset($data['complicacoes']);
         }
 
         $internamento->update($data);
@@ -308,6 +309,19 @@ class InternamentoService
         $this->atualizarEstadoDaAlta($internamento);
 
         return $internamento;
+    }
+
+    /**
+     * Converte a lista de complicações do formulário ([{id, resolucao_ids}, ...]) no formato
+     * esperado por sync(): [complicacao_id => ['resolucao' => [resolucao_ids]]].
+     */
+    private function complicacoesParaSync(array $complicacoes): array
+    {
+        return collect($complicacoes)
+            ->mapWithKeys(fn (array $complicacao) => [
+                $complicacao['id'] => ['resolucao' => array_values($complicacao['resolucao_ids'] ?? [])],
+            ])
+            ->all();
     }
 
     /**

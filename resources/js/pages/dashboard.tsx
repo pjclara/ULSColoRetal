@@ -17,6 +17,7 @@ type Props = {
         minhaEquipa?: boolean;
     };
     complicacoesOptions: LookupOption[];
+    resolucoesComplicacaoOptions: LookupOption[];
     internamentoOptions: InternamentoOptions;
 };
 
@@ -42,7 +43,7 @@ function diasDesde(data: string | null | undefined): number | null {
     return Math.floor((Date.now() - inicio.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-export default function Dashboard({ pendentes, filters, complicacoesOptions, internamentoOptions }: Props) {
+export default function Dashboard({ pendentes, filters, complicacoesOptions, resolucoesComplicacaoOptions, internamentoOptions }: Props) {
     const [minhaEquipa, setMinhaEquipa] = useState(Boolean(filters.minhaEquipa));
     const [altaTargetId, setAltaTargetId] = useState<number | null>(null);
 
@@ -151,6 +152,7 @@ export default function Dashboard({ pendentes, filters, complicacoesOptions, int
                 utenteId={altaTarget?.utente_id ?? null}
                 internamentoOptions={internamentoOptions}
                 complicacoesOptions={complicacoesOptions}
+                resolucoesComplicacaoOptions={resolucoesComplicacaoOptions}
                 onSubmit={() => {
                     setAltaTargetId(null);
                     router.reload({ only: ['pendentes'] });

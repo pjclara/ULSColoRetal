@@ -374,6 +374,25 @@ Route::middleware('auth')->group(function () {
         ->name('complicacaos.destroy');
 });
 
+// ResolucaoComplicacao Module
+Route::middleware('auth')->group(function () {
+    Route::get('/resolucoes-complicacao', [\App\Http\Controllers\ResolucaoComplicacaoController::class, 'index'])
+        ->middleware('can:resolucao-complicacao.view')
+        ->name('resolucoes-complicacao.index');
+
+    Route::post('/resolucoes-complicacao', [\App\Http\Controllers\ResolucaoComplicacaoController::class, 'store'])
+        ->middleware('can:resolucao-complicacao.create')
+        ->name('resolucoes-complicacao.store');
+
+    Route::put('/resolucoes-complicacao/{resolucaoComplicacao}', [\App\Http\Controllers\ResolucaoComplicacaoController::class, 'update'])
+        ->middleware('can:resolucao-complicacao.update')
+        ->name('resolucoes-complicacao.update');
+
+    Route::delete('/resolucoes-complicacao/{resolucaoComplicacao}', [\App\Http\Controllers\ResolucaoComplicacaoController::class, 'destroy'])
+        ->middleware('can:resolucao-complicacao.delete')
+        ->name('resolucoes-complicacao.destroy');
+});
+
 // CentroDeReferencia Module
 Route::middleware('auth')->group(function () {
     Route::get('/centro-de-referencias', [\App\Http\Controllers\CentroDeReferenciaController::class, 'index'])

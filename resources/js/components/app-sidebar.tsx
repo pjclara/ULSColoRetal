@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BarChart3, CalendarDays, Folder, LayoutGrid, UserCog, Users } from 'lucide-react';
+import { BarChart3, CalendarDays, Folder, LayoutGrid, ListChecks, UserCog, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 
@@ -57,6 +57,11 @@ const administracaoNavItems: NavItem[] = [
         title: 'Roles & Permissões',
         url: '/access-control',
         icon: UserCog,
+    },
+    {
+        title: 'Resoluções de Complicação',
+        url: '/resolucoes-complicacao',
+        icon: ListChecks,
     },
 ];
 

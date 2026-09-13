@@ -37,8 +37,10 @@ class StoreInternamentoRequest extends FormRequest
             'destino_id' => ['nullable', 'exists:destinos,id'],
             'caso_social_id' => ['nullable', 'exists:caso_socials,id'],
             'localizacao_id' => ['nullable', 'exists:localizacaos,id'],
-            'complicacao_ids' => ['nullable', 'array'],
-            'complicacao_ids.*' => ['integer', 'exists:complicacaos,id'],
+            'complicacoes' => ['nullable', 'array'],
+            'complicacoes.*.id' => ['required', 'integer', 'exists:complicacaos,id'],
+            'complicacoes.*.resolucao_ids' => ['nullable', 'array'],
+            'complicacoes.*.resolucao_ids.*' => ['integer', 'exists:resolucao_complicacaos,id'],
         ];
     }
 }

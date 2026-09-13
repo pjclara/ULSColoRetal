@@ -19,7 +19,9 @@ class Complicacao extends Model
 
     public function internamentos()
     {
-        return $this->belongsToMany(Internamento::class);
+        return $this->belongsToMany(Internamento::class)
+            ->using(ComplicacaoInternamento::class)
+            ->withPivot('resolucao');
     }
 
     public function grupoComplicacao()

@@ -87,8 +87,13 @@ export type InternamentoItem = {
     complicacaos?: {
         id: number;
         nome: string;
+        resolucao_ids?: (number | string)[];
+        pivot?: { resolucao?: (number | string)[] | null };
     }[];
-    complicacao_ids?: string[];
+    complicacoes?: {
+        id: string;
+        resolucao_ids: string[];
+    }[];
     bloco_operatorios?: {
         id: number;
         data_de_inicio: string | null;
@@ -170,6 +175,11 @@ export type DestinoItem = {
 }
 
 export type CasoSocialItem = {
+    id: number;
+    nome: string;
+}
+
+export type ResolucaoComplicacaoItem = {
     id: number;
     nome: string;
 }

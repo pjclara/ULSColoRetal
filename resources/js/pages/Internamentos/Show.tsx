@@ -25,6 +25,7 @@ type Props = {
     diagnosticosAgrupados: Record<string, any[]>;
     complicacoesAgrupadas: Record<string, any[]>;
     complicacoesOptions: LookupOption[];
+    resolucoesComplicacaoOptions: LookupOption[];
     internamentoOptions: InternamentoOptions;
     centroDeReferenciaOptions: CentroDeReferenciaOptions;
 };
@@ -43,6 +44,7 @@ export default function ShowInternamento({
     diagnosticosAgrupados,
     complicacoesAgrupadas,
     complicacoesOptions,
+    resolucoesComplicacaoOptions,
 }: Props) {
     const [showCentroModal, setShowCentroModal] = useState(false);
     const [isOpenUtente, setIsOpenUtente] = useState(false);
@@ -184,6 +186,7 @@ export default function ShowInternamento({
                         onClose={() => setIsInternamentoOpen(false)}
                         internamentoOptions={internamentoOptions}
                         complicacoesOptions={complicacoesOptions}
+                        resolucoesComplicacaoOptions={resolucoesComplicacaoOptions}
                         onSubmit={() => {
                             router.reload({ only: ['internamento'] });
                             setIsInternamentoOpen(false);

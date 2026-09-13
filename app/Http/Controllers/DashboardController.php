@@ -23,6 +23,7 @@ class DashboardController extends Controller
                 'minhaEquipa' => $minhaEquipa,
             ],
             'complicacoesOptions' => $this->complicacaoService->getComplicacoesOptions(),
+            'resolucoesComplicacaoOptions' => $this->complicacaoService->getResolucoesOptions(),
             'internamentoOptions' => [
                 'origensInternamento' => $this->service->getOrigensInternamento(),
                 'estadosAlta' => $this->service->getEstadosAlta(),

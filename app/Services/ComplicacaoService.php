@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Complicacao;
+use App\Models\ResolucaoComplicacao;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class ComplicacaoService
@@ -40,5 +41,13 @@ class ComplicacaoService
         }
 
         return $complicacoesAgrupadas;
+    }
+
+    /** Resoluções possíveis para uma complicação (ex.: "Resolvida", "Óbito", "Em resolução"). */
+    public function getResolucoesOptions()
+    {
+        return ResolucaoComplicacao::query()
+            ->orderBy('nome')
+            ->get(['id', 'nome']);
     }
 }

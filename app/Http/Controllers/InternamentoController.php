@@ -47,6 +47,7 @@ class InternamentoController extends Controller
             ],
             'diagnosticosAgrupados' => $this->diagnosticoService->getDiagnosticosAgrupados(),
             'complicacoesOptions' => $this->complicacaoService->getComplicacoesOptions(),
+            'resolucoesComplicacaoOptions' => $this->complicacaoService->getResolucoesOptions(),
             'blocoOperatorioOptions' => [
                 'tiposDeCirurgia' => $this->service->getTiposDeCirurgia(),
                 'tiposDeAbordagem' => $this->service->getTiposDeAbordagem(),
@@ -171,6 +172,7 @@ class InternamentoController extends Controller
              'diagnosticosAgrupados' => $this->diagnosticoService->getDiagnosticosAgrupados(),
              'complicacoesAgrupadas' => $this->complicacaoService->getComplicacoesAgrupadas(),
              'complicacoesOptions' => $this->complicacaoService->getComplicacoesOptions(),
+             'resolucoesComplicacaoOptions' => $this->complicacaoService->getResolucoesOptions(),
         ]);
     }
 
