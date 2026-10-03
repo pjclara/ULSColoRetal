@@ -26,6 +26,11 @@ export type LookupOption = {
     nome: string;
 };
 
+/** Grau de Clavien-Dindo tipicamente associado, usado para sugerir a classificação. */
+export type ResolucaoComplicacaoOption = LookupOption & {
+    clavien_dindo_id?: number | null;
+};
+
 export type IntervencaoOption = LookupOption & {
     centro_de_referencia: boolean;
     cirurgia_de_ressecao: boolean;

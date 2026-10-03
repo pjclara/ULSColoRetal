@@ -9,7 +9,7 @@ import AddDiagnosticosToInternamento from '../Diagnosticos/AddDiagnosticosToInte
 import AddComplicacoesToInternamento from '../Complicacoes/AddComplicacoesToInternamento';
 import CreateOrUpdateUtente from '../Utentes/CreateOrUpdateUtente';
 import CreateOrUpdateInternamentoModal from './CreateOrUpdateInternamentoModal';
-import { InternamentoOptions, LookupOption } from '@/types/internamento';
+import { InternamentoOptions, LookupOption, ResolucaoComplicacaoOption } from '@/types/internamento';
 import type { CentroDeReferenciaItem, DestinoItem, OrigemDoInternamentoItem, User, UtenteItem } from '@/types/type';
 
 type CentroDeReferenciaOptions = {
@@ -25,7 +25,7 @@ type Props = {
     diagnosticosAgrupados: Record<string, any[]>;
     complicacoesAgrupadas: Record<string, any[]>;
     complicacoesOptions: LookupOption[];
-    resolucoesComplicacaoOptions: LookupOption[];
+    resolucoesComplicacaoOptions: ResolucaoComplicacaoOption[];
     internamentoOptions: InternamentoOptions;
     centroDeReferenciaOptions: CentroDeReferenciaOptions;
 };

@@ -48,7 +48,6 @@ type Props = {
     salaDeAgendamentoOptions: Option[];
     tipoDeAgendamentoOptions: Option[];
     localDeAgendamentoOptions: Option[];
-    periodoDeAgendamentoOptions: Option[];
 };
 
 const breadcrumbs = [
@@ -68,7 +67,6 @@ export default function Index({
     salaDeAgendamentoOptions,
     localDeAgendamentoOptions,
     tipoDeAgendamentoOptions,
-    periodoDeAgendamentoOptions,
 }: Props) {
     // Modal da Lista de Espera
     const [isOpen, setIsOpen] = useState(false);
@@ -372,7 +370,6 @@ export default function Index({
                 localDeAgendamentoOptions={localDeAgendamentoOptions}
                 salaDeAgendamentoOptions={salaDeAgendamentoOptions}
                 estadoDeAgendamentoOptions={estadoDeAgendamentoOptions}
-                periodoDeAgendamentoOptions={periodoDeAgendamentoOptions}
             />
         </AppLayout>
     );

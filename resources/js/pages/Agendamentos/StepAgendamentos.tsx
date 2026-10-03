@@ -14,7 +14,6 @@ type Props = {
     tipoDeAgendamentoOptions: Option[];
     localDeAgendamentoOptions: Option[];
     salaDeAgendamentoOptions: Option[];
-    periodoDeAgendamentoOptions: Option[];
     estadoDeAgendamentoOptions: Option[];
     onContinue: () => void;
     onBack: () => void;
@@ -28,7 +27,6 @@ export default function StepAgendamentos({
     tipoDeAgendamentoOptions,
     localDeAgendamentoOptions,
     salaDeAgendamentoOptions,
-    periodoDeAgendamentoOptions,
     estadoDeAgendamentoOptions,
     onBack,
     onContinue,
@@ -225,7 +223,6 @@ export default function StepAgendamentos({
                 tipoDeAgendamentoOptions={tipoDeAgendamentoOptions}
                 localDeAgendamentoOptions={localDeAgendamentoOptions}
                 salaDeAgendamentoOptions={salaDeAgendamentoOptions}
-                periodoDeAgendamentoOptions={periodoDeAgendamentoOptions}
                 estadoDeAgendamentoOptions={estadoDeAgendamentoOptions}
             />
         </div>

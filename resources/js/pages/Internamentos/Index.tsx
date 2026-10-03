@@ -4,7 +4,7 @@ import { AppPageHeader } from '@/components/app/app-page-header';
 import { AppPagination } from '@/components/app/app-pagination';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import type { BlocoOperatorioOptions, InternamentoOptions, LookupOption } from '@/types/internamento';
+import type { BlocoOperatorioOptions, InternamentoOptions, LookupOption, ResolucaoComplicacaoOption } from '@/types/internamento';
 import { InternamentoItem, Pagination } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { FileDown, Pencil, Plus, Scissors, Search, Stethoscope, Trash2 } from 'lucide-react';
@@ -28,7 +28,7 @@ type Props = {
     };
     diagnosticosAgrupados: Record<string, { id: number; nome: string; abrev?: string }[]>;
     complicacoesOptions: LookupOption[];
-    resolucoesComplicacaoOptions: LookupOption[];
+    resolucoesComplicacaoOptions: ResolucaoComplicacaoOption[];
     blocoOperatorioOptions: BlocoOperatorioOptions;
     internamentoOptions: InternamentoOptions;
 };

@@ -13,14 +13,21 @@ class DashboardController extends Controller
         private ComplicacaoService $complicacaoService
     ) {}
 
+    /** Âmbito de doentes a mostrar no dashboard: os meus, os da minha equipa, ou todos. */
+    private const AMBITOS = ['meus', 'equipa', 'todos'];
+
     public function index(Request $request)
     {
-        $minhaEquipa = $request->boolean('minhaEquipa');
+        $ambito = $request->input('ambito', 'meus');
+
+        if (!in_array($ambito, self::AMBITOS, true)) {
+            $ambito = 'meus';
+        }
 
         return inertia('dashboard', [
-            'pendentes' => $this->service->getPendentes($request->user()?->equipa, $minhaEquipa),
+            'pendentes' => $this->service->getPendentes($ambito, $request->user()?->equipa, $request->user()?->id),
             'filters' => [
-                'minhaEquipa' => $minhaEquipa,
+                'ambito' => $ambito,
             ],
             'complicacoesOptions' => $this->complicacaoService->getComplicacoesOptions(),
             'resolucoesComplicacaoOptions' => $this->complicacaoService->getResolucoesOptions(),

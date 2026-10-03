@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BarChart3, CalendarDays, Folder, LayoutGrid, ListChecks, UserCog, Users } from 'lucide-react';
+import { CalendarDays, Folder, LayoutGrid, LineChart, ListChecks, UserCog, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 
@@ -41,9 +41,9 @@ const mainNavItems: NavItem[] = [
         icon: Folder,
     },
     {
-        title: 'Auditoria',
-        url: '/auditoria',
-        icon: BarChart3,
+        title: 'Estatísticas',
+        url: '/estatisticas',
+        icon: LineChart,
     },
 ];
 
@@ -83,7 +83,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={dashboardNavItems} title="Dasboard"/>
+                <NavMain items={dashboardNavItems} title="Dashboard"/>
                 <NavMain items={blocoNavItems} title="Bloco"/>
                 <NavMain items={mainNavItems} title="Gestão"/>
                 <NavMain items={administracaoNavItems} title="Administração" />

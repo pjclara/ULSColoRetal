@@ -21,7 +21,6 @@ type Props = {
     tipoDeAgendamentoOptions: Option[];
     localDeAgendamentoOptions: Option[];
     salaDeAgendamentoOptions: Option[];
-    periodoDeAgendamentoOptions: Option[];
     /** Quando fornecido, mostra um seletor de Lista de Espera/Utente (ex: ao criar a partir do calendário). */
     listaDeEsperaOptions?: Option[];
     /** Mostra um botão "Remover" no rodapé (ex: ao editar um agendamento a partir do calendário). */
@@ -47,12 +46,12 @@ const emptyForm = (listaDeEsperaId: number | undefined, estadoDeAgendamentoOptio
     tipo_de_agendamento_id: 0,
     local_de_agendamento_id: 0,
     sala_de_agendamento_id: 0,
-    periodo_de_agendamento_id: 0,
+    periodo_de_agendamento_id: null,
     estado_de_agendamento_id: estadoAgendadoId(estadoDeAgendamentoOptions),
     comentarios: null,
 });
 
-export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamento, listaDeEsperaId, onClose, onSuccess, responsavelOptions, tipoDeAgendamentoOptions, localDeAgendamentoOptions, estadoDeAgendamentoOptions, salaDeAgendamentoOptions, periodoDeAgendamentoOptions, listaDeEsperaOptions, onDelete, deleting }: Props) {
+export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamento, listaDeEsperaId, onClose, onSuccess, responsavelOptions, tipoDeAgendamentoOptions, localDeAgendamentoOptions, estadoDeAgendamentoOptions, salaDeAgendamentoOptions, listaDeEsperaOptions, onDelete, deleting }: Props) {
     const isEditing = Boolean(agendamento?.id);
 
     const { form, errors, loading, updateField, resetForm, submit } = useCrudForm<AgendamentoItem>(
@@ -160,14 +159,6 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
                     onChange={(value) => updateField('sala_de_agendamento_id', Number(value))}
                     error={errors.sala_de_agendamento_id}
                     options={normalizeSelectOptions(salaDeAgendamentoOptions)} // Substitua com as opções reais de salas de agendamento
-                />
-
-                <AppSelectField
-                    label="Período de agendamento"
-                    value={String(form.periodo_de_agendamento_id ?? 0)}
-                    onChange={(value) => updateField('periodo_de_agendamento_id', Number(value))}
-                    error={errors.periodo_de_agendamento_id}
-                    options={normalizeSelectOptions(periodoDeAgendamentoOptions)}
                 />
 
                 <AppSelectField

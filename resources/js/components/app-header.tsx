@@ -25,12 +25,12 @@ const mainNavItems: NavItem[] = [
 
 const rightNavItems: NavItem[] = [
     {
-        title: 'Repository',
+        title: 'Repositório',
         url: 'https://github.com/laravel/react-starter-kit',
         icon: Folder,
     },
     {
-        title: 'Documentation',
+        title: 'Documentação',
         url: 'https://laravel.com/docs/starter-kits',
         icon: BookOpen,
     },
@@ -59,7 +59,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                 </Button>
                             </SheetTrigger>
                             <SheetContent side="left" className="bg-sidebar flex h-full w-64 flex-col items-stretch justify-between">
-                                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                                <SheetTitle className="sr-only">Menu de navegação</SheetTitle>
                                 <SheetHeader className="flex justify-start text-left">
                                     <AppLogoIcon className="h-6 w-6 object-contain" />
                                 </SheetHeader>

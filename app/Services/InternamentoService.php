@@ -325,12 +325,19 @@ class InternamentoService
     }
 
     /**
-     * O estado da alta não é escolhido manualmente: um doente operado (com pelo menos um bloco
-     * operatório) está sempre "Pendente"; um doente não operado está sempre "Concluída". Chamado
+     * Antes de passarem 30 dias sobre a alta (janela da morbilidade cirúrgica aos 30 dias), o
+     * estado da alta não é escolhido manualmente: um doente operado (com pelo menos um bloco
+     * operatório) está sempre "Pendente"; um doente não operado está sempre "Concluída". Depois
+     * de passarem 30 dias, o campo fica desbloqueado no formulário e o valor escolhido manualmente
+     * (ex: "Concluída" depois de classificar o Clavien-Dindo) deixa de ser substituído. Chamado
      * sempre que o internamento é gravado e sempre que os seus blocos operatórios mudam.
      */
     public function atualizarEstadoDaAlta(Internamento $internamento): void
     {
+        if ($internamento->data_de_alta && $internamento->data_de_alta->diffInDays(now()) >= 30) {
+            return;
+        }
+
         $estado = $internamento->blocoOperatorios()->exists() ? self::ESTADO_ALTA_PENDENTE : self::ESTADO_ALTA_CONCLUIDA;
 
         if ($internamento->estado_da_alta_id !== $estado) {
@@ -344,7 +351,7 @@ class InternamentoService
      * seja para confirmar que não houve complicações. Não depende de o doente já ter saído ou não.
      * Só considera altas a partir de 2023 (histórico anterior fica fora desta lista de trabalho).
      */
-    public function getPendentes(?string $equipa = null, bool $minhaEquipa = false, int $perPage = 20): LengthAwarePaginator
+    public function getPendentes(string $ambito = 'meus', ?string $equipa = null, ?int $responsavelId = null, int $perPage = 20): LengthAwarePaginator
     {
         return Internamento::query()
             ->whereHas('blocoOperatorios')
@@ -356,7 +363,8 @@ class InternamentoService
                 ->whereNull('clavien_dindo_id')
                 ->orWhere('clavien_dindo_id', self::CLAVIEN_DINDO_A_AGUARDAR))
             ->with(self::RELACOES_INTERNAMENTO_COMPLETO)
-            ->when($minhaEquipa && $equipa, fn ($query) => $query->whereHas('responsavel', fn ($responsavelQuery) => $responsavelQuery->where('equipa', $equipa)))
+            ->when($ambito === 'equipa' && $equipa, fn ($query) => $query->whereHas('responsavel', fn ($responsavelQuery) => $responsavelQuery->where('equipa', $equipa)))
+            ->when($ambito === 'meus' && $responsavelId, fn ($query) => $query->where('responsavel_id', $responsavelId))
             ->orderBy('data_de_alta')
             ->paginate($perPage)
             ->withQueryString()

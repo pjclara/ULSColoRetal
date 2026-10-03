@@ -5,7 +5,7 @@ import { AppTable, AppTableColumn } from '@/components/app/app-table';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import type { Pagination, ResolucaoComplicacaoItem } from '@/types/type';
+import type { ClavienDindoItem, Pagination, ResolucaoComplicacaoItem } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -13,6 +13,7 @@ import CreateOrUpdateResolucaoComplicacaoModal from './CreateOrUpdateResolucaoCo
 
 type Props = {
     resolucoesComplicacao: Pagination<ResolucaoComplicacaoItem>;
+    clavienDindoOptions: ClavienDindoItem[];
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -22,7 +23,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function ResolucoesComplicacaoIndex({ resolucoesComplicacao }: Props) {
+export default function ResolucoesComplicacaoIndex({ resolucoesComplicacao, clavienDindoOptions }: Props) {
     const [openModal, setOpenModal] = useState(false);
     const [editing, setEditing] = useState<ResolucaoComplicacaoItem | null>(null);
     const [deleting, setDeleting] = useState<ResolucaoComplicacaoItem | null>(null);
@@ -50,6 +51,11 @@ export default function ResolucoesComplicacaoIndex({ resolucoesComplicacao }: Pr
         {
             key: 'nome',
             label: 'Nome',
+        },
+        {
+            key: 'clavien_dindo',
+            label: 'Grau Clavien-Dindo',
+            render: (resolucao) => resolucao.clavien_dindo?.nome ?? <span className="text-muted-foreground">—</span>,
         },
         {
             key: 'acoes',
@@ -105,7 +111,12 @@ export default function ResolucoesComplicacaoIndex({ resolucoesComplicacao }: Pr
                 />
             </div>
 
-            <CreateOrUpdateResolucaoComplicacaoModal open={openModal} onClose={() => setOpenModal(false)} resolucaoComplicacao={editing} />
+            <CreateOrUpdateResolucaoComplicacaoModal
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                resolucaoComplicacao={editing}
+                clavienDindoOptions={clavienDindoOptions}
+            />
 
             <AppConfirmDialog
                 open={!!deleting}

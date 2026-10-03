@@ -8,7 +8,6 @@ use App\Models\Agendamento;
 use App\Models\EstadoDeAgendamento;
 use App\Models\ListaDeEspera;
 use App\Models\LocalDeAgendamento;
-use App\Models\PeriodoDeAgendamento;
 use App\Models\SalaDeAgendamento;
 use App\Models\TipoDeAgendamento;
 use App\Models\User;
@@ -112,10 +111,6 @@ class AgendamentoController extends Controller
             'salaDeAgendamentoOptions' => SalaDeAgendamento::all()->map(fn(SalaDeAgendamento $sala) => [
                 'value' => $sala->id,
                 'label' => $sala->nome,
-            ]),
-            'periodoDeAgendamentoOptions' => PeriodoDeAgendamento::all()->map(fn(PeriodoDeAgendamento $periodo) => [
-                'value' => $periodo->id,
-                'label' => $periodo->nome,
             ]),
             'estadoDeAgendamentoOptions' => EstadoDeAgendamento::optionsParaAgendamento(),
         ]);

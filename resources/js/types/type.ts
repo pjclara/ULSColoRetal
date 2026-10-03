@@ -182,6 +182,8 @@ export type CasoSocialItem = {
 export type ResolucaoComplicacaoItem = {
     id: number;
     nome: string;
+    clavien_dindo_id?: number | null;
+    clavien_dindo?: ClavienDindoItem | null;
 }
 
 
@@ -238,7 +240,7 @@ export type AgendamentoItem = {
     tipo_de_agendamento_id: number;
     local_de_agendamento_id: number;
     sala_de_agendamento_id: number;
-    periodo_de_agendamento_id: number;
+    periodo_de_agendamento_id: number | null;
     estado_de_agendamento_id: number;
     comentarios?: string | null;
 }

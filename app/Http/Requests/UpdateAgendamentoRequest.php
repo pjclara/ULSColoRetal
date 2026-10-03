@@ -33,7 +33,7 @@ class UpdateAgendamentoRequest extends FormRequest
             'tipo_de_agendamento_id' => ['required', 'integer', 'exists:tipo_de_agendamentos,id'],
             'local_de_agendamento_id' => ['required', 'integer', 'exists:local_de_agendamentos,id'],
             'sala_de_agendamento_id' => ['required', 'integer', 'exists:sala_de_agendamentos,id'],
-            'periodo_de_agendamento_id' => ['required', 'integer'],
+            'periodo_de_agendamento_id' => ['nullable', 'integer'],
             // Só "Agendado", "Operado" ou "Cancelado" — ver EstadoDeAgendamento::optionsParaAgendamento().
             'estado_de_agendamento_id' => ['required', 'integer', Rule::in(EstadoDeAgendamento::optionsParaAgendamento()->pluck('value'))],
             'comentarios' => ['nullable', 'string'],

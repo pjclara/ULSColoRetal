@@ -80,10 +80,6 @@ class ListaDeEsperaController extends Controller
                 'value' => $sala->id,
                 'label' => $sala->nome,
             ]),
-            'periodoDeAgendamentoOptions' => [
-                ['value' => '1', 'label' => 'Manhã'],
-                ['value' => '2', 'label' => 'Tarde'],
-            ],
             'estadoDeAgendamentoOptions' => EstadoDeAgendamento::optionsParaAgendamento(),
 
         ]);
@@ -149,10 +145,6 @@ class ListaDeEsperaController extends Controller
                 'value' => $sala->id,
                 'label' => $sala->nome,
             ]),
-            'periodoDeAgendamentoOptions' => [
-                ['value' => '1', 'label' => 'Manhã'],
-                ['value' => '2', 'label' => 'Tarde'],
-            ],
             'estadoDeAgendamentoOptions' => EstadoDeAgendamento::optionsParaAgendamento(),
         ]);
     }

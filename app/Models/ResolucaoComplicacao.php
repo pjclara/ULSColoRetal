@@ -12,5 +12,11 @@ class ResolucaoComplicacao extends Model
 
     protected $fillable = [
         'nome',
+        'clavien_dindo_id',
     ];
+
+    public function clavienDindo()
+    {
+        return $this->belongsTo(ClavienDindo::class);
+    }
 }

@@ -2,22 +2,31 @@ import { AppAvatar } from '@/components/app/app-avatar';
 import { AppPageHeader } from '@/components/app/app-page-header';
 import { AppPagination } from '@/components/app/app-pagination';
 import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import CreateOrUpdateInternamentoModal from '@/pages/Internamentos/CreateOrUpdateInternamentoModal';
 import { type BreadcrumbItem } from '@/types';
-import type { InternamentoOptions, LookupOption } from '@/types/internamento';
+import type { InternamentoOptions, LookupOption, ResolucaoComplicacaoOption } from '@/types/internamento';
 import type { InternamentoItem, Pagination } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { ClipboardList, Stethoscope } from 'lucide-react';
 import { useState } from 'react';
 
+type Ambito = 'meus' | 'equipa' | 'todos';
+
+const AMBITO_LABELS: Record<Ambito, string> = {
+    meus: 'Os meus',
+    equipa: 'A minha equipa',
+    todos: 'Todos',
+};
+
 type Props = {
     pendentes: Pagination<InternamentoItem>;
     filters: {
-        minhaEquipa?: boolean;
+        ambito?: Ambito;
     };
     complicacoesOptions: LookupOption[];
-    resolucoesComplicacaoOptions: LookupOption[];
+    resolucoesComplicacaoOptions: ResolucaoComplicacaoOption[];
     internamentoOptions: InternamentoOptions;
 };
 
@@ -44,14 +53,14 @@ function diasDesde(data: string | null | undefined): number | null {
 }
 
 export default function Dashboard({ pendentes, filters, complicacoesOptions, resolucoesComplicacaoOptions, internamentoOptions }: Props) {
-    const [minhaEquipa, setMinhaEquipa] = useState(Boolean(filters.minhaEquipa));
+    const [ambito, setAmbito] = useState<Ambito>(filters.ambito ?? 'meus');
     const [altaTargetId, setAltaTargetId] = useState<number | null>(null);
 
     const altaTarget = altaTargetId != null ? (pendentes.data.find((item) => item.id === altaTargetId) ?? null) : null;
 
-    const trocarMinhaEquipa = (checked: boolean) => {
-        setMinhaEquipa(checked);
-        router.get(route('dashboard'), checked ? { minhaEquipa: '1' } : {}, { preserveState: true, preserveScroll: true, replace: true });
+    const trocarAmbito = (value: Ambito) => {
+        setAmbito(value);
+        router.get(route('dashboard'), { ambito: value }, { preserveState: true, preserveScroll: true, replace: true });
     };
 
     return (
@@ -63,15 +72,18 @@ export default function Dashboard({ pendentes, filters, complicacoesOptions, res
                     title="Dashboard"
                     description="Doentes operados com a morbilidade cirúrgica aos 30 dias por classificar."
                     action={
-                        <label className="flex items-center gap-2 text-sm text-neutral-600 select-none dark:text-neutral-300">
-                            <input
-                                type="checkbox"
-                                checked={minhaEquipa}
-                                onChange={(event) => trocarMinhaEquipa(event.target.checked)}
-                                className="accent-primary size-4 rounded"
-                            />
-                            A minha equipa
-                        </label>
+                        <Select value={ambito} onValueChange={(value) => trocarAmbito(value as Ambito)}>
+                            <SelectTrigger className="w-44">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {(Object.keys(AMBITO_LABELS) as Ambito[]).map((value) => (
+                                    <SelectItem key={value} value={value}>
+                                        {AMBITO_LABELS[value]}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
                     }
                 />
 
@@ -91,7 +103,7 @@ export default function Dashboard({ pendentes, filters, complicacoesOptions, res
                             <table className="w-full text-sm">
                                 <thead className="border-b border-neutral-200 bg-neutral-50 dark:border-neutral-800 dark:bg-neutral-950">
                                     <tr>
-                                        {['Doente', 'Processo', 'Cama', 'Localização', 'Dias desde a alta', 'Motivo', 'Responsável', 'Ações'].map((label) => (
+                                        {['Doente', 'Processo', 'Alta', 'Dias desde a alta', 'Motivo', 'Complicações', 'Responsável', 'Ações'].map((label) => (
                                             <th
                                                 key={label}
                                                 scope="col"
@@ -120,6 +132,22 @@ export default function Dashboard({ pendentes, filters, complicacoesOptions, res
                                                 })()}
                                             </td>
                                             <td className="px-3 py-3 text-neutral-700 dark:text-neutral-300">{item.motivo_internamento}</td>
+                                            <td className="px-3 py-3 text-neutral-700 dark:text-neutral-300">
+                                                {item.complicacaos && item.complicacaos.length > 0 ? (
+                                                    <div className="flex flex-wrap gap-1">
+                                                        {item.complicacaos.map((complicacao) => (
+                                                            <span
+                                                                key={complicacao.id}
+                                                                className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800 dark:bg-amber-900/40 dark:text-amber-300"
+                                                            >
+                                                                {complicacao.nome}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-neutral-400 dark:text-neutral-600">—</span>
+                                                )}
+                                            </td>
                                             <td className="px-3 py-3 whitespace-nowrap text-neutral-700 dark:text-neutral-300">{item.responsavel}</td>
                                             <td className="px-3 py-3 whitespace-nowrap">
                                                 <Button type="button" size="sm" variant="outline" onClick={() => setAltaTargetId(item.id ?? null)}>

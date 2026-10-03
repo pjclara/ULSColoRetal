@@ -43,11 +43,15 @@ class ComplicacaoService
         return $complicacoesAgrupadas;
     }
 
-    /** Resoluções possíveis para uma complicação (ex.: "Resolvida", "Óbito", "Em resolução"). */
+    /**
+     * Resoluções possíveis para uma complicação (ex.: "Antibioterapia", "Intervenção Cirurgica").
+     * Inclui o grau de Clavien-Dindo tipicamente associado, usado para sugerir a classificação
+     * no formulário de internamento.
+     */
     public function getResolucoesOptions()
     {
         return ResolucaoComplicacao::query()
             ->orderBy('nome')
-            ->get(['id', 'nome']);
+            ->get(['id', 'nome', 'clavien_dindo_id']);
     }
 }

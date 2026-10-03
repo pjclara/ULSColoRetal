@@ -61,7 +61,6 @@ type Props = {
     tipoDeAgendamentoOptions: Option[];
     localDeAgendamentoOptions: Option[];
     salaDeAgendamentoOptions: Option[];
-    periodoDeAgendamentoOptions: Option[];
     estadoDeAgendamentoOptions: Option[];
 };
 
@@ -118,7 +117,6 @@ export default function Calendar({
     tipoDeAgendamentoOptions,
     localDeAgendamentoOptions,
     salaDeAgendamentoOptions,
-    periodoDeAgendamentoOptions,
     estadoDeAgendamentoOptions,
 }: Props) {
     const calendarRef = useRef<FullCalendar>(null);
@@ -430,7 +428,6 @@ export default function Calendar({
                 tipoDeAgendamentoOptions={tipoDeAgendamentoOptions}
                 localDeAgendamentoOptions={localDeAgendamentoOptions}
                 salaDeAgendamentoOptions={salaDeAgendamentoOptions}
-                periodoDeAgendamentoOptions={periodoDeAgendamentoOptions}
                 estadoDeAgendamentoOptions={estadoDeAgendamentoOptions}
             />
         </AppLayout>

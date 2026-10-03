@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ClavienDindo;
 use App\Models\ResolucaoComplicacao;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,11 +15,13 @@ class ResolucaoComplicacaoController extends Controller
     public function index()
     {
         $resolucoesComplicacao = ResolucaoComplicacao::query()
+            ->with('clavienDindo')
             ->orderBy('nome')
             ->paginate(15);
 
         return Inertia::render('ResolucoesComplicacao/Index', [
             'resolucoesComplicacao' => $resolucoesComplicacao,
+            'clavienDindoOptions' => ClavienDindo::query()->orderBy('id')->get(['id', 'nome']),
         ]);
     }
 
@@ -29,6 +32,7 @@ class ResolucaoComplicacaoController extends Controller
     {
         $data = $request->validate([
             'nome' => ['required', 'string', 'max:191', 'unique:resolucao_complicacaos,nome'],
+            'clavien_dindo_id' => ['nullable', 'integer', 'exists:clavien_dindos,id'],
         ]);
 
         ResolucaoComplicacao::create($data);
@@ -43,6 +47,7 @@ class ResolucaoComplicacaoController extends Controller
     {
         $data = $request->validate([
             'nome' => ['required', 'string', 'max:191', 'unique:resolucao_complicacaos,nome,' . $resolucaoComplicacao->id],
+            'clavien_dindo_id' => ['nullable', 'integer', 'exists:clavien_dindos,id'],
         ]);
 
         $resolucaoComplicacao->update($data);

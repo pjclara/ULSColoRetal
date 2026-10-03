@@ -71,13 +71,6 @@ Route::middleware('auth')->group(function () {
     Route::resource('users', UserController::class)->only(['index', 'store', 'update']);
 });
 
-// Auditoria Module
-Route::middleware('auth')->group(function () {
-    Route::get('/auditoria', [\App\Http\Controllers\AuditoriaController::class, 'index'])
-        ->middleware('can:auditoria.view')
-        ->name('auditoria.index');
-});
-
 // Internamento Module
 Route::middleware('auth')->group(function () {
     Route::get('/internamentos', [\App\Http\Controllers\InternamentoController::class, 'index'])
@@ -751,4 +744,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/intervencaos/{intervencao}', [\App\Http\Controllers\IntervencaoController::class, 'destroy'])
         ->middleware('can:intervencao.delete')
         ->name('intervencaos.destroy');
+});
+
+// Estatísticas Module
+Route::middleware('auth')->group(function () {
+    Route::get('/estatisticas', [\App\Http\Controllers\EstatisticaController::class, 'index'])
+        ->middleware('can:estatisticas.view')
+        ->name('estatisticas.index');
 });

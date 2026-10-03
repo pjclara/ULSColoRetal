@@ -5,12 +5,12 @@ namespace Database\Seeders\Permissions;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
-class AuditoriaPermissionsSeeder extends Seeder
+class EstatisticaPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
         $permissions = [
-            'auditoria.view',
+            'estatisticas.view',
         ];
 
         foreach ($permissions as $permission) {

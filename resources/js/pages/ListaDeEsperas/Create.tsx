@@ -27,7 +27,6 @@ type Props = {
     tipoDeAgendamentoOptions: Option[];
     localDeAgendamentoOptions: Option[];
     salaDeAgendamentoOptions: Option[];
-    periodoDeAgendamentoOptions: Option[];
     estadoDeAgendamentoOptions: Option[];
     concelhoOptions: Option[];
 };
@@ -84,7 +83,6 @@ export default function Index({
     tipoDeAgendamentoOptions,
     localDeAgendamentoOptions,
     salaDeAgendamentoOptions,
-    periodoDeAgendamentoOptions,
     estadoDeAgendamentoOptions,
     concelhoOptions,
 }: Props) {
@@ -204,7 +202,6 @@ export default function Index({
                                     tipoDeAgendamentoOptions={tipoDeAgendamentoOptions}
                                     localDeAgendamentoOptions={localDeAgendamentoOptions}
                                     salaDeAgendamentoOptions={salaDeAgendamentoOptions}
-                                    periodoDeAgendamentoOptions={periodoDeAgendamentoOptions}
                                     estadoDeAgendamentoOptions={estadoDeAgendamentoOptions}
                                     onContinue={() => setCurrentStep(4)}
                                     onBack={() => setCurrentStep(2)}
