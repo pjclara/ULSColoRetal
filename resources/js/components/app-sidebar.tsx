@@ -2,9 +2,9 @@ import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { CalendarDays, Folder, LayoutGrid, LineChart, ListChecks, UserCog, Users } from 'lucide-react';
+import { type NavItem, type SharedData } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
+import { CalendarDays, Folder, LayoutGrid, LineChart, ListChecks, ShieldCheck, UserCog, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 
@@ -65,9 +65,20 @@ const administracaoNavItems: NavItem[] = [
     },
 ];
 
+// só visível ao superAdmin
+const superAdminNavItems: NavItem[] = [
+    {
+        title: 'Todos os internamentos',
+        url: '/admin/internamentos',
+        icon: ShieldCheck,
+    },
+];
+
 const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
+    const { auth } = usePage<SharedData>().props;
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -87,6 +98,7 @@ export function AppSidebar() {
                 <NavMain items={blocoNavItems} title="Bloco"/>
                 <NavMain items={mainNavItems} title="Gestão"/>
                 <NavMain items={administracaoNavItems} title="Administração" />
+                {auth.isSuperAdmin && <NavMain items={superAdminNavItems} title="Super Admin" />}
             </SidebarContent>
 
             <SidebarFooter>

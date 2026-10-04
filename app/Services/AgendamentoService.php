@@ -3,10 +3,14 @@
 namespace App\Services;
 
 use App\Models\Agendamento;
+use App\Models\BlocoOperatorio;
+use App\Models\Internamento;
 use App\Models\EstadoDeAgendamento;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date as ExcelDate;
 
 class AgendamentoService
 {
@@ -103,6 +107,160 @@ class AgendamentoService
         if ($estadoLista) {
             $agendamento->listaDeEspera?->update(['estado_lista_espera' => $estadoLista]);
         }
+    }
+
+    /**
+     * Marca como "Operado" os agendamentos dos utentes listados num Excel com as colunas
+     * DTA_INTERVENCAO e NUM_PROCESSO. Por cada linha é escolhido o agendamento do utente com
+     * `start` no mesmo dia da intervenção; se já estiver "Operado" não é alterado.
+     *
+     * @return array{atualizados: int, ja_operados: int, sem_agendamento: int, linhas_invalidas: int}
+     */
+    public function importarOperados(string $path): array
+    {
+        $estadoOperado = EstadoDeAgendamento::all()
+            ->first(fn (EstadoDeAgendamento $estado) => strtolower(trim($estado->nome)) === 'operado');
+
+        if (!$estadoOperado) {
+            throw new \RuntimeException('O estado de agendamento "Operado" não existe.');
+        }
+
+        $linhas = IOFactory::load($path)->getActiveSheet()->toArray(null, true, false, false);
+        $cabecalho = array_map(fn ($c) => strtoupper(trim((string) $c)), array_shift($linhas) ?? []);
+        $colData = array_search('DTA_INTERVENCAO', $cabecalho, true);
+        $colProcesso = array_search('NUM_PROCESSO', $cabecalho, true);
+
+        if ($colData === false || $colProcesso === false) {
+            throw new \RuntimeException('O ficheiro tem de ter as colunas DTA_INTERVENCAO e NUM_PROCESSO.');
+        }
+
+        $resultado = ['atualizados' => 0, 'ja_operados' => 0, 'sem_agendamento' => 0, 'linhas_invalidas' => 0];
+
+        foreach ($linhas as $linha) {
+            $processo = trim((string) ($linha[$colProcesso] ?? ''));
+            $data = $this->parseDataExcel($linha[$colData] ?? null);
+
+            if ($processo === '' && $data === null) {
+                continue; // linha vazia
+            }
+
+            if ($processo === '' || $data === null) {
+                $resultado['linhas_invalidas']++;
+                continue;
+            }
+
+            $agendamento = Agendamento::query()
+                ->whereHas('listaDeEspera.utente', fn ($q) => $q->where('numero_processo', $processo))
+                ->whereDate('start', $data->toDateString())
+                ->first();
+
+            if (!$agendamento) {
+                $resultado['sem_agendamento']++;
+            } elseif ($agendamento->estado_de_agendamento_id === $estadoOperado->id) {
+                $resultado['ja_operados']++;
+            } else {
+                $this->update($agendamento, ['estado_de_agendamento_id' => $estadoOperado->id]);
+                $resultado['atualizados']++;
+            }
+        }
+
+        return $resultado;
+    }
+
+    private function parseDataExcel(mixed $valor): ?Carbon
+    {
+        if ($valor === null || $valor === '') {
+            return null;
+        }
+
+        try {
+            return is_numeric($valor)
+                ? Carbon::instance(ExcelDate::excelToDateTimeObject($valor))
+                : Carbon::parse((string) $valor);
+        } catch (\Throwable) {
+            return null;
+        }
+    }
+
+    /**
+     * Agendamentos do utente do internamento cujo `start` cai no dia indicado.
+     */
+    private function agendamentosDoDia(?int $internamentoId, mixed $dia): Collection
+    {
+        $utenteId = $internamentoId ? Internamento::find($internamentoId)?->utente_id : null;
+
+        if (!$utenteId || !$dia) {
+            return new Collection();
+        }
+
+        return Agendamento::query()
+            ->whereHas('listaDeEspera', fn ($q) => $q->where('utente_id', $utenteId))
+            ->whereDate('start', Carbon::parse($dia)->toDateString())
+            ->get();
+    }
+
+    /**
+     * Um bloco operatório no dia do agendamento do mesmo utente marca-o "Operado".
+     */
+    public function marcarOperadosPorBloco(BlocoOperatorio $bloco): int
+    {
+        $operado = EstadoDeAgendamento::idPorNome('operado');
+
+        if (!$operado) {
+            return 0;
+        }
+
+        $pendentes = $this->agendamentosDoDia($bloco->internamento_id, $bloco->data_de_inicio)
+            ->where('estado_de_agendamento_id', '!=', $operado);
+
+        foreach ($pendentes as $agendamento) {
+            $this->update($agendamento, ['estado_de_agendamento_id' => $operado]);
+        }
+
+        return $pendentes->count();
+    }
+
+    /**
+     * Sem nenhum bloco operatório (ativo) do utente nesse dia, os agendamentos desse dia
+     * "Operado" voltam a "Agendado".
+     */
+    public function reverterOperadosPorBloco(?int $internamentoId, mixed $dia): void
+    {
+        $operado = EstadoDeAgendamento::idPorNome('operado');
+        $agendado = EstadoDeAgendamento::idPorNome('agendado');
+        $utenteId = $internamentoId ? Internamento::find($internamentoId)?->utente_id : null;
+
+        if (!$operado || !$agendado || !$utenteId || !$dia) {
+            return;
+        }
+
+        $aindaOperado = BlocoOperatorio::query()
+            ->whereDate('data_de_inicio', Carbon::parse($dia)->toDateString())
+            ->whereHas('internamento', fn ($q) => $q->where('utente_id', $utenteId))
+            ->exists();
+
+        if ($aindaOperado) {
+            return;
+        }
+
+        foreach ($this->agendamentosDoDia($internamentoId, $dia)->where('estado_de_agendamento_id', $operado) as $agendamento) {
+            $this->update($agendamento, ['estado_de_agendamento_id' => $agendado]);
+        }
+    }
+
+    /**
+     * Marca "Operado" todos os agendamentos com bloco operatório do mesmo utente no mesmo dia.
+     * Usado para regularizar os dados existentes.
+     */
+    public function sincronizarOperadosComBlocos(): int
+    {
+        $total = 0;
+
+        foreach (BlocoOperatorio::query()->with('internamento')->get() as $bloco) {
+            $total += $this->marcarOperadosPorBloco($bloco);
+        }
+
+        return $total;
     }
 
     /**

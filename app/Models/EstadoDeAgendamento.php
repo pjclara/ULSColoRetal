@@ -25,6 +25,14 @@ class EstadoDeAgendamento extends Model
      */
     public const NOMES_PARA_AGENDAMENTO = ['agendado', 'operado', 'cancelado'];
 
+    /** Id do estado com este nome (case-insensitive), ou null se não existir. */
+    public static function idPorNome(string $nome): ?int
+    {
+        return static::all()
+            ->first(fn (self $estado) => strtolower(trim($estado->nome)) === strtolower($nome))
+            ?->id;
+    }
+
     /**
      * Opções (value/label) para popular o select de "Estado de agendamento", restritas e
      * ordenadas pelos nomes válidos acima (esta tabela é gerida livremente pelo utilizador).

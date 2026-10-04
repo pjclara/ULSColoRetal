@@ -117,6 +117,25 @@ class AgendamentoController extends Controller
     }
 
     /**
+     * Importa um Excel (DTA_INTERVENCAO, NUM_PROCESSO) e marca os agendamentos correspondentes como "Operado".
+     */
+    public function importarOperados(Request $request)
+    {
+        $request->validate(['ficheiro' => ['required', 'file', 'mimes:xlsx,xls,csv']]);
+
+        try {
+            $r = $this->service->importarOperados($request->file('ficheiro')->getRealPath());
+        } catch (\Throwable $e) {
+            return back()->withErrors(['ficheiro' => $e->getMessage()]);
+        }
+
+        return back()->with('success', sprintf(
+            'Importação concluída: %d marcados como operado, %d já operados, %d sem agendamento, %d linhas inválidas.',
+            $r['atualizados'], $r['ja_operados'], $r['sem_agendamento'], $r['linhas_invalidas']
+        ));
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()

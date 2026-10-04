@@ -135,16 +135,38 @@ class EstatisticaService
     {
         $porTipo = fn(array $tipos) => $this->porAno($anos, fn($ano) => $blocos->where('ano', $ano)->whereIn('tipo', $tipos)->count());
 
+        // a cirurgia de ambulatório conta-se pelos agendamentos "Operado" (não há bloco operatório)
+        $ambulatorio = $this->ambulatorioOperadoPorAno($anos);
+        $programadasEUrgencia = $porTipo(['urgencia', 'programada']);
+        $total = array_map(fn($ano) => $programadasEUrgencia[$ano] + $ambulatorio[$ano], $anos);
+
         return [
             'titulo' => 'Cirurgias',
             'linhas' => [
                 $this->linha('Cirurgias de urgência', $porTipo(['urgencia'])),
                 $this->linha('Cirurgias programadas', $porTipo(['programada'])),
-                $this->linha('Cirurgia ambulatório', $porTipo(['ambulatorio'])),
-                $this->linha('Total de cirurgias realizadas', $porTipo(['urgencia', 'programada', 'ambulatorio'])),
+                $this->linha('Cirurgia ambulatório', $ambulatorio),
+                $this->linha('Total de cirurgias realizadas', array_combine($anos, $total)),
                 $this->linha('Total de doentes operados', $this->porAno($anos, fn($ano) => $blocos->where('ano', $ano)->pluck('internamento_id')->unique()->count())),
             ],
         ];
+    }
+
+    /** Agendamentos no local "Ambulatório" com estado "Operado", por ano da data do agendamento. */
+    private function ambulatorioOperadoPorAno(array $anos): array
+    {
+        $porAno = DB::table('agendamentos as a')
+            ->join('estado_de_agendamentos as e', 'e.id', '=', 'a.estado_de_agendamento_id')
+            ->join('local_de_agendamentos as l', 'l.id', '=', 'a.local_de_agendamento_id')
+            ->whereNull('a.deleted_at')
+            ->whereRaw('lower(trim(e.nome)) = ?', ['operado'])
+            ->whereRaw('lower(trim(l.nome)) in (?, ?)', ['ambulatorio', 'ambulatório'])
+            ->whereBetween(DB::raw('year(a.start)'), [min($anos), max($anos)])
+            ->selectRaw('year(a.start) as ano, count(*) as total')
+            ->groupBy('ano')
+            ->pluck('total', 'ano');
+
+        return $this->porAno($anos, fn($ano) => (int) ($porAno[$ano] ?? 0));
     }
 
     private function tabelaInternamentos(array $anos, Collection $internamentos, Collection $blocos): array

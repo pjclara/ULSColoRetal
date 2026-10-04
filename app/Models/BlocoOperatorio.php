@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Observers\BlocoOperatorioObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy(BlocoOperatorioObserver::class)]
 class BlocoOperatorio extends Model
 {
     /** @use HasFactory<\Database\Factories\BlocoOperatorioFactory> */

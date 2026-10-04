@@ -11,7 +11,7 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import type { DatesSetArg, EventClickArg, EventContentArg, EventDropArg } from '@fullcalendar/core';
 import { Head, router } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
+import { FileSpreadsheet, Plus } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -213,6 +213,29 @@ export default function Calendar({
         openCreate(start);
     };
 
+    const importInputRef = useRef<HTMLInputElement>(null);
+
+    /** Envia o Excel (DTA_INTERVENCAO, NUM_PROCESSO) para marcar os agendamentos correspondentes como "Operado". */
+    const handleImportOperados = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const ficheiro = event.target.files?.[0];
+        event.target.value = '';
+
+        if (!ficheiro) {
+            return;
+        }
+
+        router.post(
+            route('agendamentos.importar-operados'),
+            { ficheiro },
+            {
+                forceFormData: true,
+                preserveScroll: true,
+                onSuccess: (page) => toast.success((page.props as any).flash?.success ?? 'Importação concluída.'),
+                onError: (errors) => toast.error(errors.ficheiro ?? 'Não foi possível importar o ficheiro.'),
+            },
+        );
+    };
+
     /** Abre a criação com a próxima hora "redonda" pré-preenchida (usado pelo botão "Novo agendamento"). */
     const openCreateNow = () => {
         const start = new Date();
@@ -322,10 +345,23 @@ export default function Calendar({
                     title="Calendário de Agendamentos"
                     description="Consulte, crie e edite agendamentos por data, sala e período."
                     action={
-                        <Button type="button" size="sm" onClick={openCreateNow}>
-                            <Plus className="size-4" />
-                            Novo agendamento
-                        </Button>
+                        <div className="flex gap-2">
+                            <input
+                                ref={importInputRef}
+                                type="file"
+                                accept=".xlsx,.xls,.csv"
+                                className="hidden"
+                                onChange={handleImportOperados}
+                            />
+                            <Button type="button" size="sm" variant="outline" onClick={() => importInputRef.current?.click()}>
+                                <FileSpreadsheet className="size-4" />
+                                Importar operados
+                            </Button>
+                            <Button type="button" size="sm" onClick={openCreateNow}>
+                                <Plus className="size-4" />
+                                Novo agendamento
+                            </Button>
+                        </div>
                     }
                 >
                     <div className="flex flex-wrap gap-3 text-xs text-neutral-500 dark:text-neutral-400">

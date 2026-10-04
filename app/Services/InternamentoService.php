@@ -47,6 +47,42 @@ class InternamentoService
     }
 
     /**
+     * Listagem de todos os internamentos (ativos e com saída) para a área de superAdmin.
+     *
+     * @param array{search?: ?string, estado?: ?string, localizacao_id?: ?int, responsavel_id?: ?int,
+     *              destino_id?: ?int, operado?: ?string, entrada_de?: ?string, entrada_ate?: ?string} $filtros
+     */
+    public function paginateTodos(array $filtros, int $perPage = 25): LengthAwarePaginator
+    {
+        $search = $filtros['search'] ?? null;
+
+        return Internamento::query()
+            ->with(self::RELACOES_INTERNAMENTO_COMPLETO)
+            ->when($search, fn($query) => $query->where(function ($query) use ($search) {
+                $query
+                    ->where('cama', 'like', "%{$search}%")
+                    ->orWhere('motivo_internamento', 'like', "%{$search}%")
+                    ->orWhereHas('utente', fn($utenteQuery) => $utenteQuery
+                        ->where('nome', 'like', "%{$search}%")
+                        ->orWhere('numero_processo', 'like', "%{$search}%"));
+            }))
+            ->when(($filtros['estado'] ?? null) === 'ativos', fn($q) => $q->whereNull('data_de_saida'))
+            ->when(($filtros['estado'] ?? null) === 'saidos', fn($q) => $q->whereNotNull('data_de_saida'))
+            ->when($filtros['localizacao_id'] ?? null, fn($q, $id) => $q->where('localizacao_id', $id))
+            ->when($filtros['responsavel_id'] ?? null, fn($q, $id) => $q->where('responsavel_id', $id))
+            ->when($filtros['destino_id'] ?? null, fn($q, $id) => $q->where('destino_id', $id))
+            ->when(($filtros['operado'] ?? null) === 'sim', fn($q) => $q->has('blocoOperatorios'))
+            ->when(($filtros['operado'] ?? null) === 'nao', fn($q) => $q->doesntHave('blocoOperatorios'))
+            ->when($filtros['entrada_de'] ?? null, fn($q, $d) => $q->whereDate('data_de_entrada', '>=', $d))
+            ->when($filtros['entrada_ate'] ?? null, fn($q, $d) => $q->whereDate('data_de_entrada', '<=', $d))
+            ->orderByDesc('data_de_entrada')
+            ->orderByDesc('id')
+            ->paginate($perPage)
+            ->withQueryString()
+            ->through(fn (Internamento $internamento) => $this->mapInternamentoCompleto($internamento));
+    }
+
+    /**
      * Representação completa de um internamento, incluindo tudo o que o formulário de
      * edição (CreateOrUpdateInternamentoModal) precisa para pré-preencher corretamente
      * — sem isto, gravar o formulário apagava silenciosamente campos já preenchidos.

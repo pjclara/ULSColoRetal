@@ -73,6 +73,10 @@ Route::middleware('auth')->group(function () {
 
 // Internamento Module
 Route::middleware('auth')->group(function () {
+    // Todos os internamentos (só superAdmin — verificado no controlador)
+    Route::get('/admin/internamentos', [\App\Http\Controllers\AdminInternamentoController::class, 'index'])
+        ->name('admin.internamentos.index');
+
     Route::get('/internamentos', [\App\Http\Controllers\InternamentoController::class, 'index'])
         ->middleware('can:internamento.view')
         ->name('internamentos.index');
@@ -492,6 +496,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/agendamentos/calendario', [\App\Http\Controllers\AgendamentoController::class, 'calendar'])
         ->middleware('can:agendamento.view')
         ->name('agendamentos.calendar');
+
+    Route::post('/agendamentos/importar-operados', [\App\Http\Controllers\AgendamentoController::class, 'importarOperados'])
+        ->middleware('can:agendamento.update')
+        ->name('agendamentos.importar-operados');
 
     Route::post('/agendamentos', [\App\Http\Controllers\AgendamentoController::class, 'store'])
         ->middleware('can:agendamento.create')
