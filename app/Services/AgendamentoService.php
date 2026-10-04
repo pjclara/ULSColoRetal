@@ -274,7 +274,10 @@ class AgendamentoService
             return false;
         }
 
-        $listaDeEspera?->update(['estado_lista_espera' => self::ESTADO_LISTA_ESPERA_PENDENTE]);
+        // Só volta a "Pendente" se não restar outro agendamento da mesma lista de espera.
+        if ($listaDeEspera && !$listaDeEspera->agendamentos()->exists()) {
+            $listaDeEspera->update(['estado_lista_espera' => self::ESTADO_LISTA_ESPERA_PENDENTE]);
+        }
 
         return true;
     }

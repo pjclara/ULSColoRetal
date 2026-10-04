@@ -72,6 +72,7 @@ const ESTADO_COLORS: Record<string, { bg: string; border: string; text: string }
     cancelado: { bg: '#fee2e2', border: '#ef4444', text: '#991b1b' },
     operado: { bg: '#dcfce7', border: '#22c55e', text: '#166534' },
 };
+const ESTADOS_NAO_ARRASTAVEIS = ['operado', 'cancelado'];
 const DEFAULT_ESTADO_COLOR = { bg: '#f1f5f9', border: '#94a3b8', text: '#334155' };
 
 function colorFor(estado: string | null) {
@@ -171,7 +172,7 @@ export default function Calendar({
             tipo_de_agendamento_id: props.tipo_de_agendamento_id ?? 0,
             local_de_agendamento_id: props.local_de_agendamento_id ?? 0,
             sala_de_agendamento_id: props.sala_de_agendamento_id ?? 0,
-            periodo_de_agendamento_id: props.periodo_de_agendamento_id ?? 0,
+            periodo_de_agendamento_id: props.periodo_de_agendamento_id,
             estado_de_agendamento_id: props.estado_de_agendamento_id ?? 0,
             comentarios: props.comentarios,
         });
@@ -436,6 +437,8 @@ export default function Calendar({
                                 backgroundColor: color.bg,
                                 borderColor: color.border,
                                 textColor: color.text,
+                                // Operado/Cancelado já não se reagendam arrastando (continuam editáveis no modal).
+                                startEditable: !ESTADOS_NAO_ARRASTAVEIS.includes((event.extendedProps.estado ?? '').trim().toLowerCase()),
                             };
                         })}
                         eventContent={renderEventContent}

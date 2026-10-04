@@ -37,7 +37,35 @@ const estadoAgendadoId = (estadoDeAgendamentoOptions: Option[]): number => {
     return option ? Number(option.value) : 0;
 };
 
-const emptyForm = (listaDeEsperaId: number | undefined, estadoDeAgendamentoOptions: Option[]): AgendamentoItem => ({
+/** Valor "YYYY-MM-DDTHH:mm" (hora local) do input datetime-local; aceita também ISO com fuso vindo do servidor. */
+const toDatetimeLocal = (value: string | null | undefined): string => {
+    if (!value) {
+        return '';
+    }
+
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) {
+        return value;
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return '';
+    }
+
+    const pad = (n: number) => String(n).padStart(2, '0');
+
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+/** O input é hora local sem fuso; o servidor trabalha em UTC, por isso envia-se sempre ISO (igual ao arrastar no calendário). */
+const toIso = (value: string): string => {
+    const date = new Date(value);
+
+    return Number.isNaN(date.getTime()) ? value : date.toISOString();
+};
+
+const emptyForm =(listaDeEsperaId: number | undefined, estadoDeAgendamentoOptions: Option[]): AgendamentoItem => ({
     id: 0,
     lista_de_espera_id: listaDeEsperaId ?? 0,
     start: '',
@@ -58,8 +86,15 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
         {
             ...emptyForm(listaDeEsperaId, estadoDeAgendamentoOptions),
             ...agendamento,
+            start: toDatetimeLocal(agendamento?.start),
+            end: toDatetimeLocal(agendamento?.start),
         },
         {
+            transform: (data) => ({
+                ...data,
+                start: data.start ? toIso(data.start) : data.start,
+                end: data.start ? toIso(data.start) : data.end,
+            }),
             url: isEditing && agendamento ? route('agendamentos.update', agendamento.id) : route('agendamentos.store'),
 
             isEditing,
@@ -77,6 +112,8 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
         resetForm({
             ...emptyForm(listaDeEsperaId, estadoDeAgendamentoOptions),
             ...agendamento,
+            start: toDatetimeLocal(agendamento?.start),
+            end: toDatetimeLocal(agendamento?.start),
             lista_de_espera_id: agendamento?.lista_de_espera_id ?? listaDeEsperaId ?? 0,
         });
     }, [agendamento, listaDeEsperaId, estadoDeAgendamentoOptions, resetForm]);

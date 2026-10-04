@@ -14,6 +14,8 @@ interface UseCrudFormOptions<T extends CrudFormData> {
     errorMessage?: string;
     preserveScroll?: boolean;
     onSuccess?: (page: Page) => void;
+    /** Ajusta os dados imediatamente antes de serem enviados (ex: converter datas para ISO). */
+    transform?: (data: T) => T;
 }
 
 /**
@@ -21,7 +23,7 @@ interface UseCrudFormOptions<T extends CrudFormData> {
  * estado do form, loading, erros de validação e submissão via Inertia router.
  */
 export function useCrudForm<T extends CrudFormData>(initialData: T, options: UseCrudFormOptions<T>) {
-    const { url, isEditing, successMessage, errorMessage = 'Verifique os dados introduzidos.', preserveScroll = true, onSuccess } = options;
+    const { url, isEditing, successMessage, errorMessage = 'Verifique os dados introduzidos.', preserveScroll = true, onSuccess, transform } = options;
 
     const [form, setForm] = useState<T>(initialData);
     const [errors, setErrors] = useState<Errors>({});
@@ -68,10 +70,12 @@ export function useCrudForm<T extends CrudFormData>(initialData: T, options: Use
             },
         };
 
+        const data = transform ? transform(form) : form;
+
         if (isEditing) {
-            router.put(url, form, requestOptions);
+            router.put(url, data, requestOptions);
         } else {
-            router.post(url, form, requestOptions);
+            router.post(url, data, requestOptions);
         }
     };
 
