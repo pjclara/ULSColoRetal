@@ -1,1 +1,0 @@
-import{j as e,L as s}from"./app-C9kEM_Zy.js";function a({intervencao:t}){return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Editar Intervencao"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar Intervencao #",t.id]})})]})}export{a as default};

@@ -1,0 +1,1 @@
+import{j as e,L as a}from"./app-DcvJgb6n.js";function r(){return e.jsxs(e.Fragment,{children:[e.jsx(a,{title:"Criar SalaDeAgendamento"}),e.jsx("div",{className:"p-6",children:e.jsx("h1",{className:"text-2xl font-semibold",children:"Criar SalaDeAgendamento"})})]})}export{r as default};

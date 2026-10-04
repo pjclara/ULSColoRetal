@@ -1,1 +1,0 @@
-import{j as s,L as e}from"./app-C9kEM_Zy.js";function i(){return s.jsxs(s.Fragment,{children:[s.jsx(e,{title:"Criar Diagnostico"}),s.jsx("div",{className:"p-6",children:s.jsx("h1",{className:"text-2xl font-semibold",children:"Criar Diagnostico"})})]})}export{i as default};

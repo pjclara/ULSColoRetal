@@ -1,0 +1,1 @@
+import{j as e,L as t}from"./app-DcvJgb6n.js";function s(){return e.jsxs(e.Fragment,{children:[e.jsx(t,{title:"Criar TipoDeAgendamento"}),e.jsx("div",{className:"p-6",children:e.jsx("h1",{className:"text-2xl font-semibold",children:"Criar TipoDeAgendamento"})})]})}export{s as default};

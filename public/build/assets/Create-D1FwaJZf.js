@@ -1,1 +1,0 @@
-import{j as e,L as s}from"./app-C9kEM_Zy.js";function r(){return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Criar Destino"}),e.jsx("div",{className:"p-6",children:e.jsx("h1",{className:"text-2xl font-semibold",children:"Criar Destino"})})]})}export{r as default};

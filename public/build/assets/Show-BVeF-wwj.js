@@ -1,1 +1,0 @@
-import{j as e,L as a}from"./app-C9kEM_Zy.js";function r({origemDaReferenciacao:s}){return e.jsxs(e.Fragment,{children:[e.jsx(a,{title:"OrigemDaReferenciacao"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["OrigemDaReferenciacao #",s.id]})})]})}export{r as default};

@@ -1,1 +1,0 @@
-import{j as e,L as t}from"./app-C9kEM_Zy.js";function a({agendamento:s}){return e.jsxs(e.Fragment,{children:[e.jsx(t,{title:"Agendamento"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["Agendamento #",s.id]})})]})}export{a as default};

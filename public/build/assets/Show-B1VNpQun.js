@@ -1,1 +1,0 @@
-import{j as e,L as s}from"./app-C9kEM_Zy.js";function r({blocoOperatorioCRS:o}){return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"BlocoOperatorioCRS"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["BlocoOperatorioCRS #",o.id]})})]})}export{r as default};

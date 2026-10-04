@@ -1,0 +1,1 @@
+import{j as e,L as s}from"./app-DcvJgb6n.js";function d({estadoDeAgendamento:t}){return e.jsxs(e.Fragment,{children:[e.jsx(s,{title:"Editar EstadoDeAgendamento"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar EstadoDeAgendamento #",t.id]})})]})}export{d as default};
