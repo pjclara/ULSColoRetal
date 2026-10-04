@@ -104,7 +104,7 @@ export default function CreateOrUpdateAgendamento({ agendamento, isOpenAgendamen
             }
         >
             <div className="space-y-4 grid grid-cols-2 gap-4">
-                {listaDeEsperaOptions && (
+                {listaDeEsperaOptions && !isEditing && (
                     <div className="col-span-2">
                         <AppSelectField
                             label="Utente / Lista de espera"
