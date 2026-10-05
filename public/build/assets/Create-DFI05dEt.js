@@ -1,1 +1,0 @@
-import{j as r,L as e}from"./app-DcvJgb6n.js";function o(){return r.jsxs(r.Fragment,{children:[r.jsx(e,{title:"Criar BlocoOperatorio"}),r.jsx("div",{className:"p-6",children:r.jsx("h1",{className:"text-2xl font-semibold",children:"Criar BlocoOperatorio"})})]})}export{o as default};

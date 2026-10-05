@@ -1,0 +1,1 @@
+import{j as e,L as t}from"./app-C3oe6NE7.js";function r({intervencao:s}){return e.jsxs(e.Fragment,{children:[e.jsx(t,{title:"Intervencao"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["Intervencao #",s.id]})})]})}export{r as default};

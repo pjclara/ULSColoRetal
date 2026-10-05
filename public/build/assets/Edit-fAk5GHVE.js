@@ -1,1 +1,0 @@
-import{j as t,L as r}from"./app-DcvJgb6n.js";function i({blocoOperatorio:e}){return t.jsxs(t.Fragment,{children:[t.jsx(r,{title:"Editar BlocoOperatorio"}),t.jsx("div",{className:"p-6",children:t.jsxs("h1",{className:"text-2xl font-semibold",children:["Editar BlocoOperatorio #",e.id]})})]})}export{i as default};

@@ -1,1 +1,0 @@
-import{j as e,L as t}from"./app-DcvJgb6n.js";function n({localDeAgendamento:s}){return e.jsxs(e.Fragment,{children:[e.jsx(t,{title:"LocalDeAgendamento"}),e.jsx("div",{className:"p-6",children:e.jsxs("h1",{className:"text-2xl font-semibold",children:["LocalDeAgendamento #",s.id]})})]})}export{n as default};

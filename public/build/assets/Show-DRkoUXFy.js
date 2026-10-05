@@ -1,0 +1,1 @@
+import{j as s,L as e}from"./app-C3oe6NE7.js";function i({localizacao:a}){return s.jsxs(s.Fragment,{children:[s.jsx(e,{title:"Localizacao"}),s.jsx("div",{className:"p-6",children:s.jsxs("h1",{className:"text-2xl font-semibold",children:["Localizacao #",a.id]})})]})}export{i as default};
