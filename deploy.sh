@@ -13,8 +13,8 @@ git pull
 echo "==> composer install"
 composer install --no-dev --optimize-autoloader --quiet
 
-echo "==> migrate"
-php artisan migrate --force
+#echo "==> migrate"
+#php artisan migrate --force
 
 
 echo "==> cache"
