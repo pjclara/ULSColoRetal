@@ -199,6 +199,17 @@ class InternamentoController extends Controller
     }
 
     /**
+     * Confirma que o doente não teve complicações e conclui a alta (ação rápida do dashboard,
+     * sem passar pelo modal completo de edição).
+     */
+    public function confirmarSemComplicacoes(Internamento $internamento)
+    {
+        $this->service->confirmarSemComplicacoes($internamento);
+
+        return back()->with('success', 'Alta concluída: confirmado que não houve complicações.');
+    }
+
+    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Internamento $internamento)

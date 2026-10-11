@@ -317,8 +317,9 @@ class InternamentoService
     private const ESTADO_ALTA_PENDENTE = 1;
     private const ESTADO_ALTA_CONCLUIDA = 2;
 
-    // ClavienDindo: 8 = "A aguardar ..." (por classificar)
+    // ClavienDindo: 8 = "A aguardar ..." (por classificar), 9 = "Sem complicações"
     private const CLAVIEN_DINDO_A_AGUARDAR = 8;
+    private const CLAVIEN_DINDO_SEM_COMPLICACOES = 9;
 
     public function create(array $data): Internamento
     {
@@ -382,6 +383,21 @@ class InternamentoService
     }
 
     /**
+     * Confirma que o doente não teve complicações e conclui a alta: limpa as complicações
+     * eventualmente registadas, marca o Clavien-Dindo como "Sem complicações" (para deixar de
+     * aparecer na lista de pendentes do dashboard, ver {@see getPendentes()}) e o estado da alta
+     * como "Concluída".
+     */
+    public function confirmarSemComplicacoes(Internamento $internamento): Internamento
+    {
+        return $this->update($internamento, [
+            'complicacoes' => [],
+            'clavien_dindo_id' => self::CLAVIEN_DINDO_SEM_COMPLICACOES,
+            'estado_da_alta_id' => self::ESTADO_ALTA_CONCLUIDA,
+        ]);
+    }
+
+    /**
      * Doentes operados cuja janela de morbilidade cirúrgica aos 30 dias já passou (data de alta há
      * mais de 30 dias) e cujas complicações (Clavien-Dindo) ainda não foram classificadas — nem que
      * seja para confirmar que não houve complicações. Não depende de o doente já ter saído ou não.
@@ -391,7 +407,7 @@ class InternamentoService
     {
         return Internamento::query()
             ->whereHas('blocoOperatorios')
-            ->where('estado_da_alta_id', 1) // Concluída
+            ->where('estado_da_alta_id', self::ESTADO_ALTA_PENDENTE)
             ->whereNotNull('data_de_alta')
             ->whereDate('data_de_alta', '>=', '2024-01-01')
             ->whereDate('data_de_alta', '<', now()->subDays(30)->toDateString())

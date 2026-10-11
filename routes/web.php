@@ -101,6 +101,10 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:internamento.update')
         ->name('internamentos.update');
 
+    Route::patch('/internamentos/{internamento}/confirmar-sem-complicacoes', [\App\Http\Controllers\InternamentoController::class, 'confirmarSemComplicacoes'])
+        ->middleware('can:internamento.update')
+        ->name('internamentos.confirmarSemComplicacoes');
+
     Route::delete('/internamentos/{internamento}', [\App\Http\Controllers\InternamentoController::class, 'destroy'])
         ->middleware('can:internamento.delete')
         ->name('internamentos.destroy');

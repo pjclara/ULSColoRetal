@@ -9,7 +9,7 @@ import { type BreadcrumbItem } from '@/types';
 import type { InternamentoOptions, LookupOption, ResolucaoComplicacaoOption } from '@/types/internamento';
 import type { InternamentoItem, Pagination } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
-import { ClipboardList, Stethoscope } from 'lucide-react';
+import { CheckCircle2, ClipboardList, Stethoscope } from 'lucide-react';
 import { useState } from 'react';
 
 type Ambito = 'meus' | 'equipa' | 'todos';
@@ -61,6 +61,18 @@ export default function Dashboard({ pendentes, filters, complicacoesOptions, res
     const trocarAmbito = (value: Ambito) => {
         setAmbito(value);
         router.get(route('dashboard'), { ambito: value }, { preserveState: true, preserveScroll: true, replace: true });
+    };
+
+    const confirmarSemComplicacoes = (item: InternamentoItem) => {
+        if (!confirm(`Confirmar que ${item.nome_curto ?? 'este doente'} não teve complicações e concluir a alta?`)) {
+            return;
+        }
+
+        router.patch(
+            route('internamentos.confirmarSemComplicacoes', item.id),
+            {},
+            { preserveScroll: true, onSuccess: () => router.reload({ only: ['pendentes'] }) },
+        );
     };
 
     return (
@@ -150,10 +162,16 @@ export default function Dashboard({ pendentes, filters, complicacoesOptions, res
                                             </td>
                                             <td className="px-3 py-3 whitespace-nowrap text-neutral-700 dark:text-neutral-300">{item.responsavel}</td>
                                             <td className="px-3 py-3 whitespace-nowrap">
-                                                <Button type="button" size="sm" variant="outline" onClick={() => setAltaTargetId(item.id ?? null)}>
-                                                    <Stethoscope className="size-3.5" />
-                                                    Classificar
-                                                </Button>
+                                                <div className="flex items-center gap-2">
+                                                    <Button type="button" size="sm" variant="outline" onClick={() => setAltaTargetId(item.id ?? null)}>
+                                                        <Stethoscope className="size-3.5" />
+                                                        Classificar
+                                                    </Button>
+                                                    <Button type="button" size="sm" variant="outline" onClick={() => confirmarSemComplicacoes(item)}>
+                                                        <CheckCircle2 className="size-3.5" />
+                                                        Sem complicações
+                                                    </Button>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))}

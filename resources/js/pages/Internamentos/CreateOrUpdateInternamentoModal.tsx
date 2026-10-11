@@ -26,6 +26,10 @@ interface Props {
  */
 const AGUARDAR_CLASSIFICACAO_ID = 8;
 
+/** Grau Clavien-Dindo que representa "não houve complicações" e id do estado da alta "Concluída". */
+const CLAVIEN_DINDO_SEM_COMPLICACOES_ID = 9;
+const ESTADO_ALTA_CONCLUIDA_ID = 2;
+
 function sugerirClavienDindoId(
     complicacoesSelecionadas: { id: string; resolucao_ids: string[] }[],
     resolucoesComplicacaoOptions: ResolucaoComplicacaoOption[],
@@ -202,6 +206,17 @@ export default function CreateOrUpdateInternamentoModal({
     const complicacoesSemResolucao = complicacoesSelecionadas.filter((complicacao) => complicacao.resolucao_ids.length === 0);
     const complicacoesInvalidas = tentouSubmeter && complicacoesSemResolucao.length > 0;
 
+    // Confirma explicitamente que o doente não teve complicações: marca o Clavien-Dindo como
+    // "Sem complicações" e o estado da alta como "Concluída" (ver InternamentoService::getPendentes,
+    // que mantém o doente na lista do dashboard enquanto o Clavien-Dindo não for classificado).
+    const confirmarSemComplicacoes = () => {
+        updateField('clavien_dindo_id', CLAVIEN_DINDO_SEM_COMPLICACOES_ID);
+        updateField('estado_da_alta_id', ESTADO_ALTA_CONCLUIDA_ID);
+    };
+
+    const semComplicacoesConfirmado = form.clavien_dindo_id === CLAVIEN_DINDO_SEM_COMPLICACOES_ID;
+    const podeConfirmarSemComplicacoes = complicacoesSelecionadas.length === 0 && !semComplicacoesConfirmado;
+
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         if (complicacoesSemResolucao.length > 0) {
             event.preventDefault();
@@ -344,6 +359,20 @@ export default function CreateOrUpdateInternamentoModal({
                                         >
                                             Aplicar
                                         </button>
+                                    </p>
+                                )}
+                                {podeConfirmarSemComplicacoes && (
+                                    <button
+                                        type="button"
+                                        onClick={confirmarSemComplicacoes}
+                                        className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300"
+                                    >
+                                        Confirmar que não houve complicações
+                                    </button>
+                                )}
+                                {semComplicacoesConfirmado && (
+                                    <p className="mt-2 flex items-center gap-1 text-xs font-medium text-emerald-700 dark:text-emerald-400">
+                                        Confirmado: sem complicações — alta marcada como Concluída.
                                     </p>
                                 )}
                             </div>
