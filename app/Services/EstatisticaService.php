@@ -21,6 +21,8 @@ class EstatisticaService
 
     private const DESTINO_FALECIDO = 'Falecido';
 
+    private const CLAVIEN_DINDO_SEM_COMPLICACOES = 'Sem complicações';
+
     private const COMPLICACAO_DEISCENCIA = 'Deiscência da anastomose';
 
     /** Graus Clavien-Dindo considerados morbilidade (3A, 3B, 4A, 4B, 5). */
@@ -138,22 +140,22 @@ class EstatisticaService
     private function tabelaGravidade(array $anos, Collection $internamentos): array
     {
         $graus = DB::table('clavien_dindos')->orderBy('id')->pluck('nome', 'id');
+        $semComplicacoesId = $graus->search(self::CLAVIEN_DINDO_SEM_COMPLICACOES);
         $internadosDoAno = fn($ano) => $internamentos->where('ano', $ano);
 
+        // antes de existir a classificação explícita "Sem complicações", a ausência de
+        // classificação (clavien_dindo_id nulo) significava o mesmo: nenhuma complicação.
         $linhas = $graus->map(fn($nome, $id) => $this->linha(
             $nome,
-            $this->porAno($anos, fn($a) => $internadosDoAno($a)->where('clavien_dindo_id', $id)->count()),
+            $this->porAno($anos, fn($a) => $internadosDoAno($a)
+                ->filter(fn($i) => $id === $semComplicacoesId ? in_array($i->clavien_dindo_id, [$id, null], true) : $i->clavien_dindo_id === $id)
+                ->count()),
         ))->values()->all();
-
-        $linhas[] = $this->linha(
-            'Por classificar',
-            $this->porAno($anos, fn($a) => $internadosDoAno($a)->whereNull('clavien_dindo_id')->count()),
-        );
 
         return [
             'titulo' => 'Gravidade (Clavien-Dindo)',
             'linhas' => $linhas,
-            'nota' => 'Número de doentes operados em cada ano, por grau de Clavien-Dindo atribuído na alta.',
+            'nota' => 'Número de doentes operados em cada ano, por grau de Clavien-Dindo atribuído na alta. "Sem complicações" inclui os doentes ainda sem classificação explícita.',
         ];
     }
 
