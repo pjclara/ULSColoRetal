@@ -21,7 +21,7 @@ class EstatisticaService
 
     private const DESTINO_FALECIDO = 'Falecido';
 
-    private const CLAVIEN_DINDO_SEM_COMPLICACOES = 'Sem complicações';
+    private const SEM_COMPLICACOES = 'Sem complicações';
 
     private const COMPLICACAO_DEISCENCIA = 'Deiscência da anastomose';
 
@@ -105,6 +105,8 @@ class EstatisticaService
             ->join('complicacaos as c', 'c.id', '=', 'ci.complicacao_id')
             ->leftJoin('grupo_complicacaos as g', 'g.id', '=', 'c.grupo_complicacao_id')
             ->whereNull('n.deleted_at')
+            // "Sem complicações" é um registo placeholder no catálogo, não uma complicação real
+            ->where('c.nome', '!=', self::SEM_COMPLICACOES)
             ->whereIn('ci.internamento_id', $operados)
             ->whereBetween(DB::raw('year(n.data_de_entrada)'), [min($anos), max($anos)])
             ->get([
@@ -140,7 +142,7 @@ class EstatisticaService
     private function tabelaGravidade(array $anos, Collection $internamentos): array
     {
         $graus = DB::table('clavien_dindos')->orderBy('id')->pluck('nome', 'id');
-        $semComplicacoesId = $graus->search(self::CLAVIEN_DINDO_SEM_COMPLICACOES);
+        $semComplicacoesId = $graus->search(self::SEM_COMPLICACOES);
         $internadosDoAno = fn($ano) => $internamentos->where('ano', $ano);
 
         // antes de existir a classificação explícita "Sem complicações", a ausência de
