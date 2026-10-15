@@ -70,8 +70,10 @@ class EstatisticaService
     {
         $anos = range(self::PRIMEIRO_ANO, max((int) date('Y'), self::PRIMEIRO_ANO));
 
-        $internamentos = $this->internamentos($anos);
-        $registos = $this->complicacoesRegistadas($anos);
+        // só doentes operados contam para as complicações
+        $operados = $this->operadosIds();
+        $internamentos = $this->internamentos($anos)->whereIn('id', $operados);
+        $registos = $this->complicacoesRegistadas($anos, $operados);
 
         return [
             'anos' => $anos,
@@ -84,14 +86,24 @@ class EstatisticaService
         ];
     }
 
-    /** Uma linha por complicação registada num internamento, no período, com o ano, nome e grupo. */
-    private function complicacoesRegistadas(array $anos): Collection
+    /** Ids dos internamentos com pelo menos um bloco operatório (doentes operados). */
+    private function operadosIds(): Collection
+    {
+        return DB::table('bloco_operatorios')
+            ->whereNull('deleted_at')
+            ->pluck('internamento_id')
+            ->unique();
+    }
+
+    /** Uma linha por complicação registada num internamento operado, no período, com o ano, nome e grupo. */
+    private function complicacoesRegistadas(array $anos, Collection $operados): Collection
     {
         return DB::table('complicacao_internamento as ci')
             ->join('internamentos as n', 'n.id', '=', 'ci.internamento_id')
             ->join('complicacaos as c', 'c.id', '=', 'ci.complicacao_id')
             ->leftJoin('grupo_complicacaos as g', 'g.id', '=', 'c.grupo_complicacao_id')
             ->whereNull('n.deleted_at')
+            ->whereIn('ci.internamento_id', $operados)
             ->whereBetween(DB::raw('year(n.data_de_entrada)'), [min($anos), max($anos)])
             ->get([
                 'ci.internamento_id',
@@ -119,7 +131,7 @@ class EstatisticaService
                     'dec',
                 ),
             ],
-            'nota' => 'Doentes com complicações: internamentos com pelo menos um registo na lista de complicações (independentemente da gravidade).',
+            'nota' => 'Considera apenas doentes operados. Doentes com complicações: internamentos com pelo menos um registo na lista de complicações (independentemente da gravidade).',
         ];
     }
 
@@ -141,7 +153,7 @@ class EstatisticaService
         return [
             'titulo' => 'Gravidade (Clavien-Dindo)',
             'linhas' => $linhas,
-            'nota' => 'Número de doentes internados em cada ano, por grau de Clavien-Dindo atribuído na alta.',
+            'nota' => 'Número de doentes operados em cada ano, por grau de Clavien-Dindo atribuído na alta.',
         ];
     }
 
