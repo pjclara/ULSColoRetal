@@ -163,7 +163,11 @@ class EstatisticaService
 
     private function tabelaComplicacoesPorGrupo(array $anos, Collection $registos): array
     {
-        $grupos = $registos->pluck('grupo')->filter()->unique()->sort()->values();
+        $totalGeral = fn($grupo) => $registos->where('grupo', $grupo)->count();
+
+        $grupos = $registos->pluck('grupo')->filter()->unique()
+            ->sort(fn($a, $b) => $totalGeral($b) <=> $totalGeral($a))
+            ->values();
 
         $linhas = $grupos->map(fn($grupo) => $this->linha(
             $grupo,
