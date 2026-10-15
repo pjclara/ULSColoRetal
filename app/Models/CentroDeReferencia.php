@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class CentroDeReferencia extends Model
 {
@@ -11,6 +12,22 @@ class CentroDeReferencia extends Model
     use HasFactory;
 
     protected $table = 'referenciacao_centro_de_referencias';
+
+    /**
+     * As colunas `uuid` e `created_by_id` da tabela são NOT NULL sem valor por defeito, mas
+     * não fazem parte dos dados submetidos pelo formulário — têm de ser preenchidas aqui.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (self $centroDeReferencia) {
+            $centroDeReferencia->uuid ??= (string) Str::uuid();
+            $centroDeReferencia->created_by_id ??= auth()->id();
+        });
+
+        static::updating(function (self $centroDeReferencia) {
+            $centroDeReferencia->updated_by_id = auth()->id();
+        });
+    }
 
     protected $fillable = [
         'utente_id',

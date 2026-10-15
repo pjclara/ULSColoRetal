@@ -132,7 +132,7 @@ export default function Dashboard({ pendentes, filters, complicacoesOptions, res
                                             <td className="px-3 py-3">
                                                 <div className="flex items-center gap-3">
                                                     <AppAvatar name={item.nome_curto ?? '?'} />
-                                                    <span className="font-medium text-neutral-900 dark:text-white">{item.id}</span>
+                                                    <span className="font-medium text-neutral-900 dark:text-white">{item.nome_curto ?? item.nome ?? 'N/A'}</span>
                                                 </div>
                                             </td>
                                             <td className="px-3 py-3 whitespace-nowrap text-neutral-700 dark:text-neutral-300">{item.numero_processo}</td>

@@ -1,6 +1,6 @@
 import { AppPageHeader } from '@/components/app/app-page-header';
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 const breadcrumbs = [
     {
@@ -45,6 +45,18 @@ export default function Index({ anos, tabelas }: Props) {
 
             <div className="p-4">
                 <AppPageHeader title="Estatísticas" description="Indicadores anuais calculados a partir dos internamentos e blocos operatórios." />
+
+                <div className="mb-6 flex gap-4 border-b border-neutral-200 text-sm font-medium dark:border-neutral-800">
+                    <Link href={route('estatisticas.index')} className="-mb-px border-b-2 border-blue-600 px-1 py-2 text-blue-600 dark:text-blue-400">
+                        Visão geral
+                    </Link>
+                    <Link
+                        href={route('estatisticas.complicacoes')}
+                        className="px-1 py-2 text-neutral-500 hover:text-neutral-900 dark:hover:text-white"
+                    >
+                        Complicações
+                    </Link>
+                </div>
 
                 <div className="space-y-8">
                     {tabelas.map((tabela) => (

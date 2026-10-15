@@ -65,6 +65,114 @@ class EstatisticaService
         ];
     }
 
+    /** Indicadores anuais de complicações: incidência, gravidade e tipos mais frequentes. */
+    public function buildComplicacoes(): array
+    {
+        $anos = range(self::PRIMEIRO_ANO, max((int) date('Y'), self::PRIMEIRO_ANO));
+
+        $internamentos = $this->internamentos($anos);
+        $registos = $this->complicacoesRegistadas($anos);
+
+        return [
+            'anos' => $anos,
+            'tabelas' => [
+                $this->tabelaComplicacoesGeral($anos, $internamentos, $registos),
+                $this->tabelaGravidade($anos, $internamentos),
+                $this->tabelaComplicacoesPorGrupo($anos, $registos),
+                $this->tabelaComplicacoesFrequentes($anos, $registos),
+            ],
+        ];
+    }
+
+    /** Uma linha por complicação registada num internamento, no período, com o ano, nome e grupo. */
+    private function complicacoesRegistadas(array $anos): Collection
+    {
+        return DB::table('complicacao_internamento as ci')
+            ->join('internamentos as n', 'n.id', '=', 'ci.internamento_id')
+            ->join('complicacaos as c', 'c.id', '=', 'ci.complicacao_id')
+            ->leftJoin('grupo_complicacaos as g', 'g.id', '=', 'c.grupo_complicacao_id')
+            ->whereNull('n.deleted_at')
+            ->whereBetween(DB::raw('year(n.data_de_entrada)'), [min($anos), max($anos)])
+            ->get([
+                'ci.internamento_id',
+                DB::raw('year(n.data_de_entrada) as ano'),
+                'c.nome as complicacao',
+                'g.nome as grupo',
+            ]);
+    }
+
+    private function tabelaComplicacoesGeral(array $anos, Collection $internamentos, Collection $registos): array
+    {
+        $internadosDoAno = fn($ano) => $internamentos->where('ano', $ano);
+        $comComplicacoes = fn($ano) => $registos->where('ano', $ano)->pluck('internamento_id')->unique()->count();
+        $linha = fn(string $titulo, callable $fn, string $formato = 'int') => $this->linha($titulo, $this->porAno($anos, $fn), $formato);
+
+        return [
+            'titulo' => 'Complicações',
+            'linhas' => [
+                $linha('Total de complicações registadas', fn($a) => $registos->where('ano', $a)->count()),
+                $linha('Doentes com pelo menos uma complicação', $comComplicacoes),
+                $linha('Doentes com complicações %', fn($a) => $this->percentagem($comComplicacoes($a), $internadosDoAno($a)->count()), 'pct'),
+                $linha(
+                    'Média de complicações por doente afetado',
+                    fn($a) => $comComplicacoes($a) > 0 ? round($registos->where('ano', $a)->count() / $comComplicacoes($a), 2) : null,
+                    'dec',
+                ),
+            ],
+            'nota' => 'Doentes com complicações: internamentos com pelo menos um registo na lista de complicações (independentemente da gravidade).',
+        ];
+    }
+
+    private function tabelaGravidade(array $anos, Collection $internamentos): array
+    {
+        $graus = DB::table('clavien_dindos')->orderBy('id')->pluck('nome', 'id');
+        $internadosDoAno = fn($ano) => $internamentos->where('ano', $ano);
+
+        $linhas = $graus->map(fn($nome, $id) => $this->linha(
+            $nome,
+            $this->porAno($anos, fn($a) => $internadosDoAno($a)->where('clavien_dindo_id', $id)->count()),
+        ))->values()->all();
+
+        $linhas[] = $this->linha(
+            'Por classificar',
+            $this->porAno($anos, fn($a) => $internadosDoAno($a)->whereNull('clavien_dindo_id')->count()),
+        );
+
+        return [
+            'titulo' => 'Gravidade (Clavien-Dindo)',
+            'linhas' => $linhas,
+            'nota' => 'Número de doentes internados em cada ano, por grau de Clavien-Dindo atribuído na alta.',
+        ];
+    }
+
+    private function tabelaComplicacoesPorGrupo(array $anos, Collection $registos): array
+    {
+        $grupos = $registos->pluck('grupo')->filter()->unique()->sort()->values();
+
+        $linhas = $grupos->map(fn($grupo) => $this->linha(
+            $grupo,
+            $this->porAno($anos, fn($a) => $registos->where('ano', $a)->where('grupo', $grupo)->count()),
+        ))->all();
+
+        return ['titulo' => 'Complicações por grupo', 'linhas' => $linhas];
+    }
+
+    private function tabelaComplicacoesFrequentes(array $anos, Collection $registos): array
+    {
+        $totalGeral = fn($nome) => $registos->where('complicacao', $nome)->count();
+
+        $complicacoes = $registos->pluck('complicacao')->unique()
+            ->sort(fn($a, $b) => $totalGeral($b) <=> $totalGeral($a))
+            ->values();
+
+        $linhas = $complicacoes->map(fn($nome) => $this->linha(
+            $nome,
+            $this->porAno($anos, fn($a) => $registos->where('ano', $a)->where('complicacao', $nome)->count()),
+        ))->all();
+
+        return ['titulo' => 'Complicações mais frequentes', 'linhas' => $linhas];
+    }
+
     /** Internamentos do período, com o ano de entrada e o tempo de internamento. */
     private function internamentos(array $anos): Collection
     {
@@ -90,6 +198,7 @@ class EstatisticaService
                 'faleceu' => $i->destino_id === $falecido,
                 'morbilidade' => in_array($i->clavien_dindo_id, $graves, true),
                 'deiscencia' => $comDeiscencia->has($i->id),
+                'clavien_dindo_id' => $i->clavien_dindo_id,
             ])
             ->keyBy('id');
     }

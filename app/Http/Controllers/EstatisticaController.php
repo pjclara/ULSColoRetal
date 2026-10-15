@@ -12,4 +12,9 @@ class EstatisticaController extends Controller
     {
         return inertia('Estatisticas/Index', $this->service->build());
     }
+
+    public function complicacoes()
+    {
+        return inertia('Estatisticas/Complicacoes', $this->service->buildComplicacoes());
+    }
 }

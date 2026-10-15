@@ -763,4 +763,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/estatisticas', [\App\Http\Controllers\EstatisticaController::class, 'index'])
         ->middleware('can:estatisticas.view')
         ->name('estatisticas.index');
+
+    Route::get('/estatisticas/complicacoes', [\App\Http\Controllers\EstatisticaController::class, 'complicacoes'])
+        ->middleware('can:estatisticas.view')
+        ->name('estatisticas.complicacoes');
 });

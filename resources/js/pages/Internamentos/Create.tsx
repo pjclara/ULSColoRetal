@@ -155,6 +155,9 @@ export default function Create({ utentes, internamentos, internamentoOptions, fi
                             internamentoOptions={internamentoOptions}
                             utente={utente}
                             centroDeReferencia={utente.centro_de_referencia}
+                            origems={internamentoOptions.origensDaReferenciacao ?? []}
+                            destinos={internamentoOptions.destinos}
+                            users={internamentoOptions.responsaveis}
                             onBack={handleBack}
                             onContinue={() => setCurrentStep(2)}
                         />
