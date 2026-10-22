@@ -26,6 +26,7 @@ class ComplicacaoService
     public function getComplicacoesAgrupadas(): array
     {
         $complicacoes = Complicacao::with('grupoComplicacao')
+            ->where('nome', '!=', 'Sem complicações')
             ->orderBy('grupo_complicacao_id')
             ->orderBy('nome')
             ->get();

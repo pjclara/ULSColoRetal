@@ -551,10 +551,12 @@ class InternamentoService
          $internamento->diagnosticos()->detach($diagnosticoId);
     }
 
-    // add complicacao to internamento
-    public function addComplicacao(Internamento $internamento, int $complicacaoId)
+    // add complicacao to internamento (ou atualiza a sua resolução, se já associada)
+    public function addComplicacao(Internamento $internamento, int $complicacaoId, array $resolucaoIds)
     {
-        $internamento->complicacaos()->syncWithoutDetaching($complicacaoId);
+        $internamento->complicacaos()->syncWithoutDetaching([
+            $complicacaoId => ['resolucao' => array_values($resolucaoIds)],
+        ]);
     }
 
     // remove complicacao from internamento

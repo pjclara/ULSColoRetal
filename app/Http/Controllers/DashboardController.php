@@ -29,18 +29,8 @@ class DashboardController extends Controller
             'filters' => [
                 'ambito' => $ambito,
             ],
-            'complicacoesOptions' => $this->complicacaoService->getComplicacoesOptions(),
+            'complicacoesAgrupadas' => $this->complicacaoService->getComplicacoesAgrupadas(),
             'resolucoesComplicacaoOptions' => $this->complicacaoService->getResolucoesOptions(),
-            'internamentoOptions' => [
-                'origensInternamento' => $this->service->getOrigensInternamento(),
-                'estadosAlta' => $this->service->getEstadosAlta(),
-                'responsaveis' => $this->service->getResponsaveis(),
-                'clavienDindo' => $this->service->getClavienDindo(),
-                'destinos' => $this->service->getDestinos(),
-                'casosSociais' => $this->service->getCasosSociais(),
-                'localizacoes' => $this->service->getLocalizacoes(),
-                'origensDaReferenciacao' => $this->service->getOrigensDaReferenciacao(),
-            ],
         ]);
     }
 }

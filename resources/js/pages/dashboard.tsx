@@ -4,9 +4,9 @@ import { AppPagination } from '@/components/app/app-pagination';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import CreateOrUpdateInternamentoModal from '@/pages/Internamentos/CreateOrUpdateInternamentoModal';
+import AddComplicacoesToInternamento from '@/pages/Complicacoes/AddComplicacoesToInternamento';
 import { type BreadcrumbItem } from '@/types';
-import type { InternamentoOptions, LookupOption, ResolucaoComplicacaoOption } from '@/types/internamento';
+import type { LookupOption, ResolucaoComplicacaoOption } from '@/types/internamento';
 import type { InternamentoItem, Pagination } from '@/types/type';
 import { Head, router } from '@inertiajs/react';
 import { CheckCircle2, ClipboardList, Stethoscope } from 'lucide-react';
@@ -25,9 +25,8 @@ type Props = {
     filters: {
         ambito?: Ambito;
     };
-    complicacoesOptions: LookupOption[];
+    complicacoesAgrupadas: Record<string, LookupOption[]>;
     resolucoesComplicacaoOptions: ResolucaoComplicacaoOption[];
-    internamentoOptions: InternamentoOptions;
 };
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -52,11 +51,12 @@ function diasDesde(data: string | null | undefined): number | null {
     return Math.floor((Date.now() - inicio.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-export default function Dashboard({ pendentes, filters, complicacoesOptions, resolucoesComplicacaoOptions, internamentoOptions }: Props) {
+export default function Dashboard({ pendentes, filters, complicacoesAgrupadas, resolucoesComplicacaoOptions }: Props) {
     const [ambito, setAmbito] = useState<Ambito>(filters.ambito ?? 'meus');
-    const [altaTargetId, setAltaTargetId] = useState<number | null>(null);
+    const [complicacaoTargetId, setComplicacaoTargetId] = useState<number | null>(null);
 
-    const altaTarget = altaTargetId != null ? (pendentes.data.find((item) => item.id === altaTargetId) ?? null) : null;
+    const complicacaoTarget =
+        complicacaoTargetId != null ? (pendentes.data.find((item) => item.id === complicacaoTargetId) ?? null) : null;
 
     const trocarAmbito = (value: Ambito) => {
         setAmbito(value);
@@ -163,9 +163,9 @@ export default function Dashboard({ pendentes, filters, complicacoesOptions, res
                                             <td className="px-3 py-3 whitespace-nowrap text-neutral-700 dark:text-neutral-300">{item.responsavel}</td>
                                             <td className="px-3 py-3 whitespace-nowrap">
                                                 <div className="flex items-center gap-2">
-                                                    <Button type="button" size="sm" variant="outline" onClick={() => setAltaTargetId(item.id ?? null)}>
+                                                    <Button type="button" size="sm" variant="outline" onClick={() => setComplicacaoTargetId(item.id ?? null)}>
                                                         <Stethoscope className="size-3.5" />
-                                                        Classificar
+                                                        Registar complicações
                                                     </Button>
                                                     <Button type="button" size="sm" variant="outline" onClick={() => confirmarSemComplicacoes(item)}>
                                                         <CheckCircle2 className="size-3.5" />
@@ -191,19 +191,15 @@ export default function Dashboard({ pendentes, filters, complicacoesOptions, res
                 )}
             </div>
 
-            <CreateOrUpdateInternamentoModal
-                open={altaTargetId != null}
-                onClose={() => setAltaTargetId(null)}
-                internamento={altaTarget}
-                utenteId={altaTarget?.utente_id ?? null}
-                internamentoOptions={internamentoOptions}
-                complicacoesOptions={complicacoesOptions}
-                resolucoesComplicacaoOptions={resolucoesComplicacaoOptions}
-                onSubmit={() => {
-                    setAltaTargetId(null);
-                    router.reload({ only: ['pendentes'] });
-                }}
-            />
+            {complicacaoTarget?.id != null && (
+                <AddComplicacoesToInternamento
+                    internamento={{ id: complicacaoTarget.id, complicacaos: complicacaoTarget.complicacaos ?? [] }}
+                    complicacoesAgrupadas={complicacoesAgrupadas}
+                    resolucoesComplicacaoOptions={resolucoesComplicacaoOptions}
+                    onClose={() => setComplicacaoTargetId(null)}
+                    onSave={() => router.reload({ only: ['pendentes'] })}
+                />
+            )}
         </AppLayout>
     );
 }

@@ -249,12 +249,14 @@ class InternamentoController extends Controller
     {
         $request->validate([
             'complicacaoId' => 'required|exists:complicacaos,id',
+            'resolucao' => 'required|array|min:1',
+            'resolucao.*' => 'integer|exists:resolucao_complicacaos,id',
         ]);
 
-        $this->service->addComplicacao($internamento, $request->input('complicacaoId'));
+        $this->service->addComplicacao($internamento, $request->input('complicacaoId'), $request->input('resolucao'));
 
         return redirect()
-            ->route('internamentos.show', $internamento->id)
+            ->back()
             ->with('success', 'Complicação adicionada com sucesso ao internamento.');
     }
 
@@ -267,7 +269,7 @@ class InternamentoController extends Controller
         $this->service->removeComplicacao($internamento, $request->input('complicacaoId'));
 
         return redirect()
-            ->route('internamentos.show', $internamento->id)
+            ->back()
             ->with('success', 'Complicação removida com sucesso do internamento.');
     }
 }

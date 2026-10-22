@@ -206,6 +206,7 @@ export default function ShowInternamento({
                         <AddComplicacoesToInternamento
                             internamento={internamento}
                             complicacoesAgrupadas={complicacoesAgrupadas}
+                            resolucoesComplicacaoOptions={resolucoesComplicacaoOptions}
                             onClose={() => setShowComplicacoesToInternamentoModal(false)}
                             onSave={() => router.reload({ only: ['internamento'] })}
                         />
